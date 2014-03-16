@@ -1,0 +1,17 @@
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq.Test.xUnit\obj\Debug\Miq.Test.xUnit.csprojResolveAssemblyReference.cache
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq.Test.xUnit\bin\Debug\Miq.Test.xUnit.dll.config
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq.Test.xUnit\bin\Debug\Miq.Test.xUnit.dll
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq.Test.xUnit\bin\Debug\Miq.Test.xUnit.pdb
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq.Test.xUnit\bin\Debug\Moq.dll
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq.Test.xUnit\bin\Debug\Ploeh.AutoFixture.AutoMoq.dll
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq.Test.xUnit\bin\Debug\Ploeh.AutoFixture.dll
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq.Test.xUnit\bin\Debug\Ploeh.AutoFixture.Xunit.dll
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq.Test.xUnit\bin\Debug\xunit.dll
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq.Test.xUnit\bin\Debug\xunit.extensions.dll
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq.Test.xUnit\bin\Debug\Ploeh.AutoFixture.xml
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq.Test.xUnit\bin\Debug\Ploeh.AutoFixture.AutoMoq.xml
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq.Test.xUnit\bin\Debug\Ploeh.AutoFixture.Xunit.xml
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq.Test.xUnit\bin\Debug\xunit.xml
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq.Test.xUnit\bin\Debug\xunit.extensions.xml
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq.Test.xUnit\obj\Debug\Miq.Test.xUnit.dll
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq.Test.xUnit\obj\Debug\Miq.Test.xUnit.pdb

@@ -1,0 +1,6 @@
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\AngbandSharp\bin\Debug\AngbandSharp.exe.config
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\AngbandSharp\bin\Debug\AngbandSharp.exe
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\AngbandSharp\bin\Debug\AngbandSharp.pdb
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\AngbandSharp\obj\Debug\AngbandSharp.csprojResolveAssemblyReference.cache
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\AngbandSharp\obj\Debug\AngbandSharp.exe
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\AngbandSharp\obj\Debug\AngbandSharp.pdb

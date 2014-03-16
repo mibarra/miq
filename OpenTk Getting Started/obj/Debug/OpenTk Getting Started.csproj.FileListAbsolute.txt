@@ -1,0 +1,14 @@
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\OpenTk Getting Started\obj\Debug\OpenTk Getting Started.csprojResolveAssemblyReference.cache
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\OpenTk Getting Started\bin\Debug\OpenTk Getting Started.exe.config
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\OpenTk Getting Started\bin\Debug\OpenTk Getting Started.exe
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\OpenTk Getting Started\bin\Debug\OpenTk Getting Started.pdb
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\OpenTk Getting Started\bin\Debug\OpenTK.dll
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\OpenTk Getting Started\bin\Debug\SharpDX.Direct2D1.dll
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\OpenTk Getting Started\bin\Debug\SharpDX.dll
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\OpenTk Getting Started\bin\Debug\SharpDX.DXGI.dll
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\OpenTk Getting Started\bin\Debug\OpenTK.xml
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\OpenTk Getting Started\bin\Debug\SharpDX.xml
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\OpenTk Getting Started\bin\Debug\SharpDX.Direct2D1.xml
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\OpenTk Getting Started\bin\Debug\SharpDX.DXGI.xml
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\OpenTk Getting Started\obj\Debug\OpenTk Getting Started.exe
+C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\OpenTk Getting Started\obj\Debug\OpenTk Getting Started.pdb
