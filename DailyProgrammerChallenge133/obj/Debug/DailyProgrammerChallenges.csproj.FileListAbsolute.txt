@@ -1,6 +1,0 @@
-C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\DailyProgrammerChallenge133\bin\Debug\DailyProgrammerChallenge133.exe.config
-C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\DailyProgrammerChallenge133\bin\Debug\DailyProgrammerChallenge133.exe
-C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\DailyProgrammerChallenge133\bin\Debug\DailyProgrammerChallenge133.pdb
-C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\DailyProgrammerChallenge133\obj\Debug\DailyProgrammerChallenges.csprojResolveAssemblyReference.cache
-C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\DailyProgrammerChallenge133\obj\Debug\DailyProgrammerChallenge133.exe
-C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\DailyProgrammerChallenge133\obj\Debug\DailyProgrammerChallenge133.pdb

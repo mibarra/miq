@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 
-namespace Miq.Tests.Math
+namespace Miq.Tests.MoreMathTests
 {
     [TestClass]
     public class Number

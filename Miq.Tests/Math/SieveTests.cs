@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Miq;
 
-namespace Miq.Tests.Math
+namespace Miq.Tests.MoreMathTests
 {
     [TestClass]
     public class SieveTests

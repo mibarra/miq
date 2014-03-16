@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Miq;
 
-namespace Miq.Tests.Math
+namespace Miq.Tests.MoreMathTests
 {
     [TestClass]
     public class RomanNumerals

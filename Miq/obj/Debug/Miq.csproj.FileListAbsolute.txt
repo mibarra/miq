@@ -7,4 +7,3 @@ C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq\bin\Debug\Miq.dll
 C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq\bin\Debug\Miq.pdb
 C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq\obj\Debug\Miq.dll
 C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq\obj\Debug\Miq.pdb
-C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\Miq\obj\Debug\Miq.csprojResolveAssemblyReference.cache
