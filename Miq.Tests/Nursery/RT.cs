@@ -37,6 +37,23 @@ namespace Miq.Tests.Nursery.RT
             {
                 return new Point(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
             }
+
+            public static Point operator -(Point a)
+            {
+                return new Point(-a.X, -a.Y, -a.Z);
+            }
+
+            public static double DotProduct (Point a, Point b)
+            {
+                return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
+            }
+
+            public static Point CrossProduct (Point a, Point b)
+            {
+                return new Point(a.Y * b.Z - a.Z * b.Y,
+                                 a.Z * b.X - a.X * b.Z,
+                                 a.X * b.Y - a.Y * b.X);
+            }
         }
 
         class Ray
@@ -68,6 +85,8 @@ namespace Miq.Tests.Nursery.RT
 
             public readonly Point Center;
             public readonly Double Radius;
+            public Point PoleAxis; // XXX make this readonly
+            public Point EcuatorAxis; // XXX make this readonly
 
             public Point Intersection(Ray ray)
             {
@@ -77,9 +96,34 @@ namespace Miq.Tests.Nursery.RT
             public Point Normal(Point point)
             {
                 return new Point((point.X - Center.X) / Radius,
-                              (point.Y - Center.Y) / Radius,
-                              (point.Z - Center.Z) / Radius);
+                                 (point.Y - Center.Y) / Radius,
+                                 (point.Z - Center.Z) / Radius);
             }
+
+            public MappingParameter InverseMapping(Point normal)
+            {
+                double φ = Math.Acos(Point.DotProduct(-PoleAxis, normal));
+                double v = φ / Math.PI;
+                double u = 0;
+                // XXX refactor, comparison between doubles
+                //v != 0 && v != 1
+                if (v > 0.001 || (Math.Abs(v - 1) > 0.001))
+                {
+                    double θ = Math.Acos(Point.DotProduct(EcuatorAxis, normal) / Math.Sin(φ)) / (2 * Math.PI);
+                    // XXX refactor the cross product below is constant for the sphere, precalculate
+                    if (Point.DotProduct(Point.CrossProduct(PoleAxis, EcuatorAxis), normal) > 0)
+                    {
+                        u = θ; 
+                    }
+                    else
+                    {
+                        u = 1 - θ;
+                    }
+                }
+
+                return new MappingParameter(u, v);
+            }
+
 
             Point AlgebraicIntersection(Ray ray)
             {
@@ -105,6 +149,35 @@ namespace Miq.Tests.Nursery.RT
             }
         }
 
+        // XXX refactor, extremly similar to Point
+        struct MappingParameter
+        {
+            public MappingParameter(double u, double v)
+            {
+                // XXX u should range from 0 to 1, at the poles u is 0 (ie. v is 0 or 1)
+                // XXX u == 1 should convert it to 0
+                // XXX v should range from 0 (south pole) to 1 (north pole)
+                U = u;
+                V = v;
+            }
+
+            public static MappingParameter operator -(MappingParameter a, MappingParameter b)
+            {
+                return new MappingParameter(a.U - b.U, a.V - b.V);
+            }
+
+            public double Magnitude
+            {
+                get
+                {
+                    return Math.Sqrt(U * U + V * V);
+                }
+            }
+
+            public readonly Double U;
+            public readonly Double V;
+        }
+
         [TestMethod]
         public void SphereIntersection()
         {
@@ -118,6 +191,25 @@ namespace Miq.Tests.Nursery.RT
 
             AssertPointIsNear(expectedIntersection, actualIntersection);
             AssertPointIsNear(expectedNormal, actualNormal);
+        }
+
+        [TestMethod]
+        public void SphereInverseMapping()
+        {
+            var normal = new Point(0.577, -0.577, 0.577);
+            // XXX Refactor: make these the default parameter for the sphere
+            var sphere = new Sphere(new Point(0, 0, 0), 1);
+            sphere.PoleAxis = new Point(0, 0, 1); // XXX refactor, create a Point.Z
+            sphere.EcuatorAxis = new Point(1, 0, 0); // XXX refactor, create a Point.X
+
+            MappingParameter parm = sphere.InverseMapping(normal);
+            Assert2dPointIsNear(new MappingParameter(0.875, 0.696), parm);
+        }
+
+        // XXX refactor, this is the same than AssertPointIsNear
+        private void Assert2dPointIsNear(MappingParameter expected, MappingParameter actual)
+        {
+            Assert.IsTrue((expected - actual).Magnitude < 0.01);
         }
 
         private void AssertPointIsNear(Point expected, Point actual)
