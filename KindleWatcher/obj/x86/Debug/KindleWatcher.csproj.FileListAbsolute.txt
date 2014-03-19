@@ -1,6 +1,0 @@
-C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\KindleWatcher\bin\Debug\KindleWatcher.exe.config
-C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\KindleWatcher\bin\Debug\KindleWatcher.exe
-C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\KindleWatcher\bin\Debug\KindleWatcher.pdb
-C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\KindleWatcher\obj\x86\Debug\KindleWatcher.csprojResolveAssemblyReference.cache
-C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\KindleWatcher\obj\x86\Debug\KindleWatcher.exe
-C:\Users\Miguel\Desktop\Tfs\Miq\MiqLibrary\Dev\KindleWatcher\obj\x86\Debug\KindleWatcher.pdb
