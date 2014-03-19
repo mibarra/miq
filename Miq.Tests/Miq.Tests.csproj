@@ -115,7 +115,7 @@
     <Compile Include="Nursery\RedditClient.cs" />
     <Compile Include="Nursery\MobiDeDRM.cs" />
     <Compile Include="Nursery\DoomsdayRuleTests.cs" />
-    <Compile Include="Nursery\RT.cs" />
+    <Compile Include="Nursery\RTTests.cs" />
     <Compile Include="Nursery\UnsignedInteger.cs" />
     <Compile Include="Nursery\ZombieDiceTests.cs" />
     <Compile Include="ProjectEuler\Problem 61 Cyclical figurate numbers.cs" />
