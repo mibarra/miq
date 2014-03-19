@@ -149,6 +149,49 @@ namespace Miq.Tests.Nursery.RT
             }
         }
 
+        // XXX create interface with members Intersection/Normal/InverseMapping, for Sphere and Plane
+        class Plane
+        {
+            public Plane(Point normal, double distance)
+            {
+                NormalToOrigin = normal.Normal;
+                Distance = distance;
+            }
+
+            public readonly Point NormalToOrigin;
+            public readonly double Distance;
+
+            public Point Intersection(Ray ray)
+            {
+                double vd = Point.DotProduct(NormalToOrigin, ray.Direction);
+                if (Math.Abs(vd) < 0.0001)
+                {
+                    return null;
+                }
+                double v0 = -(Point.DotProduct(NormalToOrigin, ray.Origin) + Distance);
+                double distance = v0 / vd;
+                if(distance < 0)
+                {
+                    return null;
+                }
+                return ray.PointAt(distance);
+            }
+
+            public Point Normal(Point point, Ray ray)
+            {
+                var vd = Point.DotProduct(NormalToOrigin, ray.Direction);
+                if(vd < 0)
+                {
+                    return NormalToOrigin;
+                }
+                else
+                {
+                    return -NormalToOrigin;
+                }
+
+            }
+        }
+
         // XXX refactor, extremly similar to Point
         struct MappingParameter
         {
@@ -204,6 +247,19 @@ namespace Miq.Tests.Nursery.RT
 
             MappingParameter parm = sphere.InverseMapping(normal);
             Assert2dPointIsNear(new MappingParameter(0.875, 0.696), parm);
+        }
+
+        [TestMethod]
+        public void PlaneIntersection()
+        {
+            var plane = new Plane(new Point(1, 0, 0), -7);
+            var ray = new Ray(new Point(2, 3, 4), new Point(0.577, 0.577, 0.577));
+
+            var actualIntersection = plane.Intersection(ray);
+            var actualNormal = plane.Normal(actualIntersection, ray);
+
+            AssertPointIsNear(new Point(7, 8, 9), actualIntersection);
+            AssertPointIsNear(new Point(-1, 0, 0), actualNormal);
         }
 
         // XXX refactor, this is the same than AssertPointIsNear
