@@ -43,12 +43,12 @@ namespace Miq.Tests.Nursery.RT
                 return new Point(-a.X, -a.Y, -a.Z);
             }
 
-            public static double DotProduct (Point a, Point b)
+            public static double DotProduct(Point a, Point b)
             {
                 return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
             }
 
-            public static Point CrossProduct (Point a, Point b)
+            public static Point CrossProduct(Point a, Point b)
             {
                 return new Point(a.Y * b.Z - a.Z * b.Y,
                                  a.Z * b.X - a.X * b.Z,
@@ -113,7 +113,7 @@ namespace Miq.Tests.Nursery.RT
                     // XXX refactor the cross product below is constant for the sphere, precalculate
                     if (Point.DotProduct(Point.CrossProduct(PoleAxis, EcuatorAxis), normal) > 0)
                     {
-                        u = θ; 
+                        u = θ;
                     }
                     else
                     {
@@ -170,7 +170,7 @@ namespace Miq.Tests.Nursery.RT
                 }
                 double v0 = -(Point.DotProduct(NormalToOrigin, ray.Origin) + Distance);
                 double distance = v0 / vd;
-                if(distance < 0)
+                if (distance < 0)
                 {
                     return null;
                 }
@@ -180,7 +180,7 @@ namespace Miq.Tests.Nursery.RT
             public Point Normal(Point point, Ray ray)
             {
                 var vd = Point.DotProduct(NormalToOrigin, ray.Direction);
-                if(vd < 0)
+                if (vd < 0)
                 {
                     return NormalToOrigin;
                 }
@@ -189,6 +189,23 @@ namespace Miq.Tests.Nursery.RT
                     return -NormalToOrigin;
                 }
 
+            }
+        }
+
+        class OrthogonalBox
+        {
+            public OrthogonalBox(Point minimumExtent, Point maximumExtent)
+            {
+                MinimumExtent = minimumExtent;
+                MaximumExtent = maximumExtent;
+            }
+
+            public readonly Point MinimumExtent;
+            public readonly Point MaximumExtent;
+
+            public Boolean Hit(Ray ray)
+            {
+                return false;
             }
         }
 
@@ -260,6 +277,15 @@ namespace Miq.Tests.Nursery.RT
 
             AssertPointIsNear(new Point(7, 8, 9), actualIntersection);
             AssertPointIsNear(new Point(-1, 0, 0), actualNormal);
+        }
+
+        [TestMethod]
+        public void OrthogonalBoxHit()
+        {
+            var ray = new Ray(new Point(0, 4, 2), new Point(0.218, -0.436, 0.873));
+            var box = new OrthogonalBox(new Point(-1, 2, 1), new Point(3, 3, 3));
+
+            Assert.IsFalse(box.Hit(ray));
         }
 
         // XXX refactor, this is the same than AssertPointIsNear
