@@ -16,6 +16,7 @@ namespace Miq.Tests.Nursery
         string ApiEndpoint = "https://api.imgur.com/3/";
 
         [TestMethod]
+        [TestCategory("Integration")]
         public void CallCreditsPage()
         {
             //  my c# code. my client app -- photos, users, comments, scores, ranking, etc...              -- imgur
@@ -93,63 +94,53 @@ namespace Miq.Tests.Nursery
 
         }
 
-        // Rate limiting
-        // ~12.5k requests per day (blocked for a month if hits the limit five times in a month)
-        // remaining credit for application: response X-RateLimit-ClientRemaining header
-        // remaining credit for user: X-RateLimit-UserLimit header in response
-        //
-        // header   desc
-        //  X-RateLimit-UserLimit       total credits that can be allocated
-        //      -UserRemaining          total credits available
-        //      -UserReset              timestamp for credits reset
-        //      -ClientLimit            total credits for the app per day
-        //      -ClientRemaining        total credits available for the app in a day
-        //
-        //  or hit https://api.imgur.com/3/credits
-
-
-        // Global Parameters
+        /* TODO implement Errors
+         When receiving any content from imgur check for errors:
+         check success flag in the response if false:
+              status has the error code
+              data.error; error message
+              data.request; requested url
+              data.method; requested method.
+         code
+         200  no error
+         400  bad parameter (missing or invalid) On uploads (bad image format or corrupt)
+         401  missing authentication
+         403  forbidden resource or rate limit has been reached
+         404  bad resource requested
+         429  rate limiting engaged
+         500  imgur is broken
+         Implement the fault trip trigger pattern
+         *         // Global Parameters
         // ?_fake_status={200,400,401,403,404,500}  make the api return this status code. for testing error handling code.
+        */
 
+        /* TODO implement endpoint Account
+         * (interesting to explore particular users)*/
 
-        // Errors
-        // When receiving any content from imgur check for errors:
-        // check success flag in the response if false:
-        //      status has the error code
-        //      data.error; error message
-        //      data.request; requested url
-        //      data.method; requested method.
-        // code
-        // 200  no error
-        // 400  bad parameter (missing or invalid) On uploads (bad image format or corrupt)
-        // 401  missing authentication
-        // 403  forbidden resource or rate limit has been reached
-        // 404  bad resource requested
-        // 429  rate limiting engaged
-        // 500  imgur is broken
-        // Implement the fault trip trigger pattern
+        // TODO implement endpoint Album
+        // (will implement later, we want images first :) )
 
-        // Endpoints:
-        // Account          (interesting to explore particular users)
-        // Album            (will implement later, we want images first :) )
-        // Comment          (will implement later, ...)
-        // Gallery          
+        /* TODO implement endpoint Comment 
+         * (will implement later, ...)
+         */
+
+        // TODO implement endpoint Gallery          
         //                  main gallery => /gallery/hot/viral/0.json   gallery image or gallery album
         //                  subbredit => /gallery/r/{subreddit}/{sort}/{page}
-        // Image
-        //                  image info => /image/{id} => image model
-        // Conversation
-        // Notification
-        // Memegen
 
-        // Implement main gallery, then imgage info, then download of the image
-        // implement models:
-        //  gallery image
-        //  gallery album
-        //  image
+        /* TODO implement endpoint Image
+        //                  image info => /image/{id} => image model */
 
-        // gallery album:
-        /*
+        /* TODO implement endpoint Conversation
+         */
+
+        /* TODO implement endpoint Notification 
+         */
+
+        // TODO implement endpoint Memegen
+        //
+          
+        /* TODO implement gallery album:
         Key	Format	Description
 id	string	The ID for the image
 title	string	The title of the album in the gallery
@@ -349,12 +340,13 @@ images	Array of Images	An array of all the images in the album (only available w
     },
     "success": true,
     "status": 200
-}
-         * 
-         * 
-         * 
-         * 
-         * gallery image:
+}*/
+
+        /* TODO implement data wrapper
+         * Responses have: { success: bool, status: code, data: {} }
+         */ 
+
+        /* TODO implement gallery image:
          * Key	Format	Description
 id	string	The ID for the image
 title	string	The title of the image.
@@ -400,10 +392,9 @@ is_album	boolean	if it's an album or not
     },
     "success" : true,
     "status" : 200
-}
-         * 
-         * 
-         * Image thumbnails
+}*/
+
+        /* TODO implement download of Image thumbnails
 There are 6 total thumbnails that an image can be resized to. Each one is accessable by appending a single character suffix to the end of the image id, and before the file extension. The thumbnails are:
 
 Thumbnail Suffix	Thumbnail Name	    Thumbnail Size	Keeps Image Proportions
@@ -414,93 +405,215 @@ m	                Medium Thumbnail	320x320	        Yes
 l	                Large Thumbnail	    640x640	        Yes
 h	                Huge Thumbnail	    1024x1024	    Yes
 For example, the image located at http://i.imgur.com/12345.jpg has the Medium Thumbnail located at http://i.imgur.com/12345m.jpg
+          */
+
+        /* TODO implement rate limit on all responses
          * 
          * 
-         * 
-         * 
-         * 
-         * 
-         * Implement first, then gallery album, then gallery image.
-         * image model:
-         * Key	Format	Description
-id	string	The ID for the image
-title	string	The title of the image.
-description	string	Description of the image.
-datetime	integer	Time inserted into the gallery, epoch time
-type	string	Image MIME type.
-animated	boolean	is the image animated
-width	integer	The width of the image in pixels
-height	integer	The height of the image in pixels
-size	integer	The size of the image in bytes
-views	integer	The number of image views
-bandwidth	integer	Bandwidth consumed by the image in bytes
-deletehash	string	OPTIONAL, the deletehash, if you're logged in as the image owner
-section	string	If the image has been categorized by our backend then this will contain the section the image belongs in. (funny, cats, adviceanimals, wtf, etc)
-link	string	The direct link to the the image
-Show XML Response	Hide JSON Response
-{
-    "data": {
-        "id": "SbBGk",
-        "title": null,
-        "description": null,
-        "datetime": 1341533193,
-        "type": "image/jpeg",
-        "animated": false,
-        "width": 2559,
-        "height": 1439,
-        "size": 521916,
-        "views": 1,
-        "bandwidth": 521916,
-        "deletehash": "eYZd3NNJHsbreD1"
-        "section": null,
-        "link": "http://i.imgur.com/SbBGk.jpg",
-    },
-    "success": true,
-    "status": 200
-}
-         * 
-         * 
-         * 
---- Then this
+         *         // TODO implement Rate limiting
+        // ~12.5k requests per day (blocked for a month if hits the limit five times in a month)
+        // remaining credit for application: response X-RateLimit-ClientRemaining header
+        // remaining credit for user: X-RateLimit-UserLimit header in response
+        //
+        // header   desc
+        //  X-RateLimit-UserLimit       total credits that can be allocated
+        //      -UserRemaining          total credits available
+        //      -UserReset              timestamp for credits reset
+        //      -ClientLimit            total credits for the app per day
+        //      -ClientRemaining        total credits available for the app in a day
+        //
+        //  or hit https://api.imgur.com/3/credits
+
 X-RateLimit-ClientLimit: 12500
 X-RateLimit-ClientRemaining: 12500
 X-RateLimit-UserLimit: 500
 X-RateLimit-UserRemaining: 499
 X-RateLimit-UserReset: 1395976271
-         */
+        */
+
+        class Image
+        {
+            public Image(string id, string link)
+            {
+                Id = id;
+                Link = link;
+            }
+
+            public string Id { get; private set; }
+
+            public string Link { get; private set; }
+
+            public string Title { get; set; }
+
+            public string Description { get; set; }
+
+            public DateTime DateTime { get; set; }
+
+            public MediaTypeHeaderValue Type { get; set; }
+
+            public string Section { get; set; }
+
+            public long Bandwidth { get; set; }
+
+            public int Width { get; set; }
+
+            public int Height { get; set; }
+
+            public int Size { get; set; }
+
+            public int Views { get; set; }
+
+            public bool Animated { get; set; }
+
+            public bool Favorite { get; set; }
+
+            public bool Nsfw { get; set; }
+
+            public static Image Deserialize(JObject jObject)
+            {
+                if (jObject == null)
+                {
+                    throw new ArgumentNullException("jToken");
+                }
+                if (jObject.Property("id") == null)
+                {
+                    throw new ArgumentException("id property missing in jObject", "jObject");
+                }
+                if (jObject.Property("link") == null)
+                {
+                    throw new ArgumentException("link property missing in jObject", "jObject");
+                }
+
+                var image = new Image(getValueFromJObject<string>(jObject, "id"), getValueFromJObject<string>(jObject, "link"));
+
+                image.Title = getValueFromJObject<string>(jObject, "title");
+                image.Description = getValueFromJObject<string>(jObject, "description");
+                image.DateTime = getDateTimeValueFromJObject(jObject, "datetime");
+                image.Type = getMediaTypeValueFromJObjecT(jObject, "type");
+                image.Section = getValueFromJObject<string>(jObject, "section");
+                image.Bandwidth = getValueFromJObject<long>(jObject, "bandwidth");
+                image.Width = getValueFromJObject<int>(jObject, "width");
+                image.Height = getValueFromJObject<int>(jObject, "height");
+                image.Size = getValueFromJObject<int>(jObject, "size");
+                image.Views = getValueFromJObject<int>(jObject, "views");
+                image.Animated = getValueFromJObject<bool>(jObject, "animated");
+                image.Favorite = getValueFromJObject<bool>(jObject, "favorite");
+                image.Nsfw = getValueFromJObject<bool>(jObject, "nsfw");
+
+                return image;
+            }
+
+            private static MediaTypeHeaderValue getMediaTypeValueFromJObjecT(JObject jObject, string propertyName)
+            {
+                string type = getValueFromJObject<string>(jObject, propertyName);
+                return new MediaTypeHeaderValue(type);
+            }
+
+            private static DateTime getDateTimeValueFromJObject(JObject jObject, string propertyName)
+            {
+                long timestamp = getValueFromJObject<long>(jObject, propertyName);
+                return new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc).AddSeconds(timestamp);
+            }
+
+            private static TReturn getValueFromJObject<TReturn>(JObject jObject, string propertyName)
+            {
+                var jTitleProperty = jObject.Property(propertyName);
+                TReturn valueToAssign = default(TReturn);
+                JTokenType type = GetJTokenTypeFor(typeof(TReturn));
+                if (jTitleProperty != null && jTitleProperty.Value.Type == type)
+                {
+                    valueToAssign = jTitleProperty.Value.Value<TReturn>();
+                }
+                return valueToAssign;
+
+            }
+
+            private static JTokenType GetJTokenTypeFor(Type type)
+            {
+                switch (type.Name)
+                {
+                    case "String": return JTokenType.String;
+                    case "Int64": return JTokenType.Integer;
+                    case "Int32": return JTokenType.Integer;
+                    case "Boolean": return JTokenType.Boolean;
+                }
+
+                throw new NotImplementedException(type.Name + " not implemented yet.");
+            }
+        }
 
         [TestMethod]
-        public void MyTestMethod()
+        [TestCategory("Unit")]
+        public void Deserialize_WithValidData_ReturnsImageObject()
         {
-            string imageJson = @"{""data"":{""id"":""ARbGOjd"",""title"":""long text here"",""description"":null,
+            Image expectedImage = new Image(id: "ARbGOjd", link: @"http://i.imgur.com/ARbGOjd.jpg");
+            expectedImage.Title = "long text here";
+            expectedImage.Description = null;
+            expectedImage.DateTime = new DateTime(2014, 3, 27, 21, 0, 24);
+            expectedImage.Type = new MediaTypeHeaderValue("image/jpeg");
+            expectedImage.Section = "funny";
+            expectedImage.Bandwidth = 45960692496;
+            expectedImage.Width = 2048;
+            expectedImage.Height = 1536;
+            expectedImage.Size = 188484;
+            expectedImage.Views = 243844;
+            expectedImage.Animated = false;
+            expectedImage.Favorite = false;
+            expectedImage.Nsfw = false;
+            string imageJson = @"{""id"":""ARbGOjd"",""title"":""long text here"",""description"":null,
                            ""datetime"":1395954024,""type"":""image/jpeg"",""animated"":false,""width"":2048,
                            ""height"":1536,""size"":188484,""views"":243844,""bandwidth"":45960692496,
                            ""favorite"":false,""nsfw"":false,""section"":""funny"",
-                            ""link"":""http:\/\/i.imgur.com\/ARbGOjd.jpg""},""success"":true,""status"":200}";
-
+                            ""link"":""http:\/\/i.imgur.com\/ARbGOjd.jpg""}";
             var j = JObject.Parse(imageJson);
 
-            bool success = (bool)j["success"];
-            // XXX what if false?
-            if (success)
-            {
-                int status = (int)j["status"];
+            Image actualImage = Image.Deserialize(j);
 
-                int userLimit = (int)j["data"]["UserLimit"];
-                int userRemaining = (int)j["data"]["UserRemaining"];
-                int userReset = (int)j["data"]["UserReset"];
-            }
+            Assert.AreEqual(expectedImage.Id, actualImage.Id);
+            Assert.AreEqual(expectedImage.Link, actualImage.Link);
+            Assert.AreEqual(expectedImage.Title, actualImage.Title);
+            Assert.AreEqual(expectedImage.Description, actualImage.Description);
+            Assert.AreEqual(expectedImage.DateTime, actualImage.DateTime);
+            Assert.AreEqual(expectedImage.Type, actualImage.Type);
+            Assert.AreEqual(expectedImage.Section, actualImage.Section);
+            Assert.AreEqual(expectedImage.Bandwidth, actualImage.Bandwidth);
+            Assert.AreEqual(expectedImage.Width, actualImage.Width);
+            Assert.AreEqual(expectedImage.Height, actualImage.Height);
+            Assert.AreEqual(expectedImage.Size, actualImage.Size);
+            Assert.AreEqual(expectedImage.Views, actualImage.Views);
+            Assert.AreEqual(expectedImage.Animated, actualImage.Animated);
+            Assert.AreEqual(expectedImage.Favorite, actualImage.Favorite);
+            Assert.AreEqual(expectedImage.Nsfw, actualImage.Nsfw);
 
         }
 
-        // response
-        //      success
-        //      status
-        //      type of payload
-        //      payload
-        //          error
-        //          image
-        //          gallery image
-        //          gallery album
+        [TestMethod]
+        [TestCategory("Unit")]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Deserialize_WithNull_ThrowsArgumentNullException()
+        {
+            Image.Deserialize(null);
+        }
+
+        [TestMethod]
+        [TestCategory("Unit")]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Deserialize_ObjectWithoutId_ThrowsArgumentException()
+        {
+            var token = new JObject();
+
+            Image.Deserialize(token);
+        }
+
+
+        [TestMethod]
+        [TestCategory("Unit")]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Deserialize_ObjectwithoutLink_ThrowsArgumentException()
+        {
+            var token = new JObject(new { id = "foo" });
+
+            Image.Deserialize(token);
+        }
     }
 }
