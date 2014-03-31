@@ -6,6 +6,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using Miq.imgurClient;
+
 namespace Miq.Tests.Nursery
 {
     [TestClass]
@@ -19,13 +21,6 @@ namespace Miq.Tests.Nursery
         [TestCategory("Integration")]
         public void CallCreditsPage()
         {
-            //  my c# code. my client app -- photos, users, comments, scores, ranking, etc...              -- imgur
-            //    httpClient, imgurapi 3 client-- urls, data models, auth, rate limiting, tags -- imgur web api 3 server
-            //                  httpClientHandler --  requests, headers --  Imgur web server
-            //                     httpWebRequest,  http (ports, encryption, transport)
-            // Installed Microsoft.AspNet.WebApi.Client from NuGet
-            // Using System.Net.Http.HttpClient
-
             // ctor
             using (var client = new HttpClient())
             {
@@ -83,7 +78,10 @@ namespace Miq.Tests.Nursery
                     // got transport error
                 }
             }
-            // paging: for plural actions, query string parameters
+        }
+
+        /* TODO implement paging
+         *             // paging: for plural actions, query string parameters
             // parameters:
             //      page    number of page being requested
             //      perPage limit results per page
@@ -91,8 +89,7 @@ namespace Miq.Tests.Nursery
             // /album/{id}/images is not paged
             // sample: https://api.imgur.com/3/account/imgur/images/0.json?perPage=42&page=6
 
-
-        }
+*/
 
         /* TODO implement Errors
          When receiving any content from imgur check for errors:
@@ -430,190 +427,5 @@ X-RateLimit-UserLimit: 500
 X-RateLimit-UserRemaining: 499
 X-RateLimit-UserReset: 1395976271
         */
-
-        class Image
-        {
-            public Image(string id, string link)
-            {
-                Id = id;
-                Link = link;
-            }
-
-            public string Id { get; private set; }
-
-            public string Link { get; private set; }
-
-            public string Title { get; set; }
-
-            public string Description { get; set; }
-
-            public DateTime DateTime { get; set; }
-
-            public MediaTypeHeaderValue Type { get; set; }
-
-            public string Section { get; set; }
-
-            public long Bandwidth { get; set; }
-
-            public int Width { get; set; }
-
-            public int Height { get; set; }
-
-            public int Size { get; set; }
-
-            public int Views { get; set; }
-
-            public bool Animated { get; set; }
-
-            public bool Favorite { get; set; }
-
-            public bool Nsfw { get; set; }
-
-            public static Image Deserialize(JObject jObject)
-            {
-                if (jObject == null)
-                {
-                    throw new ArgumentNullException("jToken");
-                }
-                if (jObject.Property("id") == null)
-                {
-                    throw new ArgumentException("id property missing in jObject", "jObject");
-                }
-                if (jObject.Property("link") == null)
-                {
-                    throw new ArgumentException("link property missing in jObject", "jObject");
-                }
-
-                var image = new Image(getValueFromJObject<string>(jObject, "id"), getValueFromJObject<string>(jObject, "link"));
-
-                image.Title = getValueFromJObject<string>(jObject, "title");
-                image.Description = getValueFromJObject<string>(jObject, "description");
-                image.DateTime = getDateTimeValueFromJObject(jObject, "datetime");
-                image.Type = getMediaTypeValueFromJObjecT(jObject, "type");
-                image.Section = getValueFromJObject<string>(jObject, "section");
-                image.Bandwidth = getValueFromJObject<long>(jObject, "bandwidth");
-                image.Width = getValueFromJObject<int>(jObject, "width");
-                image.Height = getValueFromJObject<int>(jObject, "height");
-                image.Size = getValueFromJObject<int>(jObject, "size");
-                image.Views = getValueFromJObject<int>(jObject, "views");
-                image.Animated = getValueFromJObject<bool>(jObject, "animated");
-                image.Favorite = getValueFromJObject<bool>(jObject, "favorite");
-                image.Nsfw = getValueFromJObject<bool>(jObject, "nsfw");
-
-                return image;
-            }
-
-            private static MediaTypeHeaderValue getMediaTypeValueFromJObjecT(JObject jObject, string propertyName)
-            {
-                string type = getValueFromJObject<string>(jObject, propertyName);
-                return new MediaTypeHeaderValue(type);
-            }
-
-            private static DateTime getDateTimeValueFromJObject(JObject jObject, string propertyName)
-            {
-                long timestamp = getValueFromJObject<long>(jObject, propertyName);
-                return new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc).AddSeconds(timestamp);
-            }
-
-            private static TReturn getValueFromJObject<TReturn>(JObject jObject, string propertyName)
-            {
-                var jTitleProperty = jObject.Property(propertyName);
-                TReturn valueToAssign = default(TReturn);
-                JTokenType type = GetJTokenTypeFor(typeof(TReturn));
-                if (jTitleProperty != null && jTitleProperty.Value.Type == type)
-                {
-                    valueToAssign = jTitleProperty.Value.Value<TReturn>();
-                }
-                return valueToAssign;
-
-            }
-
-            private static JTokenType GetJTokenTypeFor(Type type)
-            {
-                switch (type.Name)
-                {
-                    case "String": return JTokenType.String;
-                    case "Int64": return JTokenType.Integer;
-                    case "Int32": return JTokenType.Integer;
-                    case "Boolean": return JTokenType.Boolean;
-                }
-
-                throw new NotImplementedException(type.Name + " not implemented yet.");
-            }
-        }
-
-        [TestMethod]
-        [TestCategory("Unit")]
-        public void Deserialize_WithValidData_ReturnsImageObject()
-        {
-            Image expectedImage = new Image(id: "ARbGOjd", link: @"http://i.imgur.com/ARbGOjd.jpg");
-            expectedImage.Title = "long text here";
-            expectedImage.Description = null;
-            expectedImage.DateTime = new DateTime(2014, 3, 27, 21, 0, 24);
-            expectedImage.Type = new MediaTypeHeaderValue("image/jpeg");
-            expectedImage.Section = "funny";
-            expectedImage.Bandwidth = 45960692496;
-            expectedImage.Width = 2048;
-            expectedImage.Height = 1536;
-            expectedImage.Size = 188484;
-            expectedImage.Views = 243844;
-            expectedImage.Animated = false;
-            expectedImage.Favorite = false;
-            expectedImage.Nsfw = false;
-            string imageJson = @"{""id"":""ARbGOjd"",""title"":""long text here"",""description"":null,
-                           ""datetime"":1395954024,""type"":""image/jpeg"",""animated"":false,""width"":2048,
-                           ""height"":1536,""size"":188484,""views"":243844,""bandwidth"":45960692496,
-                           ""favorite"":false,""nsfw"":false,""section"":""funny"",
-                            ""link"":""http:\/\/i.imgur.com\/ARbGOjd.jpg""}";
-            var j = JObject.Parse(imageJson);
-
-            Image actualImage = Image.Deserialize(j);
-
-            Assert.AreEqual(expectedImage.Id, actualImage.Id);
-            Assert.AreEqual(expectedImage.Link, actualImage.Link);
-            Assert.AreEqual(expectedImage.Title, actualImage.Title);
-            Assert.AreEqual(expectedImage.Description, actualImage.Description);
-            Assert.AreEqual(expectedImage.DateTime, actualImage.DateTime);
-            Assert.AreEqual(expectedImage.Type, actualImage.Type);
-            Assert.AreEqual(expectedImage.Section, actualImage.Section);
-            Assert.AreEqual(expectedImage.Bandwidth, actualImage.Bandwidth);
-            Assert.AreEqual(expectedImage.Width, actualImage.Width);
-            Assert.AreEqual(expectedImage.Height, actualImage.Height);
-            Assert.AreEqual(expectedImage.Size, actualImage.Size);
-            Assert.AreEqual(expectedImage.Views, actualImage.Views);
-            Assert.AreEqual(expectedImage.Animated, actualImage.Animated);
-            Assert.AreEqual(expectedImage.Favorite, actualImage.Favorite);
-            Assert.AreEqual(expectedImage.Nsfw, actualImage.Nsfw);
-
-        }
-
-        [TestMethod]
-        [TestCategory("Unit")]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Deserialize_WithNull_ThrowsArgumentNullException()
-        {
-            Image.Deserialize(null);
-        }
-
-        [TestMethod]
-        [TestCategory("Unit")]
-        [ExpectedException(typeof(ArgumentException))]
-        public void Deserialize_ObjectWithoutId_ThrowsArgumentException()
-        {
-            var token = new JObject();
-
-            Image.Deserialize(token);
-        }
-
-
-        [TestMethod]
-        [TestCategory("Unit")]
-        [ExpectedException(typeof(ArgumentException))]
-        public void Deserialize_ObjectwithoutLink_ThrowsArgumentException()
-        {
-            var token = new JObject(new { id = "foo" });
-
-            Image.Deserialize(token);
-        }
     }
 }

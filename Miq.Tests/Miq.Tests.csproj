@@ -94,6 +94,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="imgurClient\ImageTests.cs" />
     <Compile Include="Learning\GetHashCode.cs" />
     <Compile Include="Learning\DotProduct.cs" />
     <Compile Include="Learning\ASyncAWait.cs" />
@@ -127,7 +128,7 @@
     <Compile Include="Nursery\DoomsdayRuleTests.cs" />
     <Compile Include="Nursery\RTTests.cs" />
     <Compile Include="Nursery\TFSClientVersionControlTests.cs" />
-    <Compile Include="Nursery\imgurClientTests.cs" />
+    <Compile Include="imgurClient\nurseryTests.cs" />
     <Compile Include="Nursery\UnsignedInteger.cs" />
     <Compile Include="Nursery\ZombieDiceTests.cs" />
     <Compile Include="ProjectEuler\Problem 61 Cyclical figurate numbers.cs" />
