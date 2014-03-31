@@ -78,7 +78,7 @@ namespace Miq.Tests.imgurClient
         [ExpectedException(typeof(ArgumentException))]
         public void Deserialize_ObjectwithoutLink_ThrowsArgumentException()
         {
-            var token = new JObject(new { id = "foo" });
+            var token = JObject.FromObject(new { id = "foo" });
 
             Image.Deserialize(token);
         }

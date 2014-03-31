@@ -51,22 +51,15 @@ namespace Miq.Tests.Nursery
                     bool success = (bool)j["success"];
                     if (success)
                     {
-
                         int status = (int)j["status"];
 
-                        int clientLimit = (int)j["data"]["ClientLimit"];
-                        int clientRamaining = (int)j["data"]["ClientRemaining"];
+                        var credits = RateLimitCredits.Deserialize((JObject)j["data"]);
 
-                        int userLimit = (int)j["data"]["UserLimit"];
-                        int userRemaining = (int)j["data"]["UserRemaining"];
-                        int userReset = (int)j["data"]["UserReset"];
-
-                        // put some tests here.
-                        // clientLimit is 12500
-                        // 0 <= clientRemaining <= clientLimit
-                        // userLimit is 500
-                        // userRemaining >= 0 <= userLimit
-                        // userReset is some date in the future
+                        Assert.AreEqual(12500, credits.ClientLimit);
+                        Assert.AreEqual(500, credits.UserLimit);
+                        Assert.IsTrue(credits.ClientRemaining >= 0 && credits.ClientRemaining <= credits.ClientLimit);
+                        Assert.IsTrue(credits.UserRemaining >= 0 && credits.UserRemaining <= credits.UserRemaining);
+                        Assert.IsTrue(DateTime.Now < credits.UserReset);
                     }
                     else
                     {
@@ -121,9 +114,10 @@ namespace Miq.Tests.Nursery
          * (will implement later, ...)
          */
 
-        // TODO implement endpoint Gallery          
+        // ZZZ TODO implement endpoint Gallery          
         //                  main gallery => /gallery/hot/viral/0.json   gallery image or gallery album
         //                  subbredit => /gallery/r/{subreddit}/{sort}/{page}
+        // hit main gallery, capture output, see what else we need to implement it...
 
         /* TODO implement endpoint Image
         //                  image info => /image/{id} => image model */

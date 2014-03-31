@@ -61,62 +61,23 @@ namespace Miq.imgurClient
                 throw new ArgumentException("link property missing in jObject", "jObject");
             }
 
-            var image = new Image(getValueFromJObject<string>(jObject, "id"), getValueFromJObject<string>(jObject, "link"));
+            var image = new Image(jObject.getValueFromJObject<string>("id"), jObject.getValueFromJObject<string>("link"));
 
-            image.Title = getValueFromJObject<string>(jObject, "title");
-            image.Description = getValueFromJObject<string>(jObject, "description");
-            image.DateTime = getDateTimeValueFromJObject(jObject, "datetime");
-            image.Type = getMediaTypeValueFromJObjecT(jObject, "type");
-            image.Section = getValueFromJObject<string>(jObject, "section");
-            image.Bandwidth = getValueFromJObject<long>(jObject, "bandwidth");
-            image.Width = getValueFromJObject<int>(jObject, "width");
-            image.Height = getValueFromJObject<int>(jObject, "height");
-            image.Size = getValueFromJObject<int>(jObject, "size");
-            image.Views = getValueFromJObject<int>(jObject, "views");
-            image.Animated = getValueFromJObject<bool>(jObject, "animated");
-            image.Favorite = getValueFromJObject<bool>(jObject, "favorite");
-            image.Nsfw = getValueFromJObject<bool>(jObject, "nsfw");
+            image.Title = jObject.getValueFromJObject<string>("title");
+            image.Description = jObject.getValueFromJObject<string>("description");
+            image.DateTime = jObject.getDateTimeValueFromJObject("datetime");
+            image.Type = jObject.getMediaTypeValueFromJObjecT("type");
+            image.Section = jObject.getValueFromJObject<string>("section");
+            image.Bandwidth = jObject.getValueFromJObject<long>("bandwidth");
+            image.Width = jObject.getValueFromJObject<int>("width");
+            image.Height = jObject.getValueFromJObject<int>("height");
+            image.Size = jObject.getValueFromJObject<int>("size");
+            image.Views = jObject.getValueFromJObject<int>("views");
+            image.Animated = jObject.getValueFromJObject<bool>("animated");
+            image.Favorite = jObject.getValueFromJObject<bool>("favorite");
+            image.Nsfw = jObject.getValueFromJObject<bool>("nsfw");
 
             return image;
         }
-
-        private static MediaTypeHeaderValue getMediaTypeValueFromJObjecT(JObject jObject, string propertyName)
-        {
-            string type = getValueFromJObject<string>(jObject, propertyName);
-            return new MediaTypeHeaderValue(type);
-        }
-
-        private static DateTime getDateTimeValueFromJObject(JObject jObject, string propertyName)
-        {
-            long timestamp = getValueFromJObject<long>(jObject, propertyName);
-            return new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc).AddSeconds(timestamp);
-        }
-
-        private static TReturn getValueFromJObject<TReturn>(JObject jObject, string propertyName)
-        {
-            var jTitleProperty = jObject.Property(propertyName);
-            TReturn valueToAssign = default(TReturn);
-            JTokenType type = GetJTokenTypeFor(typeof(TReturn));
-            if (jTitleProperty != null && jTitleProperty.Value.Type == type)
-            {
-                valueToAssign = jTitleProperty.Value.Value<TReturn>();
-            }
-            return valueToAssign;
-
-        }
-
-        private static JTokenType GetJTokenTypeFor(Type type)
-        {
-            switch (type.Name)
-            {
-                case "String": return JTokenType.String;
-                case "Int64": return JTokenType.Integer;
-                case "Int32": return JTokenType.Integer;
-                case "Boolean": return JTokenType.Boolean;
-            }
-
-            throw new NotImplementedException(type.Name + " not implemented yet.");
-        }
     }
-
 }

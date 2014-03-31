@@ -55,7 +55,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\Array.cs" />
+    <Compile Include="imgurClient\Extensions.cs" />
     <Compile Include="imgurClient\Image.cs" />
+    <Compile Include="imgurClient\RateLimitCredits.cs" />
     <Compile Include="Math\Number.cs" />
     <Compile Include="Math\RomanNumerals.cs" />
     <Compile Include="Math\Sieve.cs" />

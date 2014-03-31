@@ -95,6 +95,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="imgurClient\ImageTests.cs" />
+    <Compile Include="imgurClient\RateLimitCreditsTests.cs" />
     <Compile Include="Learning\GetHashCode.cs" />
     <Compile Include="Learning\DotProduct.cs" />
     <Compile Include="Learning\ASyncAWait.cs" />
