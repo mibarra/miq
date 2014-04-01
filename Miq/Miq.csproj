@@ -55,9 +55,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\Array.cs" />
-    <Compile Include="imgurClient\Extensions.cs" />
-    <Compile Include="imgurClient\Image.cs" />
-    <Compile Include="imgurClient\RateLimitCredits.cs" />
+    <Compile Include="Imgur\Album.cs" />
+    <Compile Include="Imgur\Extensions.cs" />
+    <Compile Include="Imgur\Image.cs" />
+    <Compile Include="Imgur\ImgurAsset.cs" />
+    <Compile Include="Imgur\ImgurAssetCollection.cs" />
+    <Compile Include="Imgur\ImgurClient.cs" />
+    <Compile Include="Imgur\RateLimitCredits.cs" />
+    <Compile Include="Imgur\Voting.cs" />
     <Compile Include="Math\Number.cs" />
     <Compile Include="Math\RomanNumerals.cs" />
     <Compile Include="Math\Sieve.cs" />

@@ -6,23 +6,23 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Miq.imgurClient
+namespace Miq.Imgur
 {
     public static class Extensions
     {
-        public static MediaTypeHeaderValue getMediaTypeValueFromJObjecT(this JObject jObject, string propertyName)
+        public static MediaTypeHeaderValue GetMediaTypeValueFromJObjecT(this JObject jObject, string propertyName)
         {
-            string type = getValueFromJObject<string>(jObject, propertyName);
+            string type = GetValueFromJObject<string>(jObject, propertyName);
             return new MediaTypeHeaderValue(type);
         }
 
-        public static DateTime getDateTimeValueFromJObject(this JObject jObject, string propertyName)
+        public static DateTime GetDateTimeValueFromJObject(this JObject jObject, string propertyName)
         {
-            long timestamp = getValueFromJObject<long>(jObject, propertyName);
+            long timestamp = GetValueFromJObject<long>(jObject, propertyName);
             return new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc).AddSeconds(timestamp);
         }
 
-        public static TReturn getValueFromJObject<TReturn>(this JObject jObject, string propertyName)
+        public static TReturn GetValueFromJObject<TReturn>(this JObject jObject, string propertyName)
         {
             var jTitleProperty = jObject.Property(propertyName);
             TReturn valueToAssign = default(TReturn);

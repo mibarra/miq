@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
-using Miq.imgurClient;
+using Miq.Imgur;
 
-namespace Miq.Tests.imgurClient
+namespace Miq.Tests.Imgur
 {
     [TestClass]
     public class RateLimitCreditsTests
@@ -17,7 +17,7 @@ namespace Miq.Tests.imgurClient
                                     ""ClientLimit"":12500, ""ClientRemaining"":12500}";
             JObject j = JObject.Parse(creditsJson);
 
-            var actualCredits = RateLimitCredits.Deserialize(j);
+            var actualCredits = new RateLimitCredits(j);
 
             Assert.AreEqual(500, actualCredits.UserLimit);
             Assert.AreEqual(500, actualCredits.UserRemaining);
@@ -31,7 +31,7 @@ namespace Miq.Tests.imgurClient
         [ExpectedException(typeof(ArgumentNullException))]
         public void Deserialize_WithNull_ThrowsArgumentNullException()
         {
-            RateLimitCredits.Deserialize(null);
+            new RateLimitCredits(null);
         }
 
         [TestMethod]
@@ -41,7 +41,7 @@ namespace Miq.Tests.imgurClient
         {
             var jObject = JObject.FromObject(new { UserReset = 1396306675L, ClientRemaining = 100 });
 
-            RateLimitCredits.Deserialize(jObject);
+            new RateLimitCredits(jObject);
         }
 
         [TestMethod]
@@ -51,7 +51,7 @@ namespace Miq.Tests.imgurClient
         {
             var jObject = JObject.FromObject(new { UserRemaining = 100, ClientRemaining = 100 });
 
-            RateLimitCredits.Deserialize(jObject);
+            new RateLimitCredits(jObject);
         }
 
         [TestMethod]
@@ -61,7 +61,7 @@ namespace Miq.Tests.imgurClient
         {
             var jObject = JObject.FromObject(new { UserRemaining = 100, UserReset = 1396306675 });
 
-            RateLimitCredits.Deserialize(jObject);
+            new RateLimitCredits(jObject);
         }
     }
 }

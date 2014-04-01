@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
@@ -6,72 +8,39 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-using Miq.imgurClient;
+using Miq.Imgur;
 
-namespace Miq.Tests.Nursery
+namespace Miq.Tests.Imgur
 {
     [TestClass]
     public class imgurClientTests
     {
-        string ClientId = "cc7a67f84a31063";
-        //string ClientSecret = "c631b56cd31629d3162471b41edcd51509f8cc61";
-        string ApiEndpoint = "https://api.imgur.com/3/";
-
         [TestMethod]
         [TestCategory("Integration")]
         public void CallCreditsPage()
         {
-            // ctor
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(ApiEndpoint);
-                client.DefaultRequestHeaders.Accept.Clear();
-                // XXX ??? MediaTypeWithQualityHeaderValue? or is MediaTypeHeaderValue enough?
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Client-ID", ClientId);
+            var client = new ImgurClient();
 
-                // credits call
-                var url = "credits.json";
-                //                var url = "image/ARbGOjd.json";
-                var response = /* await */ client.GetAsync(url);
-                if (response.Result.IsSuccessStatusCode)
-                {
-                    var responseContent = response.Result.Content;
+            var credits = client.Credits();
 
-                    // header cache
-                    // response.Result.Headers.CacheControl
-                    // response.Result.Headers.Date 
-
-                    var responseString = /* await */ responseContent.ReadAsStringAsync().Result;
-
-                    // before doing this, check content-type header == application/json
-                    // response.Result.content.Headers.ContentType
-                    var j = JObject.Parse(responseString);
-
-                    bool success = (bool)j["success"];
-                    if (success)
-                    {
-                        int status = (int)j["status"];
-
-                        var credits = RateLimitCredits.Deserialize((JObject)j["data"]);
-
-                        Assert.AreEqual(12500, credits.ClientLimit);
-                        Assert.AreEqual(500, credits.UserLimit);
-                        Assert.IsTrue(credits.ClientRemaining >= 0 && credits.ClientRemaining <= credits.ClientLimit);
-                        Assert.IsTrue(credits.UserRemaining >= 0 && credits.UserRemaining <= credits.UserRemaining);
-                        Assert.IsTrue(DateTime.Now < credits.UserReset);
-                    }
-                    else
-                    {
-                        // got service error
-                    }
-                }
-                else
-                {
-                    // got transport error
-                }
-            }
+            Assert.AreEqual(12500, credits.ClientLimit);
+            Assert.AreEqual(500, credits.UserLimit);
+            Assert.IsTrue(credits.ClientRemaining >= 0 && credits.ClientRemaining <= credits.ClientLimit);
+            Assert.IsTrue(credits.UserRemaining >= 0 && credits.UserRemaining <= credits.UserRemaining);
+            Assert.IsTrue(DateTime.Now < credits.UserReset);
         }
+
+        [TestMethod]
+        [TestCategory("Integration")]
+        public void CallGallery()
+        {
+            var client = new ImgurClient();
+
+            var images = client.Gallery();
+            var img = images.OfType<Image>().First();
+            var di = client.Image(img.Id);
+        }
+
 
         /* TODO implement paging
          *             // paging: for plural actions, query string parameters
@@ -114,11 +83,6 @@ namespace Miq.Tests.Nursery
          * (will implement later, ...)
          */
 
-        // ZZZ TODO implement endpoint Gallery          
-        //                  main gallery => /gallery/hot/viral/0.json   gallery image or gallery album
-        //                  subbredit => /gallery/r/{subreddit}/{sort}/{page}
-        // hit main gallery, capture output, see what else we need to implement it...
-
         /* TODO implement endpoint Image
         //                  image info => /image/{id} => image model */
 
@@ -130,7 +94,7 @@ namespace Miq.Tests.Nursery
 
         // TODO implement endpoint Memegen
         //
-          
+
         /* TODO implement gallery album:
         Key	Format	Description
 id	string	The ID for the image
@@ -335,55 +299,7 @@ images	Array of Images	An array of all the images in the album (only available w
 
         /* TODO implement data wrapper
          * Responses have: { success: bool, status: code, data: {} }
-         */ 
-
-        /* TODO implement gallery image:
-         * Key	Format	Description
-id	string	The ID for the image
-title	string	The title of the image.
-description	string	Description of the image.
-datetime	integer	Time inserted into the gallery, epoch time
-type	string	Image MIME type.
-animated	boolean	is the image animated
-width	integer	The width of the image in pixels
-height	integer	The height of the image in pixels
-size	integer	The size of the image in bytes
-views	integer	The number of image views
-bandwidth	integer	Bandwidth consumed by the image in bytes
-deletehash	string	OPTIONAL, the deletehash, if you're logged in as the image owner
-link	string	The direct link to the the image
-vote	string	The current user's vote on the album. null if not signed in or if the user hasn't voted on it.
-section	string	If the image has been categorized by our backend then this will contain the section the image belongs in. (funny, cats, adviceanimals, wtf, etc)
-account_url	string	The username of the account that uploaded it, or null.
-ups	integer	Upvotes for the image
-downs	integer	Number of downvotes for the image
-score	integer	Imgur popularity score
-is_album	boolean	if it's an album or not
-         * 
-         * {
-    "data": {
-        "id": "OUHDm",
-        "title": "My most recent drawing. Spent over 100 hours. I'm pretty proud of it.",
-        "description": null,
-        "datetime": 1349051625,
-        "type": "image/jpeg",
-        "animated": false,
-        "width": 2490,
-        "height": 3025,
-        "size": 618969,
-        "views": 625622,
-        "bandwidth": 387240623718,
-        "vote": null,
-        "section": "pics",
-        "account_url": "saponifi3d",
-        "ups": 1889,
-        "downs": 58,
-        "score": 18935622,
-        "is_album": false
-    },
-    "success" : true,
-    "status" : 200
-}*/
+         */
 
         /* TODO implement download of Image thumbnails
 There are 6 total thumbnails that an image can be resized to. Each one is accessable by appending a single character suffix to the end of the image id, and before the file extension. The thumbnails are:
