@@ -61,6 +61,7 @@
     <Compile Include="Imgur\ImgurAsset.cs" />
     <Compile Include="Imgur\ImgurAssetCollection.cs" />
     <Compile Include="Imgur\ImgurClient.cs" />
+    <Compile Include="Imgur\ImgurImageRetriever.cs" />
     <Compile Include="Imgur\RateLimitCredits.cs" />
     <Compile Include="Imgur\Voting.cs" />
     <Compile Include="Math\Number.cs" />
