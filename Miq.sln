@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2012 for Windows Desktop
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miq", "Miq\Miq.csproj", "{968632DA-86D1-4F93-91A6-64985F3C0BC8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miq.Tests", "Miq.Tests\Miq.Tests.csproj", "{9D7E4CEE-9E3B-4C54-B3BA-91AB9B1113EB}"
@@ -17,37 +19,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miq.Shell", "MiqShell\Miq.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngbandSharp", "AngbandSharp\AngbandSharp.csproj", "{182B0E51-B8E3-4EAC-BC02-E046EB60AFFE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImgurBrowser", "ImgurBrowser\ImgurBrowser.csproj", "{1AD4F790-3959-4E6A-BF17-1FD728D136E7}"
+EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 9
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://lysistrata:8080/tfs/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Miq.Tests\\Miq.Tests.csproj
-		SccProjectName1 = Miq.Tests
-		SccLocalPath1 = Miq.Tests
-		SccProjectUniqueName2 = Miq\\Miq.csproj
-		SccProjectName2 = Miq
-		SccLocalPath2 = Miq
-		SccProjectUniqueName3 = OpenTk\u0020Getting\u0020Started\\OpenTk\u0020Getting\u0020Started.csproj
-		SccProjectName3 = OpenTk\u0020Getting\u0020Started
-		SccLocalPath3 = OpenTk\u0020Getting\u0020Started
-		SccProjectUniqueName4 = RoslynPlayground\\RoslynPlayground.csproj
-		SccProjectName4 = RoslynPlayground
-		SccLocalPath4 = RoslynPlayground
-		SccProjectUniqueName5 = DailyProgrammerChallenge133\\DailyProgrammerChallenges.csproj
-		SccProjectName5 = DailyProgrammerChallenge133
-		SccLocalPath5 = DailyProgrammerChallenge133
-		SccProjectUniqueName6 = SharpGLPlayground\\SharpGLPlayground.csproj
-		SccProjectName6 = SharpGLPlayground
-		SccLocalPath6 = SharpGLPlayground
-		SccProjectUniqueName7 = MiqShell\\Miq.Shell.csproj
-		SccProjectName7 = MiqShell
-		SccLocalPath7 = MiqShell
-		SccProjectUniqueName8 = AngbandSharp\\AngbandSharp.csproj
-		SccProjectName8 = AngbandSharp
-		SccLocalPath8 = AngbandSharp
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -135,6 +109,16 @@ Global
 		{182B0E51-B8E3-4EAC-BC02-E046EB60AFFE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{182B0E51-B8E3-4EAC-BC02-E046EB60AFFE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{182B0E51-B8E3-4EAC-BC02-E046EB60AFFE}.Release|x86.ActiveCfg = Release|Any CPU
+		{1AD4F790-3959-4E6A-BF17-1FD728D136E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AD4F790-3959-4E6A-BF17-1FD728D136E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AD4F790-3959-4E6A-BF17-1FD728D136E7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1AD4F790-3959-4E6A-BF17-1FD728D136E7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1AD4F790-3959-4E6A-BF17-1FD728D136E7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1AD4F790-3959-4E6A-BF17-1FD728D136E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AD4F790-3959-4E6A-BF17-1FD728D136E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AD4F790-3959-4E6A-BF17-1FD728D136E7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1AD4F790-3959-4E6A-BF17-1FD728D136E7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1AD4F790-3959-4E6A-BF17-1FD728D136E7}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
