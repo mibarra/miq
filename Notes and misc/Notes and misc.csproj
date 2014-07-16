@@ -32,7 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="PSH Index.txt" />
+    <Content Include="Harris, Sam.Lying.txt" />
+    <Content Include="Tucker-Ladd, Clayton.Psychological Self-Help\Index.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
