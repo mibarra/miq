@@ -11,13 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTk Getting Started", "O
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoslynPlayground", "RoslynPlayground\RoslynPlayground.csproj", "{C7B0804A-9379-4FE5-9FCB-8EEE0D03F9B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DailyProgrammerChallenges", "DailyProgrammerChallenge133\DailyProgrammerChallenges.csproj", "{17BBED32-5F41-4C05-8437-C7C7B6944B6E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGLPlayground", "SharpGLPlayground\SharpGLPlayground.csproj", "{BD3E3B07-83FC-4D1B-823C-9995BE971F6B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miq.Shell", "MiqShell\Miq.Shell.csproj", "{D4E90F4E-691E-4FE3-9A62-08607537FA5D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngbandSharp", "AngbandSharp\AngbandSharp.csproj", "{182B0E51-B8E3-4EAC-BC02-E046EB60AFFE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImgurBrowser", "ImgurBrowser\ImgurBrowser.csproj", "{1AD4F790-3959-4E6A-BF17-1FD728D136E7}"
 EndProject
@@ -71,16 +67,6 @@ Global
 		{C7B0804A-9379-4FE5-9FCB-8EEE0D03F9B1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{C7B0804A-9379-4FE5-9FCB-8EEE0D03F9B1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C7B0804A-9379-4FE5-9FCB-8EEE0D03F9B1}.Release|x86.ActiveCfg = Release|Any CPU
-		{17BBED32-5F41-4C05-8437-C7C7B6944B6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{17BBED32-5F41-4C05-8437-C7C7B6944B6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{17BBED32-5F41-4C05-8437-C7C7B6944B6E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{17BBED32-5F41-4C05-8437-C7C7B6944B6E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{17BBED32-5F41-4C05-8437-C7C7B6944B6E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{17BBED32-5F41-4C05-8437-C7C7B6944B6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{17BBED32-5F41-4C05-8437-C7C7B6944B6E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{17BBED32-5F41-4C05-8437-C7C7B6944B6E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{17BBED32-5F41-4C05-8437-C7C7B6944B6E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{17BBED32-5F41-4C05-8437-C7C7B6944B6E}.Release|x86.ActiveCfg = Release|Any CPU
 		{BD3E3B07-83FC-4D1B-823C-9995BE971F6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BD3E3B07-83FC-4D1B-823C-9995BE971F6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD3E3B07-83FC-4D1B-823C-9995BE971F6B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -101,16 +87,6 @@ Global
 		{D4E90F4E-691E-4FE3-9A62-08607537FA5D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{D4E90F4E-691E-4FE3-9A62-08607537FA5D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{D4E90F4E-691E-4FE3-9A62-08607537FA5D}.Release|x86.ActiveCfg = Release|Any CPU
-		{182B0E51-B8E3-4EAC-BC02-E046EB60AFFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{182B0E51-B8E3-4EAC-BC02-E046EB60AFFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{182B0E51-B8E3-4EAC-BC02-E046EB60AFFE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{182B0E51-B8E3-4EAC-BC02-E046EB60AFFE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{182B0E51-B8E3-4EAC-BC02-E046EB60AFFE}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{182B0E51-B8E3-4EAC-BC02-E046EB60AFFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{182B0E51-B8E3-4EAC-BC02-E046EB60AFFE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{182B0E51-B8E3-4EAC-BC02-E046EB60AFFE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{182B0E51-B8E3-4EAC-BC02-E046EB60AFFE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{182B0E51-B8E3-4EAC-BC02-E046EB60AFFE}.Release|x86.ActiveCfg = Release|Any CPU
 		{1AD4F790-3959-4E6A-BF17-1FD728D136E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1AD4F790-3959-4E6A-BF17-1FD728D136E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1AD4F790-3959-4E6A-BF17-1FD728D136E7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
