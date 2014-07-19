@@ -36,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Harris, Sam.Lying.txt" />
+    <Content Include="Read List.txt" />
     <Content Include="Tucker-Ladd, Clayton.Psychological Self-Help\Index.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
