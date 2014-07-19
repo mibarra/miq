@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio Express 2012 for Windows Desktop
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miq", "Miq\Miq.csproj", "{968632DA-86D1-4F93-91A6-64985F3C0BC8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miq.Tests", "Miq.Tests\Miq.Tests.csproj", "{9D7E4CEE-9E3B-4C54-B3BA-91AB9B1113EB}"
@@ -20,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngbandSharp", "AngbandSharp\AngbandSharp.csproj", "{182B0E51-B8E3-4EAC-BC02-E046EB60AFFE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImgurBrowser", "ImgurBrowser\ImgurBrowser.csproj", "{1AD4F790-3959-4E6A-BF17-1FD728D136E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notes Bits and Pieces", "Notes Bits and Pieces\Notes Bits and Pieces.csproj", "{34F4D698-06BF-4986-8233-26B062924E97}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -119,6 +119,16 @@ Global
 		{1AD4F790-3959-4E6A-BF17-1FD728D136E7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{1AD4F790-3959-4E6A-BF17-1FD728D136E7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{1AD4F790-3959-4E6A-BF17-1FD728D136E7}.Release|x86.ActiveCfg = Release|Any CPU
+		{34F4D698-06BF-4986-8233-26B062924E97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34F4D698-06BF-4986-8233-26B062924E97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34F4D698-06BF-4986-8233-26B062924E97}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{34F4D698-06BF-4986-8233-26B062924E97}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{34F4D698-06BF-4986-8233-26B062924E97}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{34F4D698-06BF-4986-8233-26B062924E97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34F4D698-06BF-4986-8233-26B062924E97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34F4D698-06BF-4986-8233-26B062924E97}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{34F4D698-06BF-4986-8233-26B062924E97}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{34F4D698-06BF-4986-8233-26B062924E97}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

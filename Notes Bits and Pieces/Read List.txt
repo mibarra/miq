@@ -1,0 +1,49 @@
+﻿** Make a Summary of these books:
+
+* Technical:
+
+Pragmatic Programmer
+
+Agile Testing
+Annotated C#
+Android Games
+Checklist Manifesto
+Clean Code
+Code Complete
+Design Patters
+Dev Guid to Enterprise Library
+Effective Programming
+Elements of Computer Systems
+Framework Design Guidelins
+An Introduction to Ray Tracing
+Reversing
+Scrum Field Guide
+Working Effectively with Legacy Code
+
+* Non Technical:
+
+> Psychological Self-Help
+
+59 Secs
+Benjamin Franklin Autobiography
+Better Angels of Our Nature
+Blown to Bits
+Cooking for Geeks
+For the Love of Physics
+God Delusion
+Healthy Programmer
+How to Argue
+How to Fail at Almost Everything (Scott Adams)
+How to Fail
+How to Read a Book
+How to Win Friends and Influence People
+Logic to the Rescue
+Masterminds of Programing
+Mindfulness in Plain English
+Moonwalking with Einstein
+The Moral Landscap
+Nikola Tesla
+Out of My Later YEars
+Power of Now
+Rules of Life
+Short History of Nearly Everything
