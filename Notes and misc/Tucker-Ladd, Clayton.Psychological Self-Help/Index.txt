@@ -1,0 +1,30 @@
+﻿Kindle Position Index for PSH:
+
+			
+Location	Content
+1			Front Cover
+9			Table of Contents
+
+PART I Introduction  (Table of contents)
+33		CHAPTER 1 Understandings about Self-Help
+65			Introduction to Self-Help 
+1313	CHAPTER 2 Steps in Self-Help
+
+PART II Understanding the Solution and the Problem
+2569	CHAPTER 3 Values and Morals: Guidelines for Living
+2598		Introduction
+3866	CHAPTER 4 Behavior, Motivation, and Self-Control 
+7460	CHAPTER 5 Stress, Anxiety, Fears, and Psychosomatic Disorders 
+11012	CHAPTER 6 Happiness, Depression and Self-Concept 
+15279	CHAPTER 7 Anger and Aggression 
+19861	CHAPTER 8 Dependency and Conformity
+21128	CHAPTER 9 Understanding Ourselves and Our Relationships 
+23916	CHAPTER 10 Dating, Love, Marriage, and Sex
+
+PART III How to Apply Self-Help Methods
+27797	CHAPTER 11 Methods for Changing Behavior 
+29767	CHAPTER 12 Methods of Changing Emotions 
+31618	CHAPTER 13 Methods for Developing Skills 
+34057	CHAPTER 14 Methods for Changing Our Thoughts, Attitudes, Self-concept, Motivation, Values, and Expectations
+37709	CHAPTER 15 Methods for Gaining Insight into Ourselves
+40275	END
