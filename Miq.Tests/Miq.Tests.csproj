@@ -76,6 +76,7 @@
       <HintPath>..\packages\Roslyn.Services.Common.1.2.20906.2\lib\net45\Roslyn.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -133,6 +134,7 @@
     <Compile Include="Nursery\RTTests.cs" />
     <Compile Include="Nursery\TFSClientVersionControlTests.cs" />
     <Compile Include="Imgur\nurseryTests.cs" />
+    <Compile Include="Nursery\WmiUsbTests.cs" />
     <Compile Include="Nursery\UnsignedInteger.cs" />
     <Compile Include="Nursery\ZombieDiceTests.cs" />
     <Compile Include="ProjectEuler\Problem 61 Cyclical figurate numbers.cs" />
