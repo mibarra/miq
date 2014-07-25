@@ -19,6 +19,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImgurBrowser", "ImgurBrowse
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notes and misc", "Notes and misc\Notes and misc.csproj", "{FEED0350-DD25-47CA-970A-60D848E32F37}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2K", "M2K\M2K.csproj", "{116BD726-015E-47E7-8229-1076EA59BF4D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{55EBC905-B3F1-49E8-93E1-2B852A7DF64D}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +116,16 @@ Global
 		{FEED0350-DD25-47CA-970A-60D848E32F37}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{FEED0350-DD25-47CA-970A-60D848E32F37}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{FEED0350-DD25-47CA-970A-60D848E32F37}.Release|x86.ActiveCfg = Release|Any CPU
+		{116BD726-015E-47E7-8229-1076EA59BF4D}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{116BD726-015E-47E7-8229-1076EA59BF4D}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{116BD726-015E-47E7-8229-1076EA59BF4D}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{116BD726-015E-47E7-8229-1076EA59BF4D}.Debug|x86.ActiveCfg = Debug|x86
+		{116BD726-015E-47E7-8229-1076EA59BF4D}.Debug|x86.Build.0 = Debug|x86
+		{116BD726-015E-47E7-8229-1076EA59BF4D}.Release|Any CPU.ActiveCfg = Release|x86
+		{116BD726-015E-47E7-8229-1076EA59BF4D}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{116BD726-015E-47E7-8229-1076EA59BF4D}.Release|Mixed Platforms.Build.0 = Release|x86
+		{116BD726-015E-47E7-8229-1076EA59BF4D}.Release|x86.ActiveCfg = Release|x86
+		{116BD726-015E-47E7-8229-1076EA59BF4D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
