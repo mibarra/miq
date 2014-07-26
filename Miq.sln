@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImgurBrowser", "ImgurBrowse
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notes and misc", "Notes and misc\Notes and misc.csproj", "{FEED0350-DD25-47CA-970A-60D848E32F37}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Screenshotter", "Screenshotter\Screenshotter.csproj", "{3BDE7FC9-F01D-49D4-9F85-B6DFEB308752}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +107,16 @@ Global
 		{FEED0350-DD25-47CA-970A-60D848E32F37}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{FEED0350-DD25-47CA-970A-60D848E32F37}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{FEED0350-DD25-47CA-970A-60D848E32F37}.Release|x86.ActiveCfg = Release|Any CPU
+		{3BDE7FC9-F01D-49D4-9F85-B6DFEB308752}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BDE7FC9-F01D-49D4-9F85-B6DFEB308752}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BDE7FC9-F01D-49D4-9F85-B6DFEB308752}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{3BDE7FC9-F01D-49D4-9F85-B6DFEB308752}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{3BDE7FC9-F01D-49D4-9F85-B6DFEB308752}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3BDE7FC9-F01D-49D4-9F85-B6DFEB308752}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BDE7FC9-F01D-49D4-9F85-B6DFEB308752}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BDE7FC9-F01D-49D4-9F85-B6DFEB308752}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3BDE7FC9-F01D-49D4-9F85-B6DFEB308752}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{3BDE7FC9-F01D-49D4-9F85-B6DFEB308752}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
