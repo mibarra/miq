@@ -1,0 +1,19 @@
+﻿8.01	Physics I								http://ocw.mit.edu/courses/physics/8-01-physics-i-classical-mechanics-fall-1999
+8.02	Physics II								http://ocw.mit.edu/courses/physics/8-02-electricity-and-magnetism-spring-2002
+18.01	Calculus I								http://ocw.mit.edu/courses/mathematics/18-01sc-single-variable-calculus-fall-2010
+18.02	Calculus II								http://ocw.mit.edu/courses/mathematics/18-02-multivariable-calculus-fall-2007
+18.03	Differential Equations					http://ocw.mit.edu/courses/mathematics/18-03-differential-equations-spring-2010
+18.06	Linear Algebra							http://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010
+6.002	Circuits and Electronics				http://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-002-circuits-and-electronics-spring-2007
+6.012	Microelectronic Devices and Circuits	http://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-012-microelectronic-devices-and-circuits-fall-2005/
+
+
+Study Order
+8.01	18.01
+8.02	
+18.02	18.03
+18.06	6.002
+6.012
+
+8.01 Physics I
+19 weeks, 12hrs per week
