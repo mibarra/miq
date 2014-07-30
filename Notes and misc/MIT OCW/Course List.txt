@@ -15,5 +15,34 @@ Study Order
 18.06	6.002
 6.012
 
+Other Courses
+6.01 Introduction to EECS I
+CMS.608	Game Design
+CMS.611	Creating Video Games
+
+Study Order
+6.01-8.02
+CMS.608
+CMS.611
+
+
+Notes: Info about a course:
+http://student.mit.edu/catalog/search.cgi?search={course number}
+
+
+
 8.01 Physics I
 19 weeks, 12hrs per week
+
+Readings of assignment 1; pp 1-57, 69-88, 94-112, 115-118
+Lec 1 notes
+Lec 1 video
+Lec 2 video
+Lec 3 video
+Assignment 1
+
+lec 4 video
+lec 5 notes
+lec 5 video
+Lec 6 7
+Assignment 2
