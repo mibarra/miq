@@ -1,0 +1,18 @@
+﻿VS uses (and includes) MSBuild to build projects.
+MSBuild defines the build process by using .targets files.
+.targets files can be extended to extend VS's build process.
+
+* Why
+
+** History
+
+See Introduction of this article: http://www.developerfusion.com/article/84411/customising-your-build-process-with-msbuild/
+
+* Ideas
+VS's and MSBuild use a project file to control the building process and keep track of the project assets.  In the ePub/Mobi world the same thing is accomplished by the .opf file.  Both types of files projects and opf are XML files. Would it be possible to make VS to use .opf directly like project files? instead of using msbuild we should use kindlegen and other eBook 'compilers' to do the building.  See "Project Types" and "Project Templates" on VS docs:
+http://msdn.microsoft.com/en-us/library/bb166376.aspx
+
+
+* Mechanics
+Extend .targets files: http://msdn.microsoft.com/en-us/library/ms366724.aspx
+
