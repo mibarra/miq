@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2012 for Windows Desktop
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miq", "Miq\Miq.csproj", "{968632DA-86D1-4F93-91A6-64985F3C0BC8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Miq.Tests", "Miq.Tests\Miq.Tests.csproj", "{9D7E4CEE-9E3B-4C54-B3BA-91AB9B1113EB}"
@@ -18,6 +20,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notes and misc", "Notes and misc\Notes and misc.csproj", "{FEED0350-DD25-47CA-970A-60D848E32F37}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Screenshotter", "Screenshotter\Screenshotter.csproj", "{3BDE7FC9-F01D-49D4-9F85-B6DFEB308752}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M2K", "M2K\M2K.csproj", "{116BD726-015E-47E7-8229-1076EA59BF4D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{55EBC905-B3F1-49E8-93E1-2B852A7DF64D}"
@@ -26,6 +29,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{55EBC9
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextElite", "TextElite\TextElite.csproj", "{65BDA3B1-3B81-4AEA-BFA2-DF5A41EBDD3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -135,6 +140,16 @@ Global
 		{116BD726-015E-47E7-8229-1076EA59BF4D}.Release|Mixed Platforms.Build.0 = Release|x86
 		{116BD726-015E-47E7-8229-1076EA59BF4D}.Release|x86.ActiveCfg = Release|x86
 		{116BD726-015E-47E7-8229-1076EA59BF4D}.Release|x86.Build.0 = Release|x86
+		{65BDA3B1-3B81-4AEA-BFA2-DF5A41EBDD3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65BDA3B1-3B81-4AEA-BFA2-DF5A41EBDD3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65BDA3B1-3B81-4AEA-BFA2-DF5A41EBDD3B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{65BDA3B1-3B81-4AEA-BFA2-DF5A41EBDD3B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{65BDA3B1-3B81-4AEA-BFA2-DF5A41EBDD3B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{65BDA3B1-3B81-4AEA-BFA2-DF5A41EBDD3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65BDA3B1-3B81-4AEA-BFA2-DF5A41EBDD3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65BDA3B1-3B81-4AEA-BFA2-DF5A41EBDD3B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{65BDA3B1-3B81-4AEA-BFA2-DF5A41EBDD3B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{65BDA3B1-3B81-4AEA-BFA2-DF5A41EBDD3B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
