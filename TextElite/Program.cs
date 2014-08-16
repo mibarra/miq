@@ -50,7 +50,7 @@ namespace TextElite
 		const int numforDiso = 147;
 		const int numforRied = 46;
 
-		static string pairs0 = "ABOUSEITILETSTONLONUTHNO"; // must continue into...
+		static string pairs0 = "ABOUSEITILETSTONLONUTHNO..LEXEGEZACEBISOUSESARMAINDIREA.ERATENBERALAVETIEDORQUANTEISRION"; 
 		static string pairs = "..LEXEGEZACEBISOUSESARMAINDIREA.ERATENBERALAVETIEDORQUANTEISRION";
 		// Dots should be nullprint characters
 
@@ -506,15 +506,15 @@ namespace TextElite
 			return true;
 		}
 
-		static uint gamefuel(uint f) 
+		static uint gamefuel(uint f)
 		{
-			if (f + fuel > maxfuel)  f = maxfuel - fuel;
+			if (f + fuel > maxfuel) f = maxfuel - fuel;
 			if (fuelcost > 0)
 			{
-				if ((int)f*fuelcost > cash)  f = (uint)(cash / fuelcost);
+				if ((int)f * fuelcost > cash) f = (uint)(cash / fuelcost);
 			}
 			fuel += f;
-			cash -= (int)(fuelcost*f);
+			cash -= (int)(fuelcost * f);
 			return f;
 		}
 
@@ -715,99 +715,106 @@ namespace TextElite
 			 B1 = <planet name>ian
 			 B2 = <random name>
 			 */
-		/*
-int gen_rnd_number(void)
-{
-	int a, x;
-	x = (rnd_seed.a * 2) & 0xFF;
-	a = x + rnd_seed.c;
-	if (rnd_seed.a > 127)	a++;
-	rnd_seed.a = a & 0xFF;
-	rnd_seed.c = x;
 
-	a = a / 256;	// a = any carry left from above 
-	x = rnd_seed.b;
-	a = (a + x + rnd_seed.d) & 0xFF;
-	rnd_seed.b = a;
-	rnd_seed.d = x;
-	return a;
-}
-	*/
+		static int gen_rnd_number()
+		{
+			int a, x;
+			x = (rnd_seed.a * 2) & 0xFF;
+			a = x + rnd_seed.c;
+			if (rnd_seed.a > 127) a++;
+			rnd_seed.a = (byte)(a & 0xFF);
+			rnd_seed.c = (byte)x;
+
+			a = a / 256;	// a = any carry left from above 
+			x = rnd_seed.b;
+			a = (a + x + rnd_seed.d) & 0xFF;
+			rnd_seed.b = (byte)a;
+			rnd_seed.d = (byte)x;
+			return a;
+		}
 
 		/* "Goat Soup" planetary description string code - adapted from Christian Pinder's
 reverse engineered sources. */
 
 		static void goat_soup(string source, ref plansys psy)
 		{
-			/*
-			for (;;)
+			for (; ; )
 			{
-				int c = *(source++);
-				if (c == '\0')	break;
-				if (c < 0x80) printf("%c", c);
+				if (source.Length == 0)
+				{
+					break;
+				}
+				int c = (int)(source[0]);
+				source = source.Substring(1);
+
+				if (c < 0x80) Console.Write((char)c);
 				else
 				{
 					if (c <= 0xA4)
 					{
 						int rnd = gen_rnd_number();
-						goat_soup(desc_list[c - 0x81].option[(rnd >= 0x33) + (rnd >= 0x66) + (rnd >= 0x99) + (rnd >= 0xCC)], psy);
+						goat_soup(desc_list[c - 0x81].option[
+							(rnd >= 0x33 ? 1 : 0) +
+							(rnd >= 0x66 ? 1 : 0) +
+							(rnd >= 0x99 ? 1 : 0) +
+							(rnd >= 0xCC ? 1 : 0)], ref psy);
 					}
-					else switch (c)
+					else
 					{
-					case 0xB0: // planet name
-					{ int i = 1;
-					printf("%c", psy->name[0]);
-					while (psy->name[i] != '\0') printf("%c", tolower(psy->name[i++]));
-					}	break;
-					case 0xB1: // <planet name>ian
-					{ int i = 1;
-					printf("%c", psy->name[0]);
-					while (psy->name[i] != '\0')
-					{
-						if ((psy->name[i + 1] != '\0') || ((psy->name[i] != 'E') && (psy->name[i] != 'I')))
-							printf("%c", tolower(psy->name[i]));
-						i++;
-					}
-					printf("ian");
-					}	break;
-					case 0xB2: // random name
-					{	int i;
-					int len = gen_rnd_number() & 3;
-					for (i = 0; i <= len; i++)
-					{
-						int x = gen_rnd_number() & 0x3e;
-						if (pairs0[x] != '.') printf("%c", pairs0[x]);
-						if (i && (pairs0[x + 1] != '.')) printf("%c", pairs0[x + 1]);
-					}
-					}	break;
-					default: printf("<bad char in data [%X]>", c); return;
+						switch (c)
+						{
+							case 0xB0: // planet name
+								Console.Write(psy.name[0]);
+								Console.Write(psy.name.Substring(1).ToLower());
+								break;
+							case 0xB1: // <planet name>ian
+								Console.Write(psy.name[0]);
+								Console.Write(psy.name.Substring(1, psy.name.Length - 2).ToLower());
+								if (psy.name[psy.name.Length - 1] != 'E' && psy.name[psy.name.Length - 1] != 'I')
+								{
+									Console.Write(psy.name.ToLower()[psy.name.Length - 1]);
+								}
+								Console.Write("ian");
+								break;
+							case 0xB2: // random name
+								int i;
+								int len = gen_rnd_number() & 3;
+								for (i = 0; i <= len; i++)
+								{
+									int x = gen_rnd_number() & 0x3e;
+									if (pairs0[x] != '.') Console.Write(pairs0[x]);
+									if (i != 0 && (pairs0[x + 1] != '.')) Console.Write(pairs0[x + 1]);
+								}
+								break;
+							default: Console.WriteLine("<bad char in data [{0}]>", (char)c);
+								return;
+						}
 					}
 				}
 			}
-		*/
 		}
 
 		static bool dosell(string s)
 		{
-/*			uint i, a, t;
-			string s2;
-			spacesplit(s, s2);
-			a = (uint)atoi(s);
-			if (a == 0) { a = 1; }
-			i = stringmatch(s2, tradnames, lasttrade + 1);
-			if (i == 0) { printf("\nUnknown trade good"); return false; }
-			i -= 1;
+			/*			uint i, a, t;
+						string s2;
+						spacesplit(s, s2);
+						a = (uint)atoi(s);
+						if (a == 0) { a = 1; }
+						i = stringmatch(s2, tradnames, lasttrade + 1);
+						if (i == 0) { printf("\nUnknown trade good"); return false; }
+						i -= 1;
 
-			t = gamesell(i, a);
+						t = gamesell(i, a);
 
-			if (t == 0) { printf("Cannot sell any "); }
-			else
-			{
-				printf("\nSelling %i", t);
-				printf(unitnames[commodities[i].units]);
-				printf(" of ");
-			}
-			printf(tradnames[i]);*/
+						if (t == 0) { printf("Cannot sell any "); }
+						else
+						{
+							printf("\nSelling %i", t);
+							printf(unitnames[commodities[i].units]);
+							printf(" of ");
+						}
+						printf(tradnames[i]);*/
 
 			return true;
 		}
