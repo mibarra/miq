@@ -73,14 +73,14 @@ namespace TextElite
 
 		struct plansys
 		{
-			public uint x;
-			public uint y;       /* One byte unsigned */
-			public uint economy; /* These two are actually only 0-7  */
-			public uint govtype;
-			public uint techlev; /* 0-16 i think */
-			public uint population;   /* One byte */
-			public uint productivity; /* Two byte */
-			public uint radius; /* Two byte (not used by game at all) */
+			public int x;
+			public int y;       /* One byte unsigned */
+			public int economy; /* These two are actually only 0-7  */
+			public int govtype;
+			public int techlev; /* 0-16 i think */
+			public int population;   /* One byte */
+			public int productivity; /* Two byte */
+			public int radius; /* Two byte (not used by game at all) */
 			public fastseedtype goatsoupseed;
 			public string name;
 		}
@@ -178,18 +178,18 @@ namespace TextElite
 			int pair1, pair2, pair3, pair4;
 			int longnameflag = (s.w0) & 64;
 
-			thissys.x = (uint)((s.w1) >> 8);
-			thissys.y = (uint)((s.w0) >> 8);
+			thissys.x = ((s.w1) >> 8);
+			thissys.y = ((s.w0) >> 8);
 
-			thissys.govtype = (uint)(((s.w1) >> 3) & 7); /* bits 3,4 &5 of w1 */
+			thissys.govtype = (((s.w1) >> 3) & 7); /* bits 3,4 &5 of w1 */
 
-			thissys.economy = (uint)(((s.w0) >> 8) & 7); /* bits 8,9 &A of w0 */
+			thissys.economy = (((s.w0) >> 8) & 7); /* bits 8,9 &A of w0 */
 			if (thissys.govtype <= 1)
 			{
 				thissys.economy = ((thissys.economy) | 2);
 			}
 
-			thissys.techlev = (uint)(((s.w1) >> 8) & 3) + ((thissys.economy) ^ 7);
+			thissys.techlev = (((s.w1) >> 8) & 3) + ((thissys.economy) ^ 7);
 			thissys.techlev += ((thissys.govtype) >> 1);
 			if (((thissys.govtype) & 1) == 1) thissys.techlev += 1;
 			/* C simulation of 6502's LSR then ADC */
@@ -200,7 +200,7 @@ namespace TextElite
 			thissys.productivity = (((thissys.economy) ^ 7) + 3) * ((thissys.govtype) + 4);
 			thissys.productivity *= (thissys.population) * 8;
 
-			thissys.radius = (uint)(256 * ((((s.w2) >> 8) & 15) + 11) + thissys.x);
+			thissys.radius = (256 * ((((s.w2) >> 8) & 15) + 11) + thissys.x);
 
 			thissys.goatsoupseed.a = (byte)(s.w1 & 0xFF);
 			thissys.goatsoupseed.b = (byte)(s.w1 >> 8);
@@ -395,7 +395,7 @@ namespace TextElite
 
 		static bool dolocal(string s)
 		{
-			/*int syscount;
+			int syscount;
 			uint d;
 			Console.WriteLine("Galaxy number {0}", galaxynum);
 			for (syscount = 0; syscount < galsize; ++syscount)
@@ -411,7 +411,7 @@ namespace TextElite
 					prisys(galaxy[syscount], true);
 					Console.Write(" ({0:0.0} LY)", (float)d / 10);
 				}
-			}*/
+			}
 			return true;
 		}
 
@@ -436,7 +436,7 @@ namespace TextElite
 				Console.Write(econnames[plsy.economy]);
 				Console.Write("\nGovernment: ({0}) ", plsy.govtype);
 				Console.Write(govnames[plsy.govtype]);
-				Console.Write("\nTech Level: %{0}", (plsy.techlev) + 1);
+				Console.Write("\nTech Level: {0}", (plsy.techlev) + 1);
 				Console.Write("\nTurnover: {0}", (plsy.productivity));
 				Console.Write("\nRadius: {0}", plsy.radius);
 				Console.Write("\nPopulation: {0} Billion", (plsy.population) >> 3);
@@ -449,40 +449,39 @@ namespace TextElite
 
 		static bool dojump(string s)
 		{
-			/*uint d;
+			uint d;
 			int dest = matchsys(s);
-			if (dest == currentplanet) { printf("\nBad jump"); return false; }
+			if (dest == currentplanet) { Console.WriteLine("\nBad jump"); return false; }
 			d = distance(galaxy[dest], galaxy[currentplanet]);
-			if (d > fuel) { printf("\nJump to far"); return false; }
+			if (d > fuel) { Console.WriteLine("\nJump to far"); return false; }
 			fuel -= d;
 			gamejump(dest);
-			prisys(galaxy[currentplanet], false);*/
+			prisys(galaxy[currentplanet], false);
 			return true;
 		}
 
 		static bool dosneak(string s)
 		{
-			/*uint fuelkeep = fuel;
-			boolean b;
+			uint fuelkeep = fuel;
+			bool b;
 			fuel = 666;
 			b = dojump(s);
 			fuel = fuelkeep;
-			return b;*/
-			return false;
+			return b;
 		}
 
 		static bool dogalhyp(string s)
 		{
-			/*galaxynum++;
+			galaxynum++;
 			if (galaxynum == 9) { galaxynum = 1; }
-			buildgalaxy(galaxynum);*/
+			buildgalaxy(galaxynum);
 			return true;
 		}
 
 		static bool doinfo(string s)
 		{
-			/*int dest = matchsys(s);
-			prisys(galaxy[dest], false);*/
+			int dest = matchsys(s);
+			prisys(galaxy[dest], false);
 			return true;
 		}
 
@@ -507,55 +506,7 @@ namespace TextElite
 			return true;
 		}
 
-		static bool dosell(string s)
-		{
-			/*uint i, a, t;
-			char s2[maxlen];
-			spacesplit(s, s2);
-			a = (uint)atoi(s);
-			if (a == 0) { a = 1; }
-			i = stringmatch(s2, tradnames, lasttrade + 1);
-			if (i == 0) { printf("\nUnknown trade good"); return false; }
-			i -= 1;
-
-			t = gamesell(i, a);
-
-			if (t == 0) { printf("Cannot sell any "); }
-			else
-			{
-				printf("\nSelling %i", t);
-				printf(unitnames[commodities[i].units]);
-				printf(" of ");
-			}
-			printf(tradnames[i]);*/
-
-			return true;
-		}
-
-		static bool dobuy(string s)
-		{
-			/*uint i, a, t;
-			char s2[maxlen];
-			spacesplit(s, s2);
-			a = (uint)atoi(s);
-			if (a == 0) a = 1;
-			i = stringmatch(s2, tradnames, lasttrade + 1);
-			if (i == 0) { printf("\nUnknown trade good"); return false; }
-			i -= 1;
-
-			t = gamebuy(i, a);
-			if (t == 0) printf("Cannot buy any ");
-			else
-			{
-				printf("\nBuying %i", t);
-				printf(unitnames[commodities[i].units]);
-				printf(" of ");
-			}
-			printf(tradnames[i]);*/
-			return true;
-		}
-
-		/*uint gamefuel(uint f) 
+		static uint gamefuel(uint f) 
 		{
 			if (f + fuel > maxfuel)  f = maxfuel - fuel;
 			if (fuelcost > 0)
@@ -563,15 +514,15 @@ namespace TextElite
 				if ((int)f*fuelcost > cash)  f = (uint)(cash / fuelcost);
 			}
 			fuel += f;
-			cash -= fuelcost*f;
+			cash -= (int)(fuelcost*f);
 			return f;
-		}*/
+		}
 
 		static bool dofuel(string s)
 		{
-			/*uint f = gamefuel((uint)floor(10 * atof(s)));
-			if (f == 0) { printf("\nCan't buy any fuel"); }
-			printf("\nBuying %.1fLY fuel", (float)f / 10);*/
+			uint f = gamefuel((uint)Math.Floor(10 * float.Parse(s)));
+			if (f == 0) { Console.WriteLine("\nCan't buy any fuel"); return false; }
+			Console.WriteLine("\nBuying %.1fLY fuel", (float)f / 10);
 			return true;
 		}
 
@@ -588,10 +539,9 @@ namespace TextElite
 
 		static bool domkt(string s)
 		{
-			/*atoi(s);
 			displaymarket(localmarket);
-			printf("\nFuel :%.1f", (float)fuel / 10);
-			printf("      Holdspace :%it", holdspace);*/
+			Console.WriteLine("\nFuel :{0:0.1}", (float)fuel / 10);
+			Console.WriteLine("      Holdspace :{0}t", holdspace);
 			return true;
 		}
 
@@ -630,7 +580,6 @@ namespace TextElite
 			dosneak, dolocal, doinfo, dogalhyp,
 			doquit
 		};
-
 
 		static char randbyte() { return (char)(myrand() & 0xFF); }
 
@@ -675,103 +624,50 @@ namespace TextElite
 			uint i = 0;
 			while (i < a.Length)
 			{
-				if (a[i].StartsWith(s, StringComparison.CurrentCultureIgnoreCase)) return i + 1;
+				if (a[i].StartsWith(s, StringComparison.OrdinalIgnoreCase)) return i + 1;
 				i++;
 			}
 			return 0;
 		}
 
-		/*
-		uint gamebuy(uint i, uint a)
-		// Try to buy ammount a  of good i  Return ammount bought Cannot buy more than is availble, can afford, or will fit in hold
+		static void displaymarket(markettype m)
 		{
-			uint t;
-			if (cash < 0) t = 0;
-			else
+			for (int i = 0; i <= lasttrade; i++)
 			{
-				t = mymin(localmarket.quantity[i], a);
-				if ((commodities[i].units) == tonnes) { t = mymin(holdspace, t); }
-				t = mymin(t, (uint)floor((double)cash / (localmarket.price[i])));
-			}
-			shipshold[i] += t;
-			localmarket.quantity[i] -= t;
-			cash -= t*(localmarket.price[i]);
-			if ((commodities[i].units) == tonnes) { holdspace -= t; }
-			return t;
-		}
-
-		uint gamesell(uint i, uint a) // As gamebuy but selling
-		{
-			uint t = mymin(shipshold[i], a);
-			shipshold[i] -= t;
-			localmarket.quantity[i] += t;
-			if ((commodities[i].units) == tonnes) { holdspace += t; }
-			cash += t*(localmarket.price[i]);
-			return t;
-		}
-
-
-		void displaymarket(markettype m)
-		{
-			unsigned short i;
-			for (i = 0; i <= lasttrade; i++)
-			{
-				printf("\n");
-				printf(commodities[i].name);
-				printf("   %.1f", ((float)(m.price[i]) / 10));
-				printf("   %u", m.quantity[i]);
-				printf(unitnames[commodities[i].units]);
-				printf("   %u", shipshold[i]);
+				Console.Write("\n");
+				Console.Write(commodities[i].name);
+				Console.Write("   {0:0.1}", ((float)(m.price[i]) / 10));
+				Console.Write("   {0}", m.quantity[i]);
+				Console.Write(unitnames[commodities[i].units]);
+				Console.Write("   {0}", shipshold[i]);
 			}
 		}
-				*/
 
-		/**-Generate system info from seed **/
-
-
-
-		/**+Generate galaxy **/
-
-
-		/* Functions for galactic hyperspace */
-
-
-
-
-
-		/**-Functions for navigation **/
-		/*
-void gamejump(int i) // Move to system i 
-{
-	currentplanet = i;
-	localmarket = genmarket(randbyte(), galaxy[i]);
-}
-
-
-
-int matchsys(char *s)
-// Return id of the planet whose name matches passed strinmg closest to currentplanet - if none return currentplanet
-{
-	int syscount;
-	int p = currentplanet;
-	uint d = 9999;
-	for (syscount = 0; syscount < galsize; ++syscount)
-	{
-		if (stringbeg(s, galaxy[syscount].name))
+		static void gamejump(int i)
 		{
-			if (distance(galaxy[syscount], galaxy[currentplanet]) < d)
-			{
-				d = distance(galaxy[syscount], galaxy[currentplanet]);
-				p = syscount;
-			}
+			currentplanet = i;
+			localmarket = genmarket(randbyte(), galaxy[i]);
 		}
-	}
-	return p;
-}
-		*/
 
-
-
+		static int matchsys(string s)
+		// Return id of the planet whose name matches passed strinmg closest to currentplanet - if none return currentplanet
+		{
+			int syscount;
+			int p = currentplanet;
+			uint d = 9999;
+			for (syscount = 0; syscount < galsize; ++syscount)
+			{
+				if (galaxy[syscount].name.StartsWith(s, StringComparison.OrdinalIgnoreCase))
+				{
+					if (distance(galaxy[syscount], galaxy[currentplanet]) < d)
+					{
+						d = distance(galaxy[syscount], galaxy[currentplanet]);
+						p = syscount;
+					}
+				}
+			}
+			return p;
+		}
 
 		struct desc_choice { public string[] option; };
 
@@ -890,5 +786,81 @@ reverse engineered sources. */
 			}
 		*/
 		}
+
+		static bool dosell(string s)
+		{
+/*			uint i, a, t;
+			string s2;
+			spacesplit(s, s2);
+			a = (uint)atoi(s);
+			if (a == 0) { a = 1; }
+			i = stringmatch(s2, tradnames, lasttrade + 1);
+			if (i == 0) { printf("\nUnknown trade good"); return false; }
+			i -= 1;
+
+			t = gamesell(i, a);
+
+			if (t == 0) { printf("Cannot sell any "); }
+			else
+			{
+				printf("\nSelling %i", t);
+				printf(unitnames[commodities[i].units]);
+				printf(" of ");
+			}
+			printf(tradnames[i]);*/
+
+			return true;
+		}
+
+		static bool dobuy(string s)
+		{
+			/*uint i, a, t;
+			char s2[maxlen];
+			spacesplit(s, s2);
+			a = (uint)atoi(s);
+			if (a == 0) a = 1;
+			i = stringmatch(s2, tradnames, lasttrade + 1);
+			if (i == 0) { printf("\nUnknown trade good"); return false; }
+			i -= 1;
+
+			t = gamebuy(i, a);
+			if (t == 0) printf("Cannot buy any ");
+			else
+			{
+				printf("\nBuying %i", t);
+				printf(unitnames[commodities[i].units]);
+				printf(" of ");
+			}
+			printf(tradnames[i]);*/
+			return true;
+		}
+
+		/*uint gamebuy(uint i, uint a)
+		// Try to buy ammount a  of good i  Return ammount bought Cannot buy more than is availble, can afford, or will fit in hold
+		{
+			uint t;
+			if (cash < 0) t = 0;
+			else
+			{
+				t = mymin(localmarket.quantity[i], a);
+				if ((commodities[i].units) == tonnes) { t = mymin(holdspace, t); }
+				t = mymin(t, (uint)floor((double)cash / (localmarket.price[i])));
+			}
+			shipshold[i] += t;
+			localmarket.quantity[i] -= t;
+			cash -= t*(localmarket.price[i]);
+			if ((commodities[i].units) == tonnes) { holdspace -= t; }
+			return t;
+		}
+
+		uint gamesell(uint i, uint a) // As gamebuy but selling
+		{
+			uint t = mymin(shipshold[i], a);
+			shipshold[i] -= t;
+			localmarket.quantity[i] += t;
+			if ((commodities[i].units) == tonnes) { holdspace += t; }
+			cash += t*(localmarket.price[i]);
+			return t;
+		}*/
 	}
 }
