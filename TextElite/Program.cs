@@ -8,58 +8,6 @@ namespace TextElite
 {
 	class Program
 	{
-		/* "Goat Soup" planetary description string code - adapted from Christian Pinder's
-  reverse engineered sources. */
-		/*
-static		void goat_soup(string source, ref plansys psy)
-{
-	for (;;)
-	{
-		int c = *(source++);
-		if (c == '\0')	break;
-		if (c < 0x80) printf("%c", c);
-		else
-		{
-			if (c <= 0xA4)
-			{
-				int rnd = gen_rnd_number();
-				goat_soup(desc_list[c - 0x81].option[(rnd >= 0x33) + (rnd >= 0x66) + (rnd >= 0x99) + (rnd >= 0xCC)], psy);
-			}
-			else switch (c)
-			{
-			case 0xB0: // planet name
-			{ int i = 1;
-			printf("%c", psy->name[0]);
-			while (psy->name[i] != '\0') printf("%c", tolower(psy->name[i++]));
-			}	break;
-			case 0xB1: // <planet name>ian
-			{ int i = 1;
-			printf("%c", psy->name[0]);
-			while (psy->name[i] != '\0')
-			{
-				if ((psy->name[i + 1] != '\0') || ((psy->name[i] != 'E') && (psy->name[i] != 'I')))
-					printf("%c", tolower(psy->name[i]));
-				i++;
-			}
-			printf("ian");
-			}	break;
-			case 0xB2: // random name
-			{	int i;
-			int len = gen_rnd_number() & 3;
-			for (i = 0; i <= len; i++)
-			{
-				int x = gen_rnd_number() & 0x3e;
-				if (pairs0[x] != '.') printf("%c", pairs0[x]);
-				if (i && (pairs0[x + 1] != '.')) printf("%c", pairs0[x + 1]);
-			}
-			}	break;
-			default: printf("<bad char in data [%X]>", c); return;
-			}
-		}
-	}
-}
-*/
-
 		static int ftoi(double value)
 		{
 			return ((int)Math.Floor(value + 0.5));
@@ -70,8 +18,8 @@ static		void goat_soup(string source, ref plansys psy)
 			return ((int)Math.Floor(value));
 		}
 
-		static uint distance(plansys a, plansys b)
 		/* Seperation between two planets (4*sqrt(X*X+Y*Y/4)) */
+		static uint distance(plansys a, plansys b)
 		{
 			return (uint)ftoi(4 * Math.Sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) / 4));
 		}
@@ -79,7 +27,6 @@ static		void goat_soup(string source, ref plansys psy)
 
 
 		const uint tonnes = 0;
-		/* Player workspace */
 		static uint[] shipshold = new uint[lasttrade + 1];  /* Contents of cargo bay */
 
 		static int cash;
@@ -89,7 +36,6 @@ static		void goat_soup(string source, ref plansys psy)
 		static int fuelcost = 2; /* 0.2 CR/Light year */
 		static uint maxfuel = 70; /* 7.0 LY tank */
 
-
 		struct markettype
 		{
 			public uint[] quantity;
@@ -97,18 +43,16 @@ static		void goat_soup(string source, ref plansys psy)
 		}
 		static markettype localmarket;
 
-
-		static int currentplanet;           /* Current planet */
+		static int currentplanet;
 
 		const int numforLave = 7;       /* Lave is 7th generated planet in galaxy one */
 		const int numforZaonce = 129;
 		const int numforDiso = 147;
 		const int numforRied = 46;
 
-		static string pairs0 = "ABOUSEITILETSTONLONUTHNO";
-		/* must continue into .. */
-		static string pairs = "..LEXEGEZACEBISOUSESARMAINDIREA.ERATENBERALAVETIEDORQUANTEISRION"; /* Dots should be nullprint characters */
-
+		static string pairs0 = "ABOUSEITILETSTONLONUTHNO"; // must continue into...
+		static string pairs = "..LEXEGEZACEBISOUSESARMAINDIREA.ERATENBERALAVETIEDORQUANTEISRION";
+		// Dots should be nullprint characters
 
 		static void tweakseed(ref seedtype s)
 		{
@@ -119,7 +63,8 @@ static		void goat_soup(string source, ref plansys psy)
 			s.w2 = (ushort)temp;
 		}
 
-		struct fastseedtype  /* four byte random number used for planet description */
+		/* four byte random number used for planet description */
+		struct fastseedtype
 		{
 			public byte a, b, c, d;
 		}
@@ -143,7 +88,6 @@ static		void goat_soup(string source, ref plansys psy)
 		const int galsize = 256;
 		static plansys[] galaxy = new plansys[galsize]; /* Need 0 to galsize-1 inclusive */
 
-
 		const int AlienItems = 16;
 		const int lasttrade = 16;
 
@@ -161,24 +105,24 @@ static		void goat_soup(string source, ref plansys psy)
 		}
 
 		static tradegood[] commodities = new tradegood[] {
-	new tradegood() { baseprice = 0x13, gradient = -0x02, basequant = 0x06, maskbyte = 0x01, units = 0, name = "Food        " },
-	new tradegood() { baseprice = 0x14, gradient = -0x01, basequant = 0x0A, maskbyte = 0x03, units = 0, name = "Textiles    " },
-	new tradegood() { baseprice = 0x41, gradient = -0x03, basequant = 0x02, maskbyte = 0x07, units = 0, name = "Radioactives" },
-	new tradegood() { baseprice = 0x28, gradient = -0x05, basequant = 0xE2, maskbyte = 0x1F, units = 0, name = "Slaves      " },
-	new tradegood() { baseprice = 0x53, gradient = -0x05, basequant = 0xFB, maskbyte = 0x0F, units = 0, name = "Liquor/Wines" },
-	new tradegood() { baseprice = 0xC4, gradient = +0x08, basequant = 0x36, maskbyte = 0x03, units = 0, name = "Luxuries    " },
-	new tradegood() { baseprice = 0xEB, gradient = +0x1D, basequant = 0x08, maskbyte = 0x78, units = 0, name = "Narcotics   " },
-	new tradegood() { baseprice = 0x9A, gradient = +0x0E, basequant = 0x38, maskbyte = 0x03, units = 0, name = "Computers   " },
-	new tradegood() { baseprice = 0x75, gradient = +0x06, basequant = 0x28, maskbyte = 0x07, units = 0, name = "Machinery   " },
-	new tradegood() { baseprice = 0x4E, gradient = +0x01, basequant = 0x11, maskbyte = 0x1F, units = 0, name = "Alloys      " },
-	new tradegood() { baseprice = 0x7C, gradient = +0x0d, basequant = 0x1D, maskbyte = 0x07, units = 0, name = "Firearms    " },
-	new tradegood() { baseprice = 0xB0, gradient = -0x09, basequant = 0xDC, maskbyte = 0x3F, units = 0, name = "Furs        " },
-	new tradegood() { baseprice = 0x20, gradient = -0x01, basequant = 0x35, maskbyte = 0x03, units = 0, name = "Minerals    " },
-	new tradegood() { baseprice = 0x61, gradient = -0x01, basequant = 0x42, maskbyte = 0x07, units = 1, name = "Gold        " },
-	new tradegood() { baseprice = 0xAB, gradient = -0x02, basequant = 0x37, maskbyte = 0x1F, units = 1, name = "Platinum    " },
-	new tradegood() { baseprice = 0x2D, gradient = -0x01, basequant = 0xFA, maskbyte = 0x0F, units = 2, name = "Gem-Strones " },
-	new tradegood() { baseprice = 0x35, gradient = +0x0F, basequant = 0xC0, maskbyte = 0x07, units = 0, name = "Alien Items " },
-};
+			new tradegood() { baseprice = 0x13, gradient = -0x02, basequant = 0x06, maskbyte = 0x01, units = 0, name = "Food        " },
+			new tradegood() { baseprice = 0x14, gradient = -0x01, basequant = 0x0A, maskbyte = 0x03, units = 0, name = "Textiles    " },
+			new tradegood() { baseprice = 0x41, gradient = -0x03, basequant = 0x02, maskbyte = 0x07, units = 0, name = "Radioactives" },
+			new tradegood() { baseprice = 0x28, gradient = -0x05, basequant = 0xE2, maskbyte = 0x1F, units = 0, name = "Slaves      " },
+			new tradegood() { baseprice = 0x53, gradient = -0x05, basequant = 0xFB, maskbyte = 0x0F, units = 0, name = "Liquor/Wines" },
+			new tradegood() { baseprice = 0xC4, gradient = +0x08, basequant = 0x36, maskbyte = 0x03, units = 0, name = "Luxuries    " },
+			new tradegood() { baseprice = 0xEB, gradient = +0x1D, basequant = 0x08, maskbyte = 0x78, units = 0, name = "Narcotics   " },
+			new tradegood() { baseprice = 0x9A, gradient = +0x0E, basequant = 0x38, maskbyte = 0x03, units = 0, name = "Computers   " },
+			new tradegood() { baseprice = 0x75, gradient = +0x06, basequant = 0x28, maskbyte = 0x07, units = 0, name = "Machinery   " },
+			new tradegood() { baseprice = 0x4E, gradient = +0x01, basequant = 0x11, maskbyte = 0x1F, units = 0, name = "Alloys      " },
+			new tradegood() { baseprice = 0x7C, gradient = +0x0d, basequant = 0x1D, maskbyte = 0x07, units = 0, name = "Firearms    " },
+			new tradegood() { baseprice = 0xB0, gradient = -0x09, basequant = 0xDC, maskbyte = 0x3F, units = 0, name = "Furs        " },
+			new tradegood() { baseprice = 0x20, gradient = -0x01, basequant = 0x35, maskbyte = 0x03, units = 0, name = "Minerals    " },
+			new tradegood() { baseprice = 0x61, gradient = -0x01, basequant = 0x42, maskbyte = 0x07, units = 1, name = "Gold        " },
+			new tradegood() { baseprice = 0xAB, gradient = -0x02, basequant = 0x37, maskbyte = 0x1F, units = 1, name = "Platinum    " },
+			new tradegood() { baseprice = 0x2D, gradient = -0x01, basequant = 0xFA, maskbyte = 0x0F, units = 2, name = "Gem-Strones " },
+			new tradegood() { baseprice = 0x35, gradient = +0x0F, basequant = 0xC0, maskbyte = 0x07, units = 0, name = "Alien Items " },
+		};
 
 		static Random rand = new Random();
 
@@ -212,12 +156,9 @@ static		void goat_soup(string source, ref plansys psy)
 		/* (tried to use chars but too much effort persuading this braindead
 		   language to do bit operations on bytes!) */
 		{
-			var temp = x
-				&
-				128;
+			var temp = x & 128;
 			return (2 * (x & 127)) + (temp >> 7);
 		}
-
 
 		static UInt16 twist(UInt16 x)
 		{
@@ -306,8 +247,8 @@ static		void goat_soup(string source, ref plansys psy)
 		}
 
 
-		static /* Original game generated from scratch each time info needed */
-void buildgalaxy(uint galaxynum)
+		/* Original game generated from scratch each time info needed */
+		static void buildgalaxy(uint galaxynum)
 		{
 			uint syscount, galcount;
 			seed.w0 = base0; seed.w1 = base1; seed.w2 = base2; /* Initialise seed for galaxy 1 */
@@ -354,7 +295,6 @@ void buildgalaxy(uint galaxynum)
 			market.quantity[AlienItems] = 0; /* Override to force nonavailability */
 			return market;
 		}
-
 
 		static void Main()
 		{
@@ -420,32 +360,14 @@ void buildgalaxy(uint galaxynum)
 
 		  Note that this is not the universe of David Braben's 'Frontier' series.
 
-
 		  ICGB 13/10/99
 		  iancgbell@email.com
 		  www.ibell.co.uk
 		  ---------------------------------------------------------------------- */
 
-
 		/* Note that this program is "quick-hack" text parser-driven version
 		of Elite with no combat or missions.
 		*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 		//static const char *digrams=
 		//							 "ABOUSEITILETSTONLONUTHNO"
@@ -454,32 +376,44 @@ void buildgalaxy(uint galaxynum)
 		//							 "ERATENBERALAVETI"
 		//							 "EDORQUANTEISRION";
 
-
 		static string[] govnames = { "Anarchy", "Feudal", "Multi-gov", "Dictatorship",
 "Communist", "Confederacy", "Democracy", "Corporate State" };
 
 		static string[] econnames = { "Rich Ind", "Average Ind", "Poor Ind", "Mainly Ind",
 "Mainly Agri", "Rich Agri", "Average Agri", "Poor Agri" };
 
-
 		static string[] unitnames = { "t", "kg", "g" };
-
-		/* Data for DB's price/availability generation system */
-		/*                   Base  Grad Base Mask Un   Name
-							 price ient quant     it              */
-
-
-		/**-Required data for text interface **/
 
 		const int nocomms = 13;
 
-		static string[] commands =
-{ "buy", "sell", "fuel", "jump",
-"cash", "mkt", "help", "hold",
-"sneak", "local", "info", "galhyp",
-"quit"
-};
+		static string[] commands = {
+			"buy", "sell", "fuel", "jump",
+			"cash", "mkt", "help", "hold",
+			"sneak", "local", "info", "galhyp",
+			"quit"
+		};
 
+		static bool dolocal(string s)
+		{
+			/*int syscount;
+			uint d;
+			Console.WriteLine("Galaxy number {0}", galaxynum);
+			for (syscount = 0; syscount < galsize; ++syscount)
+			{
+				d = distance(galaxy[syscount], galaxy[currentplanet]);
+				if (d <= maxfuel)
+				{
+					if (d <= fuel)
+						Console.Write("\n * ");
+					else
+						Console.Write("\n - ");
+
+					prisys(galaxy[syscount], true);
+					Console.Write(" ({0:0.0} LY)", (float)d / 10);
+				}
+			}*/
+			return true;
+		}
 
 		/**-Print data for given system **/
 		static void prisys(plansys plsy, bool compressed)
@@ -509,31 +443,8 @@ void buildgalaxy(uint galaxynum)
 
 				rnd_seed = plsy.goatsoupseed;
 				Console.WriteLine(" ");
-				// goat_soup("\x8F is \x97.", ref plsy);
+				goat_soup("\x8F is \x97.", ref plsy);
 			}
-		}
-
-
-		static bool dolocal(string s)
-		{
-			/*int syscount;
-			uint d;
-			Console.WriteLine("Galaxy number {0}", galaxynum);
-			for (syscount = 0; syscount < galsize; ++syscount)
-			{
-				d = distance(galaxy[syscount], galaxy[currentplanet]);
-				if (d <= maxfuel)
-				{
-					if (d <= fuel)
-						Console.Write("\n * ");
-					else
-						Console.Write("\n - ");
-
-					prisys(galaxy[syscount], true);
-					Console.Write(" ({0:0.0} LY)", (float)d / 10);
-				}
-			}*/
-			return true;
 		}
 
 		static bool dojump(string s)
@@ -586,7 +497,8 @@ void buildgalaxy(uint galaxynum)
 				if ((commodities[i].units) == tonnes)
 					t += (int)shipshold[i];
 			}
-			if (t > a) {
+			if (t > a)
+			{
 				Console.WriteLine("Hold too full");
 				return false;
 			}
@@ -742,7 +654,7 @@ void buildgalaxy(uint galaxynum)
 				return false;
 			}
 
-			return comfuncs[i - 1](parts.Length > 1? parts[1]: null);
+			return comfuncs[i - 1](parts.Length > 1 ? parts[1] : null);
 		}
 
 		int toupper(char c)
@@ -925,5 +837,58 @@ int gen_rnd_number(void)
 	return a;
 }
 	*/
+
+		/* "Goat Soup" planetary description string code - adapted from Christian Pinder's
+reverse engineered sources. */
+
+		static void goat_soup(string source, ref plansys psy)
+		{
+			/*
+			for (;;)
+			{
+				int c = *(source++);
+				if (c == '\0')	break;
+				if (c < 0x80) printf("%c", c);
+				else
+				{
+					if (c <= 0xA4)
+					{
+						int rnd = gen_rnd_number();
+						goat_soup(desc_list[c - 0x81].option[(rnd >= 0x33) + (rnd >= 0x66) + (rnd >= 0x99) + (rnd >= 0xCC)], psy);
+					}
+					else switch (c)
+					{
+					case 0xB0: // planet name
+					{ int i = 1;
+					printf("%c", psy->name[0]);
+					while (psy->name[i] != '\0') printf("%c", tolower(psy->name[i++]));
+					}	break;
+					case 0xB1: // <planet name>ian
+					{ int i = 1;
+					printf("%c", psy->name[0]);
+					while (psy->name[i] != '\0')
+					{
+						if ((psy->name[i + 1] != '\0') || ((psy->name[i] != 'E') && (psy->name[i] != 'I')))
+							printf("%c", tolower(psy->name[i]));
+						i++;
+					}
+					printf("ian");
+					}	break;
+					case 0xB2: // random name
+					{	int i;
+					int len = gen_rnd_number() & 3;
+					for (i = 0; i <= len; i++)
+					{
+						int x = gen_rnd_number() & 0x3e;
+						if (pairs0[x] != '.') printf("%c", pairs0[x]);
+						if (i && (pairs0[x + 1] != '.')) printf("%c", pairs0[x + 1]);
+					}
+					}	break;
+					default: printf("<bad char in data [%X]>", c); return;
+					}
+				}
+			}
+		*/
+		}
 	}
 }
