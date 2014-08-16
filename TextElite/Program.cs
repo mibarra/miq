@@ -27,19 +27,19 @@ namespace TextElite
 
 
 		const uint tonnes = 0;
-		static uint[] shipshold = new uint[lasttrade + 1];  /* Contents of cargo bay */
+		static int[] shipshold = new int[lasttrade + 1];  /* Contents of cargo bay */
 
 		static int cash;
 		static uint fuel;
-		static uint holdspace;
+		static int holdspace;
 
 		static int fuelcost = 2; /* 0.2 CR/Light year */
 		static uint maxfuel = 70; /* 7.0 LY tank */
 
 		struct markettype
 		{
-			public uint[] quantity;
-			public uint[] price;
+			public int[] quantity;
+			public int[] price;
 		}
 		static markettype localmarket;
 
@@ -50,7 +50,7 @@ namespace TextElite
 		const int numforDiso = 147;
 		const int numforRied = 46;
 
-		static string pairs0 = "ABOUSEITILETSTONLONUTHNO..LEXEGEZACEBISOUSESARMAINDIREA.ERATENBERALAVETIEDORQUANTEISRION"; 
+		static string pairs0 = "ABOUSEITILETSTONLONUTHNO..LEXEGEZACEBISOUSESARMAINDIREA.ERATENBERALAVETIEDORQUANTEISRION";
 		static string pairs = "..LEXEGEZACEBISOUSESARMAINDIREA.ERATENBERALAVETIEDORQUANTEISRION";
 		// Dots should be nullprint characters
 
@@ -274,8 +274,8 @@ namespace TextElite
 		   */
 		{
 			markettype market = new markettype();
-			market.quantity = new uint[lasttrade + 1];
-			market.price = new uint[lasttrade + 1];
+			market.quantity = new int[lasttrade + 1];
+			market.price = new int[lasttrade + 1];
 			ushort i;
 			for (i = 0; i <= lasttrade; i++)
 			{
@@ -502,7 +502,7 @@ namespace TextElite
 				return false;
 			}
 
-			holdspace = (uint)(a - t);
+			holdspace = a - t;
 			return true;
 		}
 
@@ -583,7 +583,7 @@ namespace TextElite
 
 		static char randbyte() { return (char)(myrand() & 0xFF); }
 
-		static uint mymin(uint a, uint b) { if (a < b) return (a); else return (b); }
+		static int mymin(int a, int b) { if (a < b) return (a); else return (b); }
 
 		void stop(string str)
 		{
@@ -796,78 +796,84 @@ reverse engineered sources. */
 
 		static bool dosell(string s)
 		{
-			/*			uint i, a, t;
-						string s2;
-						spacesplit(s, s2);
-						a = (uint)atoi(s);
-						if (a == 0) { a = 1; }
-						i = stringmatch(s2, tradnames, lasttrade + 1);
-						if (i == 0) { printf("\nUnknown trade good"); return false; }
-						i -= 1;
+			string[] parts = s.Split(' ');
+			int i, a, t;
 
-						t = gamesell(i, a);
+			a = int.Parse(parts[1]);
+			if (a == 0) { a = 1; }
 
-						if (t == 0) { printf("Cannot sell any "); }
-						else
-						{
-							printf("\nSelling %i", t);
-							printf(unitnames[commodities[i].units]);
-							printf(" of ");
-						}
-						printf(tradnames[i]);*/
+			i = (int)stringmatch(parts[0], tradnames);
+			if (i == 0) { Console.WriteLine("\nUnknown trade good"); return false; }
+			i -= 1;
+
+			t = gamesell(i, a);
+
+			if (t == 0) { Console.Write("Cannot sell any "); }
+			else
+			{
+				Console.Write("\nSelling {0}", t);
+				Console.Write(unitnames[commodities[i].units]);
+				Console.Write(" of ");
+			}
+			Console.WriteLine(tradnames[i]);
 
 			return true;
 		}
 
 		static bool dobuy(string s)
 		{
-			/*uint i, a, t;
-			char s2[maxlen];
-			spacesplit(s, s2);
-			a = (uint)atoi(s);
+			string[] parts = s.Split(' ');
+			int i, a, t;
+
+			a = int.Parse(parts[1]);
 			if (a == 0) a = 1;
-			i = stringmatch(s2, tradnames, lasttrade + 1);
-			if (i == 0) { printf("\nUnknown trade good"); return false; }
+
+			i = (int)stringmatch(parts[0], tradnames);
+			if (i == 0) { Console.WriteLine("\nUnknown trade good"); return false; }
 			i -= 1;
 
 			t = gamebuy(i, a);
-			if (t == 0) printf("Cannot buy any ");
+			if (t == 0) Console.Write("Cannot buy any ");
 			else
 			{
-				printf("\nBuying %i", t);
-				printf(unitnames[commodities[i].units]);
-				printf(" of ");
+				Console.Write("\nBuying {0}", t);
+				Console.Write(unitnames[commodities[i].units]);
+				Console.Write(" of ");
 			}
-			printf(tradnames[i]);*/
+			Console.WriteLine(tradnames[i]);
 			return true;
 		}
 
-		/*uint gamebuy(uint i, uint a)
 		// Try to buy ammount a  of good i  Return ammount bought Cannot buy more than is availble, can afford, or will fit in hold
+		static int gamebuy(int i, int a)
 		{
-			uint t;
-			if (cash < 0) t = 0;
+			int t;
+			if (cash < 0)
+			{
+				t = 0;
+			}
 			else
 			{
 				t = mymin(localmarket.quantity[i], a);
 				if ((commodities[i].units) == tonnes) { t = mymin(holdspace, t); }
-				t = mymin(t, (uint)floor((double)cash / (localmarket.price[i])));
+				t = mymin(t, (int)Math.Floor((double)cash / (localmarket.price[i])));
 			}
+
 			shipshold[i] += t;
 			localmarket.quantity[i] -= t;
-			cash -= t*(localmarket.price[i]);
+			cash -= t * (localmarket.price[i]);
 			if ((commodities[i].units) == tonnes) { holdspace -= t; }
 			return t;
 		}
 
-		uint gamesell(uint i, uint a) // As gamebuy but selling
+		static int gamesell(int i, int a)
 		{
-			uint t = mymin(shipshold[i], a);
+			int t = mymin(shipshold[i], a);
 			shipshold[i] -= t;
 			localmarket.quantity[i] += t;
 			if ((commodities[i].units) == tonnes) { holdspace += t; }
-			cash += t*(localmarket.price[i]);
+			cash += t * localmarket.price[i];
 			return t;
-		}*/
+		}
 	}
 }
