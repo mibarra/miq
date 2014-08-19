@@ -10,12 +10,10 @@ namespace TextElite
 	{
 		static void Main()
 		{
-			uint i;
-			string getcommand;
 			Console.Write("\nWelcome to Text Elite 1.4.\n");
 
 			// XXX Refactor; avoid having to copy these, can we get rid of tradnames?
-			for (i = 0; i <= lasttrade; i++)
+			for (int i = 0; i <= lasttrade; i++)
 				tradnames[i] = commodities[i].name;
 
 			mysrand(12345);/* Ensure repeatability */
@@ -34,16 +32,15 @@ namespace TextElite
 
 			for (; ; )
 			{
-				Console.Write(
-					string.Format(
-				"\n\nCash: {0:0.0}>", ((float)cash) / 10
-					));
-				getcommand = Console.ReadLine();
+				Console.Write(string.Format("\n\nCash: {0:0.0}>", (float)cash / 10));
+				string getcommand = Console.ReadLine();
 				parser(getcommand);
 			}
 		}
 
 		#region Player
+		// XXX Refactor; this is the planet the player is on; should be a property of the player instead of a global.
+		static int currentplanet;
 		static int[] shipshold = new int[lasttrade + 1];  /* Contents of cargo bay */
 		static int cash;
 		static uint fuel;
@@ -100,8 +97,7 @@ namespace TextElite
 			markettype market = new markettype();
 			market.quantity = new int[lasttrade + 1];
 			market.price = new int[lasttrade + 1];
-			ushort i;
-			for (i = 0; i <= lasttrade; i++)
+			for (int i = 0; i <= lasttrade; i++)
 			{
 				long q;
 				long product = (p.economy) * (commodities[i].gradient);
@@ -116,17 +112,27 @@ namespace TextElite
 				q = q & 0xFF;
 				market.price[i] = (UInt16)(q * 4);
 			}
-			market.quantity[AlienItems] = 0; /* Override to force nonavailability */
 			return market;
 		}
 
-		// XXX convert to enum
-		static string[] unitnames = { "t", "kg", "g" };
+		class Unit
+		{
+			public Unit(string symbol, bool accumulateOnShipHold)
+			{
+				Symbol = symbol;
+				AccumulateOnShipHold = accumulateOnShipHold;
+			}
+
+			public string Symbol { get; private set; }
+			public bool AccumulateOnShipHold { get; private set; }
+
+			public static Unit Ton = new Unit("t", true);
+			public static Unit Kilogram = new Unit("kg", false);
+			public static Unit Gram = new Unit("g", false);
+		}
 
 		// XXX Refactor; can we get rid of this?
-		const int AlienItems = 16;
-		// XXX Refactor; can we get rid of this?
-		const int lasttrade = 16;
+		const int lasttrade = 15;
 
 		/* Tradegood names used in text commands. Set using commodities array */
 		// XXX Refactor; can we get rid of this?
@@ -139,58 +145,41 @@ namespace TextElite
 			public Int16 gradient;   /* five bits plus sign */
 			public uint basequant;        /* one byte */
 			public uint maskbyte;         /* one byte */
-			public uint units;            /* two bits */
+			public Unit Unit;
 			public string name;         /* longest="Radioactives" */
 		}
 
 		// XXX Refactor; Open/Closed principle
 		static tradegood[] commodities = new tradegood[] {
-			new tradegood() { baseprice = 0x13, gradient = -0x02, basequant = 0x06, maskbyte = 0x01, units = 0, name = "Food        " },
-			new tradegood() { baseprice = 0x14, gradient = -0x01, basequant = 0x0A, maskbyte = 0x03, units = 0, name = "Textiles    " },
-			new tradegood() { baseprice = 0x41, gradient = -0x03, basequant = 0x02, maskbyte = 0x07, units = 0, name = "Radioactives" },
-			new tradegood() { baseprice = 0x28, gradient = -0x05, basequant = 0xE2, maskbyte = 0x1F, units = 0, name = "Slaves      " },
-			new tradegood() { baseprice = 0x53, gradient = -0x05, basequant = 0xFB, maskbyte = 0x0F, units = 0, name = "Liquor/Wines" },
-			new tradegood() { baseprice = 0xC4, gradient = +0x08, basequant = 0x36, maskbyte = 0x03, units = 0, name = "Luxuries    " },
-			new tradegood() { baseprice = 0xEB, gradient = +0x1D, basequant = 0x08, maskbyte = 0x78, units = 0, name = "Narcotics   " },
-			new tradegood() { baseprice = 0x9A, gradient = +0x0E, basequant = 0x38, maskbyte = 0x03, units = 0, name = "Computers   " },
-			new tradegood() { baseprice = 0x75, gradient = +0x06, basequant = 0x28, maskbyte = 0x07, units = 0, name = "Machinery   " },
-			new tradegood() { baseprice = 0x4E, gradient = +0x01, basequant = 0x11, maskbyte = 0x1F, units = 0, name = "Alloys      " },
-			new tradegood() { baseprice = 0x7C, gradient = +0x0d, basequant = 0x1D, maskbyte = 0x07, units = 0, name = "Firearms    " },
-			new tradegood() { baseprice = 0xB0, gradient = -0x09, basequant = 0xDC, maskbyte = 0x3F, units = 0, name = "Furs        " },
-			new tradegood() { baseprice = 0x20, gradient = -0x01, basequant = 0x35, maskbyte = 0x03, units = 0, name = "Minerals    " },
-			new tradegood() { baseprice = 0x61, gradient = -0x01, basequant = 0x42, maskbyte = 0x07, units = 1, name = "Gold        " },
-			new tradegood() { baseprice = 0xAB, gradient = -0x02, basequant = 0x37, maskbyte = 0x1F, units = 1, name = "Platinum    " },
-			new tradegood() { baseprice = 0x2D, gradient = -0x01, basequant = 0xFA, maskbyte = 0x0F, units = 2, name = "Gem-Strones " },
-			new tradegood() { baseprice = 0x35, gradient = +0x0F, basequant = 0xC0, maskbyte = 0x07, units = 0, name = "Alien Items " },
+			new tradegood() { baseprice = 0x13, gradient = -0x02, basequant = 0x06, maskbyte = 0x01, Unit = Unit.Ton, name = "Food        " },
+			new tradegood() { baseprice = 0x14, gradient = -0x01, basequant = 0x0A, maskbyte = 0x03, Unit = Unit.Ton, name = "Textiles    " },
+			new tradegood() { baseprice = 0x41, gradient = -0x03, basequant = 0x02, maskbyte = 0x07, Unit = Unit.Ton, name = "Radioactives" },
+			new tradegood() { baseprice = 0x28, gradient = -0x05, basequant = 0xE2, maskbyte = 0x1F, Unit = Unit.Ton, name = "Slaves      " },
+			new tradegood() { baseprice = 0x53, gradient = -0x05, basequant = 0xFB, maskbyte = 0x0F, Unit = Unit.Ton, name = "Liquor/Wines" },
+			new tradegood() { baseprice = 0xC4, gradient = +0x08, basequant = 0x36, maskbyte = 0x03, Unit = Unit.Ton, name = "Luxuries    " },
+			new tradegood() { baseprice = 0xEB, gradient = +0x1D, basequant = 0x08, maskbyte = 0x78, Unit = Unit.Ton, name = "Narcotics   " },
+			new tradegood() { baseprice = 0x9A, gradient = +0x0E, basequant = 0x38, maskbyte = 0x03, Unit = Unit.Ton, name = "Computers   " },
+			new tradegood() { baseprice = 0x75, gradient = +0x06, basequant = 0x28, maskbyte = 0x07, Unit = Unit.Ton, name = "Machinery   " },
+			new tradegood() { baseprice = 0x4E, gradient = +0x01, basequant = 0x11, maskbyte = 0x1F, Unit = Unit.Ton, name = "Alloys      " },
+			new tradegood() { baseprice = 0x7C, gradient = +0x0d, basequant = 0x1D, maskbyte = 0x07, Unit = Unit.Ton, name = "Firearms    " },
+			new tradegood() { baseprice = 0xB0, gradient = -0x09, basequant = 0xDC, maskbyte = 0x3F, Unit = Unit.Ton, name = "Furs        " },
+			new tradegood() { baseprice = 0x20, gradient = -0x01, basequant = 0x35, maskbyte = 0x03, Unit = Unit.Ton, name = "Minerals    " },
+			new tradegood() { baseprice = 0x61, gradient = -0x01, basequant = 0x42, maskbyte = 0x07, Unit = Unit.Kilogram, name = "Gold        " },
+			new tradegood() { baseprice = 0xAB, gradient = -0x02, basequant = 0x37, maskbyte = 0x1F, Unit = Unit.Kilogram, name = "Platinum    " },
+			new tradegood() { baseprice = 0x2D, gradient = -0x01, basequant = 0xFA, maskbyte = 0x0F, Unit = Unit.Gram, name = "Gem-Strones " }
 		};
 
 		#endregion
 
 		#region Universe
-		static int ftoi(double value)
-		{
-			return ((int)Math.Floor(value + 0.5));
-		}
-
-		static int ftoi2(double value)
-		{
-			return ((int)Math.Floor(value));
-		}
-
 		/* Seperation between two planets (4*sqrt(X*X+Y*Y/4)) */
 		static uint distance(plansys a, plansys b)
 		{
-			return (uint)ftoi(4 * Math.Sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) / 4));
+			return (uint)Math.Round(4 * Math.Sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) / 4));
 		}
-
-		// XXX Refactor; this is the planet the player is on; should be a property of the player instead of a global.
-		static int currentplanet;
 
 		// XXX Refactor; get rid of this
 		const int numforLave = 7;       /* Lave is 7th generated planet in galaxy one */
-		const int numforZaonce = 129;
-		const int numforDiso = 147;
-		const int numforRied = 46;
 
 		// XXX refactor; convert to enum
 		static string[] govnames = { "Anarchy", "Feudal", "Multi-gov", "Dictatorship",
@@ -325,17 +314,15 @@ namespace TextElite
 
 		static void buildgalaxy(uint galaxynum)
 		{
-			uint syscount, galcount;
 			seed.w0 = base0; seed.w1 = base1; seed.w2 = base2;
-			for (galcount = 1; galcount < galaxynum; ++galcount) nextgalaxy(ref seed);
-			for (syscount = 0; syscount < galsize; ++syscount) galaxy[syscount] = makesystem(ref seed);
+			for (int galcount = 1; galcount < galaxynum; ++galcount) nextgalaxy(ref seed);
+			for (int syscount = 0; syscount < galsize; ++syscount) galaxy[syscount] = makesystem(ref seed);
 		}
 		#endregion
 
 		#region Commands
 		delegate void comfunc(string cmd);
 
-		// XX there is an order relationship between the next two arrays, make the relationship stronger
 		static comfunc[] comfuncs = {
 			dobuy, dosell, dofuel, dojump,
 			docash, domkt, dohelp, dohold,
@@ -352,12 +339,10 @@ namespace TextElite
 
 		static void dolocal(string s)
 		{
-			int syscount;
-			uint d;
 			Console.WriteLine("Galaxy number {0}", galaxynum);
-			for (syscount = 0; syscount < galsize; ++syscount)
+			for (int syscount = 0; syscount < galsize; ++syscount)
 			{
-				d = distance(galaxy[syscount], galaxy[currentplanet]);
+				uint d = distance(galaxy[syscount], galaxy[currentplanet]);
 				if (d <= maxfuel)
 				{
 					if (d <= fuel)
@@ -376,7 +361,6 @@ namespace TextElite
 		{
 			if (compressed)
 			{
-				uint i;
 				Console.Write(plsy.name);
 				Console.Write(" TL: {0} ", (plsy.techlev) + 1);
 				Console.Write("{0}", econnames[plsy.economy]);
@@ -405,14 +389,13 @@ namespace TextElite
 
 		static void dojump(string s)
 		{
-			uint d;
 			int dest = matchsys(s);
 			if (dest == currentplanet)
 			{
 				Console.WriteLine("\nBad jump");
 				return;
 			}
-			d = distance(galaxy[dest], galaxy[currentplanet]);
+			uint d = distance(galaxy[dest], galaxy[currentplanet]);
 			if (d > fuel)
 			{
 				Console.WriteLine("\nJump to far");
@@ -449,12 +432,12 @@ namespace TextElite
 		static void dohold(string s)
 		{
 			int a = int.Parse(s),
-				t = 0,
-				i;
+				t = 0;
 
-			for (i = 0; i <= lasttrade; ++i)
+			for (int i = 0; i <= lasttrade; ++i)
 			{
-				if ((commodities[i].units) == tonnes)
+				// XXX we want: commodities[i].AccumulateOnShipHold
+				if (commodities[i].Unit.AccumulateOnShipHold)
 					t += (int)shipshold[i];
 			}
 			if (t > a)
@@ -583,7 +566,7 @@ namespace TextElite
 				Console.Write(commodities[i].name);
 				Console.Write("   {0:0.1}", ((float)(m.price[i]) / 10));
 				Console.Write("   {0}", m.quantity[i]);
-				Console.Write(unitnames[commodities[i].units]);
+				Console.Write(commodities[i].Unit.Symbol);
 				Console.Write("   {0}", shipshold[i]);
 			}
 		}
@@ -597,10 +580,9 @@ namespace TextElite
 		static int matchsys(string s)
 		// Return id of the planet whose name matches passed strinmg closest to currentplanet - if none return currentplanet
 		{
-			int syscount;
 			int p = currentplanet;
 			uint d = 9999;
-			for (syscount = 0; syscount < galsize; ++syscount)
+			for (int syscount = 0; syscount < galsize; ++syscount)
 			{
 				if (galaxy[syscount].name.StartsWith(s, StringComparison.OrdinalIgnoreCase))
 				{
@@ -635,7 +617,7 @@ namespace TextElite
 			else
 			{
 				Console.Write("\nSelling {0}", t);
-				Console.Write(unitnames[commodities[i].units]);
+				Console.Write(commodities[i].Unit.Symbol);
 				Console.Write(" of ");
 			}
 			Console.WriteLine(tradnames[i]);
@@ -661,7 +643,7 @@ namespace TextElite
 			else
 			{
 				Console.Write("\nBuying {0}", t);
-				Console.Write(unitnames[commodities[i].units]);
+				Console.Write(commodities[i].Unit.Symbol);
 				Console.Write(" of ");
 			}
 			Console.WriteLine(tradnames[i]);
@@ -678,14 +660,14 @@ namespace TextElite
 			else
 			{
 				t = Math.Min(localmarket.quantity[i], a);
-				if ((commodities[i].units) == tonnes) { t = Math.Min(holdspace, t); }
+				if (commodities[i].Unit.AccumulateOnShipHold) { t = Math.Min(holdspace, t); }
 				t = Math.Min(t, (int)Math.Floor((double)cash / (localmarket.price[i])));
 			}
 
 			shipshold[i] += t;
 			localmarket.quantity[i] -= t;
 			cash -= t * (localmarket.price[i]);
-			if ((commodities[i].units) == tonnes) { holdspace -= t; }
+			if (commodities[i].Unit.AccumulateOnShipHold) { holdspace -= t; }
 			return t;
 		}
 
@@ -694,7 +676,7 @@ namespace TextElite
 			int t = Math.Min(shipshold[i], a);
 			shipshold[i] -= t;
 			localmarket.quantity[i] += t;
-			if ((commodities[i].units) == tonnes) { holdspace += t; }
+			if (commodities[i].Unit.AccumulateOnShipHold) { holdspace += t; }
 			cash += t * localmarket.price[i];
 			return t;
 		}
@@ -759,11 +741,6 @@ namespace TextElite
 	/* A4 */new desc_choice() { option = new string[] {"hockey", "cricket", "karate", "polo", "tennis" }}
 };
 
-		/* B0 = <planet name>
-			 B1 = <planet name>ian
-			 B2 = <random name>
-			 */
-
 		static int gen_rnd_number()
 		{
 			int a, x;
@@ -780,9 +757,6 @@ namespace TextElite
 			rnd_seed.d = (byte)x;
 			return a;
 		}
-
-		/* "Goat Soup" planetary description string code - adapted from Christian Pinder's
-reverse engineered sources. */
 
 		static void goat_soup(string source, ref plansys psy)
 		{
@@ -825,9 +799,8 @@ reverse engineered sources. */
 								Console.Write("ian");
 								break;
 							case 0xB2: // random name
-								int i;
 								int len = gen_rnd_number() & 3;
-								for (i = 0; i <= len; i++)
+								for (int i = 0; i <= len; i++)
 								{
 									int x = gen_rnd_number() & 0x3e;
 									if (pairs0[x] != '.') Console.Write(pairs0[x]);
