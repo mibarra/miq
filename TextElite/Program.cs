@@ -532,8 +532,6 @@ namespace TextElite
 			Console.WriteLine("\nAbbreviations allowed eg. b fo 5 = Buy Food 5, m= Mkt");
 		}
 
-		static int mymin(int a, int b) { if (a < b) return (a); else return (b); }
-
 		void stop(string str)
 		{
 			Console.WriteLine("\n" + str);
@@ -679,9 +677,9 @@ namespace TextElite
 			}
 			else
 			{
-				t = mymin(localmarket.quantity[i], a);
-				if ((commodities[i].units) == tonnes) { t = mymin(holdspace, t); }
-				t = mymin(t, (int)Math.Floor((double)cash / (localmarket.price[i])));
+				t = Math.Min(localmarket.quantity[i], a);
+				if ((commodities[i].units) == tonnes) { t = Math.Min(holdspace, t); }
+				t = Math.Min(t, (int)Math.Floor((double)cash / (localmarket.price[i])));
 			}
 
 			shipshold[i] += t;
@@ -693,7 +691,7 @@ namespace TextElite
 
 		static int gamesell(int i, int a)
 		{
-			int t = mymin(shipshold[i], a);
+			int t = Math.Min(shipshold[i], a);
 			shipshold[i] -= t;
 			localmarket.quantity[i] += t;
 			if ((commodities[i].units) == tonnes) { holdspace += t; }
