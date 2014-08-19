@@ -37,7 +37,7 @@ namespace TextElite
 		#region Player
 		// XXX Refactor; this is the planet the player is on; should be a property of the player instead of a global.
 		static int currentplanet;
-		static int[] shipshold = new int[lasttrade + 1];  /* Contents of cargo bay */
+		static Stock shipshold = new Stock();  /* Contents of cargo bay */
 		static int cash;
 		static uint fuel;
 		static int holdspace;
@@ -79,18 +79,41 @@ namespace TextElite
 		#endregion
 
 		#region Trading
-		const uint tonnes = 0;
-		// XXX Refactor; this is the market the player can interact with, should be a property of "Game" or "Universe"
-		struct markettype
-		{
-			public int[] quantity;
-			public int[] price;
-		}
-		static markettype localmarket;
 
-		static markettype genmarket(uint fluct, plansys p)
+		class QuantityCollection
 		{
-			markettype market = new markettype();
+			public int this[TradeGood good]
+			{
+				get { return 0; }
+				set { /* set the specified index to value here */ }
+			}
+		}
+
+		class PriceList
+		{
+			public int this[TradeGood index]
+			{
+				get { return 0; }
+				set { /* set the specified index to value here */ }
+			}
+		}
+
+		class Stock
+		{
+			public QuantityCollection Quantity { get; private set; }
+		}
+
+		class PricedStock : Stock
+		{
+			public PriceList Price { get; private set; }
+		}
+
+		static PricedStock localmarket;
+
+		static PricedStock genmarket(uint fluct, plansys p)
+		{
+			var market = new PricedStock();
+
 			market.quantity = new int[lasttrade + 1];
 			market.price = new int[lasttrade + 1];
 			for (int i = 0; i <= lasttrade; i++)
@@ -114,44 +137,6 @@ namespace TextElite
 
 		// XXX Refactor; can we get rid of this?
 		const int lasttrade = 15;
-
-		class TradeGood
-		{
-			public uint baseprice;
-			public Int16 gradient;
-			public uint basequant;
-			public uint maskbyte;
-			public Unit Unit;
-			public string name;
-
-			public static string[] tradnames
-			{
-				get
-				{
-					return AllGoods.Select(good => good.name).ToArray();
-				}
-			}
-
-			public static TradeGood[] AllGoods = new TradeGood[] {
-				new TradeGood() { baseprice = 0x13, gradient = -0x02, basequant = 0x06, maskbyte = 0x01, Unit = Unit.Ton,      name = "Food        " },
-				new TradeGood() { baseprice = 0x14, gradient = -0x01, basequant = 0x0A, maskbyte = 0x03, Unit = Unit.Ton,      name = "Textiles    " },
-				new TradeGood() { baseprice = 0x41, gradient = -0x03, basequant = 0x02, maskbyte = 0x07, Unit = Unit.Ton,      name = "Radioactives" },
-				new TradeGood() { baseprice = 0x28, gradient = -0x05, basequant = 0xE2, maskbyte = 0x1F, Unit = Unit.Ton,      name = "Slaves      " },
-				new TradeGood() { baseprice = 0x53, gradient = -0x05, basequant = 0xFB, maskbyte = 0x0F, Unit = Unit.Ton,      name = "Liquor/Wines" },
-				new TradeGood() { baseprice = 0xC4, gradient = +0x08, basequant = 0x36, maskbyte = 0x03, Unit = Unit.Ton,      name = "Luxuries    " },
-				new TradeGood() { baseprice = 0xEB, gradient = +0x1D, basequant = 0x08, maskbyte = 0x78, Unit = Unit.Ton,      name = "Narcotics   " },
-				new TradeGood() { baseprice = 0x9A, gradient = +0x0E, basequant = 0x38, maskbyte = 0x03, Unit = Unit.Ton,      name = "Computers   " },
-				new TradeGood() { baseprice = 0x75, gradient = +0x06, basequant = 0x28, maskbyte = 0x07, Unit = Unit.Ton,      name = "Machinery   " },
-				new TradeGood() { baseprice = 0x4E, gradient = +0x01, basequant = 0x11, maskbyte = 0x1F, Unit = Unit.Ton,      name = "Alloys      " },
-				new TradeGood() { baseprice = 0x7C, gradient = +0x0d, basequant = 0x1D, maskbyte = 0x07, Unit = Unit.Ton,      name = "Firearms    " },
-				new TradeGood() { baseprice = 0xB0, gradient = -0x09, basequant = 0xDC, maskbyte = 0x3F, Unit = Unit.Ton,      name = "Furs        " },
-				new TradeGood() { baseprice = 0x20, gradient = -0x01, basequant = 0x35, maskbyte = 0x03, Unit = Unit.Ton,      name = "Minerals    " },
-				new TradeGood() { baseprice = 0x61, gradient = -0x01, basequant = 0x42, maskbyte = 0x07, Unit = Unit.Kilogram, name = "Gold        " },
-				new TradeGood() { baseprice = 0xAB, gradient = -0x02, basequant = 0x37, maskbyte = 0x1F, Unit = Unit.Kilogram, name = "Platinum    " },
-				new TradeGood() { baseprice = 0x2D, gradient = -0x01, basequant = 0xFA, maskbyte = 0x0F, Unit = Unit.Gram,     name = "Gem-Strones " }
-			};
-		};
-
 		#endregion
 
 		#region Universe
@@ -817,4 +802,51 @@ namespace TextElite
 		public static Unit Kilogram = new Unit("kg", false);
 		public static Unit Gram = new Unit("g", false);
 	}
+
+	class TradeGood
+	{
+		public uint baseprice;
+		public Int16 gradient;
+		public uint basequant;
+		public uint maskbyte;
+		public Unit Unit;
+		public string name;
+
+		public static string[] tradnames
+		{
+			get
+			{
+				return AllGoods.Select(good => good.name).ToArray();
+			}
+		}
+
+		public static TradeGood[] AllGoods = new TradeGood[] {
+			new TradeGood() { baseprice = 0x13, gradient = -0x02, basequant = 0x06, maskbyte = 0x01, Unit = Unit.Ton,      name = "Food        " },
+			new TradeGood() { baseprice = 0x14, gradient = -0x01, basequant = 0x0A, maskbyte = 0x03, Unit = Unit.Ton,      name = "Textiles    " },
+			new TradeGood() { baseprice = 0x41, gradient = -0x03, basequant = 0x02, maskbyte = 0x07, Unit = Unit.Ton,      name = "Radioactives" },
+			new TradeGood() { baseprice = 0x28, gradient = -0x05, basequant = 0xE2, maskbyte = 0x1F, Unit = Unit.Ton,      name = "Slaves      " },
+			new TradeGood() { baseprice = 0x53, gradient = -0x05, basequant = 0xFB, maskbyte = 0x0F, Unit = Unit.Ton,      name = "Liquor/Wines" },
+			new TradeGood() { baseprice = 0xC4, gradient = +0x08, basequant = 0x36, maskbyte = 0x03, Unit = Unit.Ton,      name = "Luxuries    " },
+			new TradeGood() { baseprice = 0xEB, gradient = +0x1D, basequant = 0x08, maskbyte = 0x78, Unit = Unit.Ton,      name = "Narcotics   " },
+			new TradeGood() { baseprice = 0x9A, gradient = +0x0E, basequant = 0x38, maskbyte = 0x03, Unit = Unit.Ton,      name = "Computers   " },
+			new TradeGood() { baseprice = 0x75, gradient = +0x06, basequant = 0x28, maskbyte = 0x07, Unit = Unit.Ton,      name = "Machinery   " },
+			new TradeGood() { baseprice = 0x4E, gradient = +0x01, basequant = 0x11, maskbyte = 0x1F, Unit = Unit.Ton,      name = "Alloys      " },
+			new TradeGood() { baseprice = 0x7C, gradient = +0x0d, basequant = 0x1D, maskbyte = 0x07, Unit = Unit.Ton,      name = "Firearms    " },
+			new TradeGood() { baseprice = 0xB0, gradient = -0x09, basequant = 0xDC, maskbyte = 0x3F, Unit = Unit.Ton,      name = "Furs        " },
+			new TradeGood() { baseprice = 0x20, gradient = -0x01, basequant = 0x35, maskbyte = 0x03, Unit = Unit.Ton,      name = "Minerals    " },
+			new TradeGood() { baseprice = 0x61, gradient = -0x01, basequant = 0x42, maskbyte = 0x07, Unit = Unit.Kilogram, name = "Gold        " },
+			new TradeGood() { baseprice = 0xAB, gradient = -0x02, basequant = 0x37, maskbyte = 0x1F, Unit = Unit.Kilogram, name = "Platinum    " },
+			new TradeGood() { baseprice = 0x2D, gradient = -0x01, basequant = 0xFA, maskbyte = 0x0F, Unit = Unit.Gram,     name = "Gem-Strones " }
+		};
+
+		public override bool Equals(object obj)
+		{
+			// same type &*
+			return this.GetHashCode() == obj.GetHashCode();
+		}
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
+	};
 }
