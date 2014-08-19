@@ -333,18 +333,15 @@ namespace TextElite
 		#endregion
 
 		#region Commands
+		delegate void comfunc(string cmd);
 
-		delegate bool comfunc(string cmd);
-
+		// XX there is an order relationship between the next two arrays, make the relationship stronger
 		static comfunc[] comfuncs = {
 			dobuy, dosell, dofuel, dojump,
 			docash, domkt, dohelp, dohold,
 			dosneak, dolocal, doinfo, dogalhyp,
 			doquit
 		};
-
-		// XXX "number of commands"; Get rid of the constant.
-		const int nocomms = 13;
 
 		static string[] commands = {
 			"buy", "sell", "fuel", "jump",
@@ -353,7 +350,7 @@ namespace TextElite
 			"quit"
 		};
 
-		static bool dolocal(string s)
+		static void dolocal(string s)
 		{
 			int syscount;
 			uint d;
@@ -372,7 +369,6 @@ namespace TextElite
 					Console.Write(" ({0:0.0} LY)", (float)d / 10);
 				}
 			}
-			return true;
 		}
 
 		/**-Print data for given system **/
@@ -407,45 +403,50 @@ namespace TextElite
 			}
 		}
 
-		static bool dojump(string s)
+		static void dojump(string s)
 		{
 			uint d;
 			int dest = matchsys(s);
-			if (dest == currentplanet) { Console.WriteLine("\nBad jump"); return false; }
+			if (dest == currentplanet)
+			{
+				Console.WriteLine("\nBad jump");
+				return;
+			}
 			d = distance(galaxy[dest], galaxy[currentplanet]);
-			if (d > fuel) { Console.WriteLine("\nJump to far"); return false; }
+			if (d > fuel)
+			{
+				Console.WriteLine("\nJump to far");
+				return;
+			}
 			fuel -= d;
 			gamejump(dest);
 			prisys(galaxy[currentplanet], false);
-			return true;
+			return;
 		}
 
-		static bool dosneak(string s)
+		static void dosneak(string s)
 		{
 			uint fuelkeep = fuel;
-			bool b;
 			fuel = 666;
-			b = dojump(s);
+			dojump(s);
 			fuel = fuelkeep;
-			return b;
+			return;
 		}
 
-		static bool dogalhyp(string s)
+		static void dogalhyp(string s)
 		{
 			galaxynum++;
 			if (galaxynum == 9) { galaxynum = 1; }
 			buildgalaxy(galaxynum);
-			return true;
 		}
 
-		static bool doinfo(string s)
+		static void doinfo(string s)
 		{
 			int dest = matchsys(s);
 			prisys(galaxy[dest], false);
-			return true;
 		}
 
-		static bool dohold(string s)
+		static void dohold(string s)
 		{
 			int a = int.Parse(s),
 				t = 0,
@@ -459,11 +460,11 @@ namespace TextElite
 			if (t > a)
 			{
 				Console.WriteLine("Hold too full");
-				return false;
+				return;
 			}
 
 			holdspace = a - t;
-			return true;
+			return;
 		}
 
 		static uint gamefuel(uint f)
@@ -478,40 +479,41 @@ namespace TextElite
 			return f;
 		}
 
-		static bool dofuel(string s)
+		static void dofuel(string s)
 		{
 			uint f = gamefuel((uint)Math.Floor(10 * float.Parse(s)));
-			if (f == 0) { Console.WriteLine("\nCan't buy any fuel"); return false; }
+			if (f == 0)
+			{
+				Console.WriteLine("\nCan't buy any fuel");
+			}
 			Console.WriteLine("\nBuying {0}LY fuel", (float)f / 10);
-			return true;
 		}
 
-		static bool docash(string s)
+		static void docash(string s)
 		{
 			int a = (int)(10 * float.Parse(s));
 			cash += a;
 			if (a != 0)
-				return true;
+			{
+				return;
+			}
 
 			Console.WriteLine("Number not understood");
-			return false;
 		}
 
-		static bool domkt(string s)
+		static void domkt(string s)
 		{
 			displaymarket(localmarket);
 			Console.WriteLine("\nFuel :{0:0.1}", (float)fuel / 10);
 			Console.WriteLine("      Holdspace :{0}t", holdspace);
-			return true;
 		}
 
-		static bool doquit(string s)
+		static void doquit(string s)
 		{
 			System.Environment.Exit(0);
-			return false;
 		}
 
-		static bool dohelp(string s)
+		static void dohelp(string s)
 		{
 			Console.WriteLine("Commands are:");
 			Console.WriteLine("Buy   tradegood ammount");
@@ -520,7 +522,7 @@ namespace TextElite
 			Console.WriteLine("Jump  planetname (limited by fuel)");
 			Console.WriteLine("Sneak planetname (any distance - no fuel cost)");
 			Console.WriteLine("Galhyp           (jumps to next galaxy)");
-			Console.WriteLine("Info  planetname (prints info on system");
+			Console.WriteLine("Info  planetname (prints info on system)");
 			Console.WriteLine("Mkt              (shows market prices)");
 			Console.WriteLine("Local            (lists systems within 7 light years)");
 			Console.WriteLine("Cash number      (alters cash - cheating!)");
@@ -528,8 +530,6 @@ namespace TextElite
 			Console.WriteLine("Quit or ^C       (exit)");
 			Console.WriteLine("Help             (display this text)");
 			Console.WriteLine("\nAbbreviations allowed eg. b fo 5 = Buy Food 5, m= Mkt");
-
-			return true;
 		}
 
 		static int mymin(int a, int b) { if (a < b) return (a); else return (b); }
@@ -540,19 +540,17 @@ namespace TextElite
 			System.Environment.Exit(0);
 		}
 
-		static bool parser(string s) /* Obey command s */
+		static void parser(string s) /* Obey command s */
 		{
 			uint i;
 			string[] parts = s.Split(new char[] { ' ' }, 2);
 			i = stringmatch(parts[0], commands);
-
 			if (i == 0)
 			{
 				Console.WriteLine("\n Bad command ({0})", parts[0]);
-				return false;
+				return;
 			}
-
-			return comfuncs[i - 1](parts.Length > 1 ? parts[1] : null);
+			comfuncs[i - 1](parts.Length > 1 ? parts[1] : null);
 		}
 
 		int toupper(char c)
@@ -618,7 +616,7 @@ namespace TextElite
 			return p;
 		}
 
-		static bool dosell(string s)
+		static void dosell(string s)
 		{
 			string[] parts = s.Split(' ');
 			int i, a, t;
@@ -627,7 +625,10 @@ namespace TextElite
 			if (a == 0) { a = 1; }
 
 			i = (int)stringmatch(parts[0], tradnames);
-			if (i == 0) { Console.WriteLine("\nUnknown trade good"); return false; }
+			if (i == 0)
+			{
+				Console.WriteLine("\nUnknown trade good");
+			}
 			i -= 1;
 
 			t = gamesell(i, a);
@@ -640,11 +641,9 @@ namespace TextElite
 				Console.Write(" of ");
 			}
 			Console.WriteLine(tradnames[i]);
-
-			return true;
 		}
 
-		static bool dobuy(string s)
+		static void dobuy(string s)
 		{
 			string[] parts = s.Split(' ');
 			int i, a, t;
@@ -653,7 +652,10 @@ namespace TextElite
 			if (a == 0) a = 1;
 
 			i = (int)stringmatch(parts[0], tradnames);
-			if (i == 0) { Console.WriteLine("\nUnknown trade good"); return false; }
+			if (i == 0)
+			{
+				Console.WriteLine("\nUnknown trade good");
+			}
 			i -= 1;
 
 			t = gamebuy(i, a);
@@ -665,7 +667,6 @@ namespace TextElite
 				Console.Write(" of ");
 			}
 			Console.WriteLine(tradnames[i]);
-			return true;
 		}
 
 		// Try to buy ammount a  of good i  Return ammount bought Cannot buy more than is availble, can afford, or will fit in hold
