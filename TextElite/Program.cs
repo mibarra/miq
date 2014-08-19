@@ -8,51 +8,53 @@ namespace TextElite
 {
 	class Program
 	{
-		static int ftoi(double value)
+		static void Main()
 		{
-			return ((int)Math.Floor(value + 0.5));
+			uint i;
+			string getcommand;
+			Console.Write("\nWelcome to Text Elite 1.4.\n");
+
+			// XXX Refactor; avoid having to copy these, can we get rid of tradnames?
+			for (i = 0; i <= lasttrade; i++)
+				tradnames[i] = commodities[i].name;
+
+			mysrand(12345);/* Ensure repeatability */
+
+			galaxynum = 1;
+			buildgalaxy(galaxynum);
+
+			currentplanet = numforLave;                        /* Don't use jump */
+			localmarket = genmarket(0x00, galaxy[numforLave]);/* Since want seed=0 */
+
+			fuel = maxfuel;
+
+			parser("hold 20");         /* Small cargo bay */
+			parser("cash +100");       /* 100 CR */
+			parser("help");
+
+			for (; ; )
+			{
+				Console.Write(
+					string.Format(
+				"\n\nCash: {0:0.0}>", ((float)cash) / 10
+					));
+				getcommand = Console.ReadLine();
+				parser(getcommand);
+			}
 		}
 
-		static int ftoi2(double value)
-		{
-			return ((int)Math.Floor(value));
-		}
-
-		/* Seperation between two planets (4*sqrt(X*X+Y*Y/4)) */
-		static uint distance(plansys a, plansys b)
-		{
-			return (uint)ftoi(4 * Math.Sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) / 4));
-		}
-
-
-
-		const uint tonnes = 0;
+		#region Player
 		static int[] shipshold = new int[lasttrade + 1];  /* Contents of cargo bay */
-
 		static int cash;
 		static uint fuel;
 		static int holdspace;
 
 		static int fuelcost = 2; /* 0.2 CR/Light year */
 		static uint maxfuel = 70; /* 7.0 LY tank */
+		#endregion
 
-		struct markettype
-		{
-			public int[] quantity;
-			public int[] price;
-		}
-		static markettype localmarket;
-
-		static int currentplanet;
-
-		const int numforLave = 7;       /* Lave is 7th generated planet in galaxy one */
-		const int numforZaonce = 129;
-		const int numforDiso = 147;
-		const int numforRied = 46;
-
-		static string pairs0 = "ABOUSEITILETSTONLONUTHNO..LEXEGEZACEBISOUSESARMAINDIREA.ERATENBERALAVETIEDORQUANTEISRION";
-		static string pairs = "..LEXEGEZACEBISOUSESARMAINDIREA.ERATENBERALAVETIEDORQUANTEISRION";
-		// Dots should be nullprint characters
+		#region RNG
+		static char randbyte() { return (char)(myrand() & 0xFF); }
 
 		static void tweakseed(ref seedtype s)
 		{
@@ -70,30 +72,67 @@ namespace TextElite
 		}
 
 		static fastseedtype rnd_seed;
+		static Random rand = new Random();
 
-		struct plansys
+		static void mysrand(int seed)
 		{
-			public int x;
-			public int y;       /* One byte unsigned */
-			public int economy; /* These two are actually only 0-7  */
-			public int govtype;
-			public int techlev; /* 0-16 i think */
-			public int population;   /* One byte */
-			public int productivity; /* Two byte */
-			public int radius; /* Two byte (not used by game at all) */
-			public fastseedtype goatsoupseed;
-			public string name;
+			rand = new Random(seed);
 		}
 
-		const int galsize = 256;
-		static plansys[] galaxy = new plansys[galsize]; /* Need 0 to galsize-1 inclusive */
+		static int myrand()
+		{
+			return rand.Next();
+		}
+		#endregion
 
+		#region Trading
+		const uint tonnes = 0;
+		// XXX Refactor; this is the market the player can interact with, should be a property of "Game" or "Universe"
+		struct markettype
+		{
+			public int[] quantity;
+			public int[] price;
+		}
+		static markettype localmarket;
+
+		static markettype genmarket(uint fluct, plansys p)
+		{
+			markettype market = new markettype();
+			market.quantity = new int[lasttrade + 1];
+			market.price = new int[lasttrade + 1];
+			ushort i;
+			for (i = 0; i <= lasttrade; i++)
+			{
+				long q;
+				long product = (p.economy) * (commodities[i].gradient);
+				uint changing = (fluct & (commodities[i].maskbyte));
+				q = (commodities[i].basequant) + changing - product;
+				q = q & 0xFF;
+				if ((q & 0x80) != 0) { q = 0; };                       /* Clip to positive 8-bit */
+
+				market.quantity[i] = (UInt16)(q & 0x3F); /* Mask to 6 bits */
+
+				q = (commodities[i].baseprice) + changing + product;
+				q = q & 0xFF;
+				market.price[i] = (UInt16)(q * 4);
+			}
+			market.quantity[AlienItems] = 0; /* Override to force nonavailability */
+			return market;
+		}
+
+		// XXX convert to enum
+		static string[] unitnames = { "t", "kg", "g" };
+
+		// XXX Refactor; can we get rid of this?
 		const int AlienItems = 16;
+		// XXX Refactor; can we get rid of this?
 		const int lasttrade = 16;
 
 		/* Tradegood names used in text commands. Set using commodities array */
+		// XXX Refactor; can we get rid of this?
 		static string[] tradnames = new string[lasttrade + 1];
 
+		// XXX Refactor; Convert to class
 		struct tradegood
 		{                         /* In 6502 version these were: */
 			public uint baseprice;        /* one byte */
@@ -104,6 +143,7 @@ namespace TextElite
 			public string name;         /* longest="Radioactives" */
 		}
 
+		// XXX Refactor; Open/Closed principle
 		static tradegood[] commodities = new tradegood[] {
 			new tradegood() { baseprice = 0x13, gradient = -0x02, basequant = 0x06, maskbyte = 0x01, units = 0, name = "Food        " },
 			new tradegood() { baseprice = 0x14, gradient = -0x01, basequant = 0x0A, maskbyte = 0x03, units = 0, name = "Textiles    " },
@@ -124,17 +164,68 @@ namespace TextElite
 			new tradegood() { baseprice = 0x35, gradient = +0x0F, basequant = 0xC0, maskbyte = 0x07, units = 0, name = "Alien Items " },
 		};
 
-		static Random rand = new Random();
+		#endregion
 
-		static void mysrand(int seed)
+		#region Universe
+		static int ftoi(double value)
 		{
-			rand = new Random(seed);
+			return ((int)Math.Floor(value + 0.5));
 		}
 
-		static int myrand()
+		static int ftoi2(double value)
 		{
-			return rand.Next();
+			return ((int)Math.Floor(value));
 		}
+
+		/* Seperation between two planets (4*sqrt(X*X+Y*Y/4)) */
+		static uint distance(plansys a, plansys b)
+		{
+			return (uint)ftoi(4 * Math.Sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y) / 4));
+		}
+
+		// XXX Refactor; this is the planet the player is on; should be a property of the player instead of a global.
+		static int currentplanet;
+
+		// XXX Refactor; get rid of this
+		const int numforLave = 7;       /* Lave is 7th generated planet in galaxy one */
+		const int numforZaonce = 129;
+		const int numforDiso = 147;
+		const int numforRied = 46;
+
+		// XXX refactor; convert to enum
+		static string[] govnames = { "Anarchy", "Feudal", "Multi-gov", "Dictatorship",
+"Communist", "Confederacy", "Democracy", "Corporate State" };
+
+		// XXX; Refactor; convert to enum
+		static string[] econnames = {
+			"Rich Ind",		// 000
+			"Average Ind",	// 001
+			"Poor Ind",		// 010
+			"Mainly Ind",	// 011
+
+			"Mainly Agri",  // 100
+			"Rich Agri",    // 101
+			"Average Agri", // 110
+			"Poor Agri" };  // 111
+
+		// XXX Refactor; convert to class
+		struct plansys
+		{
+			public int x;
+			public int y;       /* One byte unsigned */
+			public int economy; /* These two are actually only 0-7  */
+			public int govtype;
+			public int techlev; /* 0-16 i think */
+			public int population;   /* One byte */
+			public int productivity; /* Two byte */
+			public int radius; /* Two byte (not used by game at all) */
+			public fastseedtype goatsoupseed;
+			public string name;
+		}
+
+		// XXX Refactor; can we get rid of this?
+		const int galsize = 256;
+		static plansys[] galaxy = new plansys[galsize]; /* Need 0 to galsize-1 inclusive */
 
 		static uint galaxynum;               /* Galaxy number (1-8) */
 
@@ -182,8 +273,7 @@ namespace TextElite
 			thissys.y = ((s.w0) >> 8);
 
 			thissys.govtype = (((s.w1) >> 3) & 7); /* bits 3,4 &5 of w1 */
-
-			thissys.economy = (((s.w0) >> 8) & 7); /* bits 8,9 &A of w0 */
+			thissys.economy = (((s.w0) >> 8) & 7); /* bits 8,9 & A of w0 */
 			if (thissys.govtype <= 1)
 			{
 				thissys.economy = ((thissys.economy) | 2);
@@ -192,10 +282,8 @@ namespace TextElite
 			thissys.techlev = (((s.w1) >> 8) & 3) + ((thissys.economy) ^ 7);
 			thissys.techlev += ((thissys.govtype) >> 1);
 			if (((thissys.govtype) & 1) == 1) thissys.techlev += 1;
-			/* C simulation of 6502's LSR then ADC */
 
 			thissys.population = 4 * (thissys.techlev) + (thissys.economy);
-			thissys.population += (thissys.govtype) + 1;
 
 			thissys.productivity = (((thissys.economy) ^ 7) + 3) * ((thissys.govtype) + 4);
 			thissys.productivity *= (thissys.population) * 8;
@@ -235,155 +323,27 @@ namespace TextElite
 			return thissys;
 		}
 
-		static void stripout(StringBuilder s, char c) /* Remove all c's from string s */
-		{
-			int i = 0, j = 0;
-			while (i < s.Length)
-			{
-				if (s[i] != c) { s[j] = s[i]; j++; }
-				i++;
-			}
-			s.Length = j;
-		}
-
-
-		/* Original game generated from scratch each time info needed */
 		static void buildgalaxy(uint galaxynum)
 		{
 			uint syscount, galcount;
-			seed.w0 = base0; seed.w1 = base1; seed.w2 = base2; /* Initialise seed for galaxy 1 */
+			seed.w0 = base0; seed.w1 = base1; seed.w2 = base2;
 			for (galcount = 1; galcount < galaxynum; ++galcount) nextgalaxy(ref seed);
-			/* Put galaxy data into array of structures */
 			for (syscount = 0; syscount < galsize; ++syscount) galaxy[syscount] = makesystem(ref seed);
 		}
+		#endregion
 
-		static markettype genmarket(uint fluct, plansys p)
-		/* Prices and availabilities are influenced by the planet's economy type
-		   (0-7) and a random "fluctuation" byte that was kept within the saved
-		   commander position to keep the market prices constant over gamesaves.
-		   Availabilities must be saved with the game since the player alters them
-		   by buying (and selling(?))
+		#region Commands
 
-		   Almost all operations are one byte only and overflow "errors" are
-		   extremely frequent and exploited.
+		delegate bool comfunc(string cmd);
 
-		   Trade Item prices are held internally in a single byte=true value/4.
-		   The decimal point in prices is introduced only when printing them.
-		   Internally, all prices are integers.
-		   The player's cash is held in four bytes.
-		   */
-		{
-			markettype market = new markettype();
-			market.quantity = new int[lasttrade + 1];
-			market.price = new int[lasttrade + 1];
-			ushort i;
-			for (i = 0; i <= lasttrade; i++)
-			{
-				long q;
-				long product = (p.economy) * (commodities[i].gradient);
-				uint changing = (fluct & (commodities[i].maskbyte));
-				q = (commodities[i].basequant) + changing - product;
-				q = q & 0xFF;
-				if ((q & 0x80) != 0) { q = 0; };                       /* Clip to positive 8-bit */
+		static comfunc[] comfuncs = {
+			dobuy, dosell, dofuel, dojump,
+			docash, domkt, dohelp, dohold,
+			dosneak, dolocal, doinfo, dogalhyp,
+			doquit
+		};
 
-				market.quantity[i] = (UInt16)(q & 0x3F); /* Mask to 6 bits */
-
-				q = (commodities[i].baseprice) + changing + product;
-				q = q & 0xFF;
-				market.price[i] = (UInt16)(q * 4);
-			}
-			market.quantity[AlienItems] = 0; /* Override to force nonavailability */
-			return market;
-		}
-
-		static void Main()
-		{
-			uint i;
-			string getcommand;
-			Console.Write("\nWelcome to Text Elite 1.4.\n");
-
-			for (i = 0; i <= lasttrade; i++)
-				tradnames[i] = commodities[i].name;
-
-			mysrand(12345);/* Ensure repeatability */
-
-			galaxynum = 1;
-			buildgalaxy(galaxynum);
-
-			currentplanet = numforLave;                        /* Don't use jump */
-			localmarket = genmarket(0x00, galaxy[numforLave]);/* Since want seed=0 */
-
-			fuel = maxfuel;
-
-			parser("hold 20");         /* Small cargo bay */
-			parser("cash +100");       /* 100 CR */
-			parser("help");
-
-			for (; ; )
-			{
-				Console.Write(
-					string.Format(
-				"\n\nCash: {0:0.0}>", ((float)cash) / 10
-					));
-				getcommand = Console.ReadLine();
-				parser(getcommand);
-			}
-
-
-			/* 6502 Elite fires up at Lave with fluctuation=00
-			   and these prices tally with the NES ones.
-			   However, the availabilities reside in the saved game data.
-			   Availabilities are calculated (and fluctuation randomised)
-			   on hyperspacing
-			   I have checked with this code for Zaonce with fluctaution &AB
-			   against the SuperVision 6502 code and both prices and availabilities tally.
-			   */
-		}
-
-		/* txtelite.c  1.4 */
-		/* Textual version of Elite trading (C implementation) */
-		/* Converted by Ian Bell from 6502 Elite sources.
-		   Original 6502 Elite by Ian Bell & David Braben. */
-
-
-		/* ----------------------------------------------------------------------
-		  The nature of basic mechanisms used to generate the Elite socio-economic
-		  universe are now widely known. A competant games programmer should be able to
-		  produce equivalent functionality. A competant hacker should be able to lift
-		  the exact system from the object code base of official conversions.
-
-		  This file may be regarded as defining the Classic Elite universe.
-
-		  It contains a C implementation of the precise 6502 algorithms used in the
-		  original BBC Micro version of Acornsoft Elite together with a parsed textual
-		  command testbed.
-
-		  Note that this is not the universe of David Braben's 'Frontier' series.
-
-		  ICGB 13/10/99
-		  iancgbell@email.com
-		  www.ibell.co.uk
-		  ---------------------------------------------------------------------- */
-
-		/* Note that this program is "quick-hack" text parser-driven version
-		of Elite with no combat or missions.
-		*/
-
-		//static const char *digrams=
-		//							 "ABOUSEITILETSTONLONUTHNO"
-		//							 "ALLEXEGEZACEBISO"
-		//							 "USESARMAINDIREA?"
-		//							 "ERATENBERALAVETI"
-		//							 "EDORQUANTEISRION";
-
-		static string[] govnames = { "Anarchy", "Feudal", "Multi-gov", "Dictatorship",
-"Communist", "Confederacy", "Democracy", "Corporate State" };
-
-		static string[] econnames = { "Rich Ind", "Average Ind", "Poor Ind", "Mainly Ind",
-"Mainly Agri", "Rich Agri", "Average Agri", "Poor Agri" };
-
-		static string[] unitnames = { "t", "kg", "g" };
-
+		// XXX "number of commands"; Get rid of the constant.
 		const int nocomms = 13;
 
 		static string[] commands = {
@@ -522,7 +482,7 @@ namespace TextElite
 		{
 			uint f = gamefuel((uint)Math.Floor(10 * float.Parse(s)));
 			if (f == 0) { Console.WriteLine("\nCan't buy any fuel"); return false; }
-			Console.WriteLine("\nBuying %.1fLY fuel", (float)f / 10);
+			Console.WriteLine("\nBuying {0}LY fuel", (float)f / 10);
 			return true;
 		}
 
@@ -571,17 +531,6 @@ namespace TextElite
 
 			return true;
 		}
-
-		delegate bool comfunc(string cmd);
-
-		static comfunc[] comfuncs = {
-			dobuy, dosell, dofuel, dojump,
-			docash, domkt, dohelp, dohold,
-			dosneak, dolocal, doinfo, dogalhyp,
-			doquit
-		};
-
-		static char randbyte() { return (char)(myrand() & 0xFF); }
 
 		static int mymin(int a, int b) { if (a < b) return (a); else return (b); }
 
@@ -669,10 +618,110 @@ namespace TextElite
 			return p;
 		}
 
+		static bool dosell(string s)
+		{
+			string[] parts = s.Split(' ');
+			int i, a, t;
+
+			a = int.Parse(parts[1]);
+			if (a == 0) { a = 1; }
+
+			i = (int)stringmatch(parts[0], tradnames);
+			if (i == 0) { Console.WriteLine("\nUnknown trade good"); return false; }
+			i -= 1;
+
+			t = gamesell(i, a);
+
+			if (t == 0) { Console.Write("Cannot sell any "); }
+			else
+			{
+				Console.Write("\nSelling {0}", t);
+				Console.Write(unitnames[commodities[i].units]);
+				Console.Write(" of ");
+			}
+			Console.WriteLine(tradnames[i]);
+
+			return true;
+		}
+
+		static bool dobuy(string s)
+		{
+			string[] parts = s.Split(' ');
+			int i, a, t;
+
+			a = int.Parse(parts[1]);
+			if (a == 0) a = 1;
+
+			i = (int)stringmatch(parts[0], tradnames);
+			if (i == 0) { Console.WriteLine("\nUnknown trade good"); return false; }
+			i -= 1;
+
+			t = gamebuy(i, a);
+			if (t == 0) Console.Write("Cannot buy any ");
+			else
+			{
+				Console.Write("\nBuying {0}", t);
+				Console.Write(unitnames[commodities[i].units]);
+				Console.Write(" of ");
+			}
+			Console.WriteLine(tradnames[i]);
+			return true;
+		}
+
+		// Try to buy ammount a  of good i  Return ammount bought Cannot buy more than is availble, can afford, or will fit in hold
+		static int gamebuy(int i, int a)
+		{
+			int t;
+			if (cash < 0)
+			{
+				t = 0;
+			}
+			else
+			{
+				t = mymin(localmarket.quantity[i], a);
+				if ((commodities[i].units) == tonnes) { t = mymin(holdspace, t); }
+				t = mymin(t, (int)Math.Floor((double)cash / (localmarket.price[i])));
+			}
+
+			shipshold[i] += t;
+			localmarket.quantity[i] -= t;
+			cash -= t * (localmarket.price[i]);
+			if ((commodities[i].units) == tonnes) { holdspace -= t; }
+			return t;
+		}
+
+		static int gamesell(int i, int a)
+		{
+			int t = mymin(shipshold[i], a);
+			shipshold[i] -= t;
+			localmarket.quantity[i] += t;
+			if ((commodities[i].units) == tonnes) { holdspace += t; }
+			cash += t * localmarket.price[i];
+			return t;
+		}
+		#endregion
+
+		#region Random Name & Description Generator
+
+		static void stripout(StringBuilder s, char c) /* Remove all c's from string s */
+		{
+			int i = 0, j = 0;
+			while (i < s.Length)
+			{
+				if (s[i] != c) { s[j] = s[i]; j++; }
+				i++;
+			}
+			s.Length = j;
+		}
+
 		struct desc_choice { public string[] option; };
 
-		static desc_choice[] desc_list =
-{
+		// XXX Refactor; Extract a name & description generator
+		static string pairs0 = "ABOUSEITILETSTONLONUTHNO..LEXEGEZACEBISOUSESARMAINDIREA.ERATENBERALAVETIEDORQUANTEISRION";
+		static string pairs = "..LEXEGEZACEBISOUSESARMAINDIREA.ERATENBERALAVETIEDORQUANTEISRION";
+		// Dots should be nullprint characters
+
+		static desc_choice[] desc_list = {
 	/* 81 */new desc_choice() { option = new string[] {"fabled", "notable", "well known", "famous", "noted" }},
 	/* 82 */new desc_choice() { option = new string[] {"very", "mildly", "most", "reasonably", "" }},
 	/* 83 */new desc_choice() { option = new string[] {"ancient", "\x95", "great", "vast", "pink" }},
@@ -794,86 +843,6 @@ reverse engineered sources. */
 			}
 		}
 
-		static bool dosell(string s)
-		{
-			string[] parts = s.Split(' ');
-			int i, a, t;
-
-			a = int.Parse(parts[1]);
-			if (a == 0) { a = 1; }
-
-			i = (int)stringmatch(parts[0], tradnames);
-			if (i == 0) { Console.WriteLine("\nUnknown trade good"); return false; }
-			i -= 1;
-
-			t = gamesell(i, a);
-
-			if (t == 0) { Console.Write("Cannot sell any "); }
-			else
-			{
-				Console.Write("\nSelling {0}", t);
-				Console.Write(unitnames[commodities[i].units]);
-				Console.Write(" of ");
-			}
-			Console.WriteLine(tradnames[i]);
-
-			return true;
-		}
-
-		static bool dobuy(string s)
-		{
-			string[] parts = s.Split(' ');
-			int i, a, t;
-
-			a = int.Parse(parts[1]);
-			if (a == 0) a = 1;
-
-			i = (int)stringmatch(parts[0], tradnames);
-			if (i == 0) { Console.WriteLine("\nUnknown trade good"); return false; }
-			i -= 1;
-
-			t = gamebuy(i, a);
-			if (t == 0) Console.Write("Cannot buy any ");
-			else
-			{
-				Console.Write("\nBuying {0}", t);
-				Console.Write(unitnames[commodities[i].units]);
-				Console.Write(" of ");
-			}
-			Console.WriteLine(tradnames[i]);
-			return true;
-		}
-
-		// Try to buy ammount a  of good i  Return ammount bought Cannot buy more than is availble, can afford, or will fit in hold
-		static int gamebuy(int i, int a)
-		{
-			int t;
-			if (cash < 0)
-			{
-				t = 0;
-			}
-			else
-			{
-				t = mymin(localmarket.quantity[i], a);
-				if ((commodities[i].units) == tonnes) { t = mymin(holdspace, t); }
-				t = mymin(t, (int)Math.Floor((double)cash / (localmarket.price[i])));
-			}
-
-			shipshold[i] += t;
-			localmarket.quantity[i] -= t;
-			cash -= t * (localmarket.price[i]);
-			if ((commodities[i].units) == tonnes) { holdspace -= t; }
-			return t;
-		}
-
-		static int gamesell(int i, int a)
-		{
-			int t = mymin(shipshold[i], a);
-			shipshold[i] -= t;
-			localmarket.quantity[i] += t;
-			if ((commodities[i].units) == tonnes) { holdspace += t; }
-			cash += t * localmarket.price[i];
-			return t;
-		}
+		#endregion
 	}
 }
