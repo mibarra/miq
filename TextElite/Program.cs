@@ -12,10 +12,6 @@ namespace TextElite
 		{
 			Console.Write("\nWelcome to Text Elite 1.4.\n");
 
-			// XXX Refactor; avoid having to copy these, can we get rid of tradnames?
-			for (int i = 0; i <= lasttrade; i++)
-				tradnames[i] = commodities[i].name;
-
 			mysrand(12345);/* Ensure repeatability */
 
 			galaxynum = 1;
@@ -32,7 +28,7 @@ namespace TextElite
 
 			for (; ; )
 			{
-				Console.Write(string.Format("\n\nCash: {0:0.0}>", (float)cash / 10));
+				Console.Write(string.Format("\n\nCash: {0:0.0}> ", (float)cash / 10));
 				string getcommand = Console.ReadLine();
 				parser(getcommand);
 			}
@@ -99,74 +95,61 @@ namespace TextElite
 			market.price = new int[lasttrade + 1];
 			for (int i = 0; i <= lasttrade; i++)
 			{
+				TradeGood good = TradeGood.AllGoods[i];
 				long q;
-				long product = (p.economy) * (commodities[i].gradient);
-				uint changing = (fluct & (commodities[i].maskbyte));
-				q = (commodities[i].basequant) + changing - product;
+				long product = (p.economy) * (good.gradient);
+				uint changing = (fluct & (good.maskbyte));
+				q = (good.basequant) + changing - product;
 				q = q & 0xFF;
 				if ((q & 0x80) != 0) { q = 0; };                       /* Clip to positive 8-bit */
 
 				market.quantity[i] = (UInt16)(q & 0x3F); /* Mask to 6 bits */
 
-				q = (commodities[i].baseprice) + changing + product;
+				q = (good.baseprice) + changing + product;
 				q = q & 0xFF;
 				market.price[i] = (UInt16)(q * 4);
 			}
 			return market;
 		}
 
-		class Unit
-		{
-			public Unit(string symbol, bool accumulateOnShipHold)
-			{
-				Symbol = symbol;
-				AccumulateOnShipHold = accumulateOnShipHold;
-			}
-
-			public string Symbol { get; private set; }
-			public bool AccumulateOnShipHold { get; private set; }
-
-			public static Unit Ton = new Unit("t", true);
-			public static Unit Kilogram = new Unit("kg", false);
-			public static Unit Gram = new Unit("g", false);
-		}
-
 		// XXX Refactor; can we get rid of this?
 		const int lasttrade = 15;
 
-		/* Tradegood names used in text commands. Set using commodities array */
-		// XXX Refactor; can we get rid of this?
-		static string[] tradnames = new string[lasttrade + 1];
-
-		// XXX Refactor; Convert to class
-		struct tradegood
-		{                         /* In 6502 version these were: */
-			public uint baseprice;        /* one byte */
-			public Int16 gradient;   /* five bits plus sign */
-			public uint basequant;        /* one byte */
-			public uint maskbyte;         /* one byte */
+		class TradeGood
+		{
+			public uint baseprice;
+			public Int16 gradient;
+			public uint basequant;
+			public uint maskbyte;
 			public Unit Unit;
-			public string name;         /* longest="Radioactives" */
-		}
+			public string name;
 
-		// XXX Refactor; Open/Closed principle
-		static tradegood[] commodities = new tradegood[] {
-			new tradegood() { baseprice = 0x13, gradient = -0x02, basequant = 0x06, maskbyte = 0x01, Unit = Unit.Ton, name = "Food        " },
-			new tradegood() { baseprice = 0x14, gradient = -0x01, basequant = 0x0A, maskbyte = 0x03, Unit = Unit.Ton, name = "Textiles    " },
-			new tradegood() { baseprice = 0x41, gradient = -0x03, basequant = 0x02, maskbyte = 0x07, Unit = Unit.Ton, name = "Radioactives" },
-			new tradegood() { baseprice = 0x28, gradient = -0x05, basequant = 0xE2, maskbyte = 0x1F, Unit = Unit.Ton, name = "Slaves      " },
-			new tradegood() { baseprice = 0x53, gradient = -0x05, basequant = 0xFB, maskbyte = 0x0F, Unit = Unit.Ton, name = "Liquor/Wines" },
-			new tradegood() { baseprice = 0xC4, gradient = +0x08, basequant = 0x36, maskbyte = 0x03, Unit = Unit.Ton, name = "Luxuries    " },
-			new tradegood() { baseprice = 0xEB, gradient = +0x1D, basequant = 0x08, maskbyte = 0x78, Unit = Unit.Ton, name = "Narcotics   " },
-			new tradegood() { baseprice = 0x9A, gradient = +0x0E, basequant = 0x38, maskbyte = 0x03, Unit = Unit.Ton, name = "Computers   " },
-			new tradegood() { baseprice = 0x75, gradient = +0x06, basequant = 0x28, maskbyte = 0x07, Unit = Unit.Ton, name = "Machinery   " },
-			new tradegood() { baseprice = 0x4E, gradient = +0x01, basequant = 0x11, maskbyte = 0x1F, Unit = Unit.Ton, name = "Alloys      " },
-			new tradegood() { baseprice = 0x7C, gradient = +0x0d, basequant = 0x1D, maskbyte = 0x07, Unit = Unit.Ton, name = "Firearms    " },
-			new tradegood() { baseprice = 0xB0, gradient = -0x09, basequant = 0xDC, maskbyte = 0x3F, Unit = Unit.Ton, name = "Furs        " },
-			new tradegood() { baseprice = 0x20, gradient = -0x01, basequant = 0x35, maskbyte = 0x03, Unit = Unit.Ton, name = "Minerals    " },
-			new tradegood() { baseprice = 0x61, gradient = -0x01, basequant = 0x42, maskbyte = 0x07, Unit = Unit.Kilogram, name = "Gold        " },
-			new tradegood() { baseprice = 0xAB, gradient = -0x02, basequant = 0x37, maskbyte = 0x1F, Unit = Unit.Kilogram, name = "Platinum    " },
-			new tradegood() { baseprice = 0x2D, gradient = -0x01, basequant = 0xFA, maskbyte = 0x0F, Unit = Unit.Gram, name = "Gem-Strones " }
+			public static string[] tradnames
+			{
+				get
+				{
+					return AllGoods.Select(good => good.name).ToArray();
+				}
+			}
+
+			public static TradeGood[] AllGoods = new TradeGood[] {
+				new TradeGood() { baseprice = 0x13, gradient = -0x02, basequant = 0x06, maskbyte = 0x01, Unit = Unit.Ton,      name = "Food        " },
+				new TradeGood() { baseprice = 0x14, gradient = -0x01, basequant = 0x0A, maskbyte = 0x03, Unit = Unit.Ton,      name = "Textiles    " },
+				new TradeGood() { baseprice = 0x41, gradient = -0x03, basequant = 0x02, maskbyte = 0x07, Unit = Unit.Ton,      name = "Radioactives" },
+				new TradeGood() { baseprice = 0x28, gradient = -0x05, basequant = 0xE2, maskbyte = 0x1F, Unit = Unit.Ton,      name = "Slaves      " },
+				new TradeGood() { baseprice = 0x53, gradient = -0x05, basequant = 0xFB, maskbyte = 0x0F, Unit = Unit.Ton,      name = "Liquor/Wines" },
+				new TradeGood() { baseprice = 0xC4, gradient = +0x08, basequant = 0x36, maskbyte = 0x03, Unit = Unit.Ton,      name = "Luxuries    " },
+				new TradeGood() { baseprice = 0xEB, gradient = +0x1D, basequant = 0x08, maskbyte = 0x78, Unit = Unit.Ton,      name = "Narcotics   " },
+				new TradeGood() { baseprice = 0x9A, gradient = +0x0E, basequant = 0x38, maskbyte = 0x03, Unit = Unit.Ton,      name = "Computers   " },
+				new TradeGood() { baseprice = 0x75, gradient = +0x06, basequant = 0x28, maskbyte = 0x07, Unit = Unit.Ton,      name = "Machinery   " },
+				new TradeGood() { baseprice = 0x4E, gradient = +0x01, basequant = 0x11, maskbyte = 0x1F, Unit = Unit.Ton,      name = "Alloys      " },
+				new TradeGood() { baseprice = 0x7C, gradient = +0x0d, basequant = 0x1D, maskbyte = 0x07, Unit = Unit.Ton,      name = "Firearms    " },
+				new TradeGood() { baseprice = 0xB0, gradient = -0x09, basequant = 0xDC, maskbyte = 0x3F, Unit = Unit.Ton,      name = "Furs        " },
+				new TradeGood() { baseprice = 0x20, gradient = -0x01, basequant = 0x35, maskbyte = 0x03, Unit = Unit.Ton,      name = "Minerals    " },
+				new TradeGood() { baseprice = 0x61, gradient = -0x01, basequant = 0x42, maskbyte = 0x07, Unit = Unit.Kilogram, name = "Gold        " },
+				new TradeGood() { baseprice = 0xAB, gradient = -0x02, basequant = 0x37, maskbyte = 0x1F, Unit = Unit.Kilogram, name = "Platinum    " },
+				new TradeGood() { baseprice = 0x2D, gradient = -0x01, basequant = 0xFA, maskbyte = 0x0F, Unit = Unit.Gram,     name = "Gem-Strones " }
+			};
 		};
 
 		#endregion
@@ -434,12 +417,12 @@ namespace TextElite
 			int a = int.Parse(s),
 				t = 0;
 
-			for (int i = 0; i <= lasttrade; ++i)
+			foreach (TradeGood good in TradeGood.AllGoods.Where(good => good.Unit.AccumulateOnShipHold))
 			{
-				// XXX we want: commodities[i].AccumulateOnShipHold
-				if (commodities[i].Unit.AccumulateOnShipHold)
-					t += (int)shipshold[i];
+				int index = Array.IndexOf(TradeGood.AllGoods, good);
+				t += shipshold[index];
 			}
+
 			if (t > a)
 			{
 				Console.WriteLine("Hold too full");
@@ -562,11 +545,12 @@ namespace TextElite
 		{
 			for (int i = 0; i <= lasttrade; i++)
 			{
+				TradeGood good = TradeGood.AllGoods[i];
 				Console.Write("\n");
-				Console.Write(commodities[i].name);
+				Console.Write(good.name);
 				Console.Write("   {0:0.1}", ((float)(m.price[i]) / 10));
 				Console.Write("   {0}", m.quantity[i]);
-				Console.Write(commodities[i].Unit.Symbol);
+				Console.Write(good.Unit.Symbol);
 				Console.Write("   {0}", shipshold[i]);
 			}
 		}
@@ -604,7 +588,7 @@ namespace TextElite
 			a = int.Parse(parts[1]);
 			if (a == 0) { a = 1; }
 
-			i = (int)stringmatch(parts[0], tradnames);
+			i = (int)stringmatch(parts[0], TradeGood.tradnames);
 			if (i == 0)
 			{
 				Console.WriteLine("\nUnknown trade good");
@@ -617,10 +601,10 @@ namespace TextElite
 			else
 			{
 				Console.Write("\nSelling {0}", t);
-				Console.Write(commodities[i].Unit.Symbol);
+				Console.Write(TradeGood.AllGoods[i].Unit.Symbol);
 				Console.Write(" of ");
 			}
-			Console.WriteLine(tradnames[i]);
+			Console.WriteLine(TradeGood.tradnames[i]);
 		}
 
 		static void dobuy(string s)
@@ -631,7 +615,7 @@ namespace TextElite
 			a = int.Parse(parts[1]);
 			if (a == 0) a = 1;
 
-			i = (int)stringmatch(parts[0], tradnames);
+			i = (int)stringmatch(parts[0], TradeGood.tradnames);
 			if (i == 0)
 			{
 				Console.WriteLine("\nUnknown trade good");
@@ -643,10 +627,10 @@ namespace TextElite
 			else
 			{
 				Console.Write("\nBuying {0}", t);
-				Console.Write(commodities[i].Unit.Symbol);
+				Console.Write(TradeGood.AllGoods[i].Unit.Symbol);
 				Console.Write(" of ");
 			}
-			Console.WriteLine(tradnames[i]);
+			Console.WriteLine(TradeGood.tradnames[i]);
 		}
 
 		// Try to buy ammount a  of good i  Return ammount bought Cannot buy more than is availble, can afford, or will fit in hold
@@ -660,14 +644,14 @@ namespace TextElite
 			else
 			{
 				t = Math.Min(localmarket.quantity[i], a);
-				if (commodities[i].Unit.AccumulateOnShipHold) { t = Math.Min(holdspace, t); }
+				if (TradeGood.AllGoods[i].Unit.AccumulateOnShipHold) { t = Math.Min(holdspace, t); }
 				t = Math.Min(t, (int)Math.Floor((double)cash / (localmarket.price[i])));
 			}
 
 			shipshold[i] += t;
 			localmarket.quantity[i] -= t;
 			cash -= t * (localmarket.price[i]);
-			if (commodities[i].Unit.AccumulateOnShipHold) { holdspace -= t; }
+			if (TradeGood.AllGoods[i].Unit.AccumulateOnShipHold) { holdspace -= t; }
 			return t;
 		}
 
@@ -676,7 +660,7 @@ namespace TextElite
 			int t = Math.Min(shipshold[i], a);
 			shipshold[i] -= t;
 			localmarket.quantity[i] += t;
-			if (commodities[i].Unit.AccumulateOnShipHold) { holdspace += t; }
+			if (TradeGood.AllGoods[i].Unit.AccumulateOnShipHold) { holdspace += t; }
 			cash += t * localmarket.price[i];
 			return t;
 		}
@@ -816,5 +800,21 @@ namespace TextElite
 		}
 
 		#endregion
+	}
+
+	class Unit
+	{
+		public Unit(string symbol, bool accumulateOnShipHold)
+		{
+			Symbol = symbol;
+			AccumulateOnShipHold = accumulateOnShipHold;
+		}
+
+		public string Symbol { get; private set; }
+		public bool AccumulateOnShipHold { get; private set; }
+
+		public static Unit Ton = new Unit("t", true);
+		public static Unit Kilogram = new Unit("kg", false);
+		public static Unit Gram = new Unit("g", false);
 	}
 }
