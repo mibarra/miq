@@ -38,6 +38,7 @@
     <Content Include="Books\Harris, Sam.Lying.txt" />
     <Content Include="Books\Read List.txt" />
     <Content Include="Books\Tucker-Ladd, Clayton.Psychological Self-Help\Index.txt" />
+    <Content Include="Ideas\AutoBob.txt" />
     <Content Include="Ideas\VS for creating eBooks.txt" />
     <Content Include="MIT OCW\Course List.txt" />
   </ItemGroup>
