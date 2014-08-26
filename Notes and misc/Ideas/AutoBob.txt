@@ -1,0 +1,87 @@
+﻿Canvas   *1024,768* 43ppi
+	create
+	indexer[x,y]Pixel Color set & get
+	write
+	<<BitmapSource>>
+
+Drop of Paint
+	location of canvas
+	square of 3x3 pixels centered at location
+	center of drop has high alpha; otuter pixels lower alpha
+		center alpha between 0.4 and 0.6
+		edges 0.05 to 0.07
+		corners 0.01 to 0.03
+
+PAINTING ACTION
+	PE dragged on a line (deposites drops of paint at each pixel along the line)
+		stroke is a set of paint drops through the line segment
+	stabbed on the canvas (desposites drop of paint)
+	Final color to put on canvas depends on:
+		color of paint on PE
+		original color on canvas and
+		alpah value assigned to the pixel
+	alpha blending
+		b = as + (1-a)d
+		b final color
+		s color of paint on the PE
+		d color on the canvas
+		a transparency of PE; 0 transparent, 1 opaque
+	Each time a drop is deposited PE's amount decreases
+		by a random value between 0.09 and 0.11
+
+Painting Entities
+	amount of paint  0-100
+	color of paint	rgb; 0-255; or 'undefined' for dry with no paint 
+	dry brush is used to blend colors on canvas
+	amount = 0; dry brush
+	States:
+		(start) wet with loaded paint; amount > 0
+			switches to drying from laoded paint when amount reaches 0
+		drying from laoded paint; amount just became 0
+			blending switches from we blending to dry blending by 0.01 for each
+			drop of paint. switched to dry with canvas paint when blending reaches
+			dry blending.
+		dry with canvas paint; amount = 0, but picked paint from canvas
+			adquired color of fix pixel on canvas it is dragged over.
+			used to belnd colors in the canvas
+		(Start) dry with no paint; amount = 0; hasn't touched the canvas
+			picks color a swtches to dry with canvas paint first time it touches the canvas.
+	Blending Equation
+		n = bc + (1-b)o
+		n = paint color on PE
+		o = original PE color before blending
+		c = color on canvas
+		b = blending control value between 0 and 1
+			0.001 to .03 for wet blending (0.03 for low paint aoumtns 0.001 for high paint amounts)
+			0.2 to 0.95 for dry blending (0.95 if low pressure, 0.2 if high pressure)
+	blending amount is randomly ajudted by the bush for each PE, by percentage -3 to 3
+	3D effect
+		color adjustment = p * (a-80) / 20
+		p; random persentage between -10 and 10
+		a; amount of paint in PE
+
+Brush
+	PEs: { PE, position relatve to brush center}
+
+	loading of paint; (color, amount) load each PE with random adjustment of -5 to 5%
+
+	Line Stroke
+		From
+			point
+			rotation
+			pressure
+		To
+			point
+			rotation
+			pressure
+		brush rotation & pressure defined for each point
+		ressure between 1 to 100
+		find point on the line at regular intervals bwtween start and end
+
+	Stab
+		point
+		rotation
+		pressure
+		offset 0-5
+		direction (angle 0 is top; 90 is right)
+
