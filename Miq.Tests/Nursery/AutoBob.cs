@@ -119,6 +119,11 @@ namespace Miq.Tests.Nursery
 				return canvasPixelColor;
 			}
 
+			public System.Drawing.Color GetColor(System.Drawing.Point position)
+			{
+				return GetColor(Index(position));
+			}
+
 			public void Save(string filename)
 			{
 				var format = System.Drawing.Imaging.PixelFormat.Format24bppRgb;
@@ -159,7 +164,6 @@ namespace Miq.Tests.Nursery
 				return System.Drawing.Color.FromArgb(Pixels[pixelIndex + 2], Pixels[pixelIndex + 1], Pixels[pixelIndex]);
 			}
 
-
 			int Index(System.Drawing.Point position)
 			{
 				return Index(position.X, position.Y);
@@ -189,13 +193,210 @@ namespace Miq.Tests.Nursery
 			int LineStride;
 		}
 
+		class PaintingEntity
+		{
+			public PaintingEntity(Canvas canvas, double blendingAdjustment)
+			{
+				Canvas = canvas;
+				// Check blending is between -0.03 and  0.03
+				BlendingAdjustment = blendingAdjustment;
+				Rng = new Random();
+			}
+
+			public Canvas Canvas { get; private set; }
+			public double PaintAmount
+			{
+				get { return paintAmount; }
+				private set { paintAmount = Math.Max(0, Math.Min(100, value)); }
+			}
+			public System.Drawing.Color PaintColor
+			{
+				get
+				{
+					return paintColor;
+/*					double maxAdjustment = (Rng.NextDouble() - 0.5) * 20;
+					double adjustmentFor3dEffect = 1 + (maxAdjustment * (PaintAmount - 80) / 20);
+					return System.Drawing.Color.FromArgb(
+						(int)Math.Round(paintColor.R * adjustmentFor3dEffect),
+						(int)Math.Round(paintColor.G * adjustmentFor3dEffect),
+						(int)Math.Round(paintColor.B * adjustmentFor3dEffect));*/
+				}
+				private set
+				{
+					paintColor = value;
+				}
+			}
+			public PaintingEntityState State { get; private set; }
+
+			public void Clean()
+			{
+				PaintAmount = 0;
+				State = PaintingEntityState.DryWithNoPaint;
+			}
+
+			public void Load(System.Drawing.Color paintColor, int paintAmount)
+			{
+				PaintAmount = paintAmount;
+				PaintColor = paintColor;
+				State = PaintingEntityState.WetLoaded;
+			}
+
+			public void Line(System.Drawing.Point a, System.Drawing.Point b)
+			{
+				// Bresenham's Line Algorithm From wikipedia's page.
+				int dx = Math.Abs(b.X - a.X);
+				int dy = Math.Abs(b.Y - a.Y);
+				int sx = a.X < b.X ? 1 : -1;
+				int sy = a.Y < b.Y ? 1 : -1;
+				int err = dx - dy;
+
+				var p = new System.Drawing.Point(a.X, a.Y);
+				for (; ; )
+				{
+					DragOverCanvas(p);
+					if (p == b)
+					{
+						return;
+					}
+		
+					int e2 = 2 * err;
+					
+					if (e2 > -dy)
+					{
+						err -= dy;
+						p.X += sx;
+					}
+
+					if (e2 < dx)
+					{
+						err += dx;
+						p.Y += sy;
+					}
+				}
+			}
+
+			public void Stab(System.Drawing.Point position)
+			{
+				DragOverCanvas(position);
+			}
+
+			void DragOverCanvas(System.Drawing.Point position)
+			{
+				PaintingEntityState nextState;
+				switch (State)
+				{
+					case PaintingEntityState.WetLoaded:
+						nextState = WetDragOverCanvas(position);
+						break;
+					case PaintingEntityState.DryWithPaint:
+						nextState = DryDagOverCanvas(position);
+						break;
+					case PaintingEntityState.DryWithNoPaint:
+						nextState = PickCanvasColor(position);
+						break;
+					default:
+						throw new InvalidOperationException("PE is in an invalid state");
+				}
+				State = nextState;
+			}
+
+			private PaintingEntityState PickCanvasColor(System.Drawing.Point position)
+			{
+				PaintColor = Canvas.GetColor(position);
+				return PaintingEntityState.DryWithPaint;
+			}
+
+			private PaintingEntityState DryDagOverCanvas(System.Drawing.Point position)
+			{
+				DropPaint(position);
+				return PaintingEntityState.DryWithPaint;
+			}
+
+			void DropPaint(System.Drawing.Point position)
+			{
+				var drop = new PaintDrop(position, PaintColor);
+				System.Drawing.Color colorOnCanvas = Canvas.Blend(drop);
+				double blendingControl = BlendingControl;
+				PaintColor = BlendColors(paintColor, colorOnCanvas, blendingControl);
+			}
+
+			System.Drawing.Color BlendColors(System.Drawing.Color paintColor, System.Drawing.Color colorOnCanvas, double blendingControl)
+			{
+				System.Drawing.Color newColor = System.Drawing.Color.FromArgb(
+					(int)Math.Round(blendingControl * colorOnCanvas.R + (1 - blendingControl) * paintColor.R),
+					(int)Math.Round(blendingControl * colorOnCanvas.G + (1 - blendingControl) * paintColor.G),
+					(int)Math.Round(blendingControl * colorOnCanvas.B + (1 - blendingControl) * paintColor.B)
+				);
+				return newColor;
+			}
+
+			double BlendingControl
+			{
+				get
+				{
+					double blendingControl;
+					if (State == PaintingEntityState.WetLoaded)
+					{
+						blendingControl = 0.001 + Rng.NextDouble() * 0.029 * (1 - (PaintAmount / 100));
+					}
+					else
+					{
+						// XXX need pressure stuff 
+						blendingControl = 0.2 + Rng.NextDouble() * 0.75; // times pressure adjustment 1 low pressure; 0 high pressure
+					}
+					return blendingControl + BlendingAdjustment;
+				}
+			}
+
+			PaintingEntityState WetDragOverCanvas(System.Drawing.Point position)
+			{
+				DropPaint(position);
+				PaintAmount -= PaintDecreaseAmount;
+				PaintingEntityState nextState = PaintAmount == 0
+													? PaintingEntityState.DryWithPaint
+													: PaintingEntityState.WetLoaded;
+				return nextState;
+			}
+
+			private double PaintDecreaseAmount
+			{
+				get
+				{
+					return 0.09 + Rng.NextDouble() * 0.02;
+				}
+			}
+
+			System.Drawing.Color paintColor;
+			private double paintAmount;
+			private Random Rng;
+			private double BlendingAdjustment;
+		}
+
+		enum PaintingEntityState
+		{
+			WetLoaded,
+			DryWithPaint,
+			DryWithNoPaint
+		}
+
 		[TestMethod]
 		[TestCategory("AutoBob")]
 		public void PaintADropInACanvas()
 		{
 			var canvas = new Canvas(new Size(1024, 768), System.Drawing.Color.White);
-			var drop = new PaintDrop(new System.Drawing.Point(56, 128), System.Drawing.Color.FromArgb(6, 6, 98));
-			var canvasPixelColor = canvas.Blend(drop);
+			var pe = new PaintingEntity(canvas, 0.0);
+			pe.Load(System.Drawing.Color.Black, 100);
+			pe.Stab(new System.Drawing.Point(56, 128));
+			pe.Stab(new System.Drawing.Point(60, 128));
+			pe.Stab(new System.Drawing.Point(64, 128));
+			pe.Stab(new System.Drawing.Point(56, 132));
+			pe.Stab(new System.Drawing.Point(60, 132));
+			pe.Stab(new System.Drawing.Point(64, 132));
+			pe.Stab(new System.Drawing.Point(56, 136));
+			pe.Stab(new System.Drawing.Point(60, 136));
+			pe.Stab(new System.Drawing.Point(64, 136));
+			pe.Line(new System.Drawing.Point(70, 200), new System.Drawing.Point(800, 300));
+			pe.Line(new System.Drawing.Point(70, 202), new System.Drawing.Point(800, 302));
 			canvas.Save("E:/Stuff/test.png");
 		}
 	}
