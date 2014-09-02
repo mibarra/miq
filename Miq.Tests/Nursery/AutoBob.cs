@@ -154,6 +154,10 @@ namespace Miq.Tests.Nursery
 			System.Drawing.Color Blend(System.Drawing.Point position, System.Drawing.Color color, double alpha)
 			{
 				int index = Index(position);
+				if (index < 0 || index >= Pixels.Length)
+				{
+					return System.Drawing.Color.White;
+				}
 				System.Drawing.Color origColor = GetColor(index);
 				Pixels[index] = BlendComponent(color.B, Pixels[index], alpha);
 				Pixels[index + 1] = BlendComponent(color.G, Pixels[index + 1], alpha);
@@ -391,6 +395,7 @@ namespace Miq.Tests.Nursery
 			//			points grid <= 
 			//			randomize grid
 			//			pick points inside ellipse
+
 			IEnumerable<System.Drawing.Point> GridPoints(int majorAxis, int minorAxis)
 			{
 				for (int x = 0; x < minorAxis; x+=3)
@@ -398,24 +403,24 @@ namespace Miq.Tests.Nursery
 					for (int y = 0; y < majorAxis; y+=2)
 					{
 						var point = new System.Drawing.Point(x, y);
-						// move randomly
-						// check inside ellipse
 						yield return point;
 					}
 				}
 			}
 
-			IEnumerable<System.Drawing.Point> PaintingElementsPoints(int majorAxis, int minorAxis)
+			public IEnumerable<System.Drawing.Point> PaintingElementsPoints(int majorAxis, int minorAxis)
 			{
-				return GridPoints(majorAxis, minorAxis).Select(RandomizePoint).Where(point => PointInsideEllipse(point, majorAxis, minorAxis));
+				return GridPoints(majorAxis, minorAxis).Select(RandomizePoint)
+													   .Where(point => PointInsideEllipse(point, majorAxis, minorAxis));
 			}
 
 			private bool PointInsideEllipse(System.Drawing.Point point, int majorAxis, int minorAxis)
 			{
-				// h = minorAxis / 2;
-				// k = majorAxis / 2;
-				// ((x-h)^2 / h^2) + ((y-k)^2 / k^2) <= 1
-				throw new NotImplementedException();
+				double h = minorAxis / 2;
+				double k = majorAxis / 2;
+				double det = (Math.Pow(point.X - h, 2) / Math.Pow(h, 2)) +
+							 (Math.Pow(point.Y - k, 2) / Math.Pow(k, 2));
+				return det <= 1;
 			}
 
 			private System.Drawing.Point RandomizePoint(System.Drawing.Point point)
@@ -425,7 +430,7 @@ namespace Miq.Tests.Nursery
 				return point;
 			}
 
-			Random Rng;
+			Random Rng = new Random();
 
 			//	can send line stroke to a brush
 			//		can use rotation
@@ -494,7 +499,7 @@ namespace Miq.Tests.Nursery
 			var canvas = new Canvas(new Size(1024, 768), System.Drawing.Color.White);
 			var pe = new PaintingEntity(canvas, 0.0);
 			pe.Load(System.Drawing.Color.Black, 100);
-			pe.Stab(new System.Drawing.Point(56, 128));
+/*			pe.Stab(new System.Drawing.Point(56, 128));
 			pe.Stab(new System.Drawing.Point(60, 128));
 			pe.Stab(new System.Drawing.Point(64, 128));
 			pe.Stab(new System.Drawing.Point(56, 132));
@@ -504,7 +509,15 @@ namespace Miq.Tests.Nursery
 			pe.Stab(new System.Drawing.Point(60, 136));
 			pe.Stab(new System.Drawing.Point(64, 136));
 			pe.Line(new System.Drawing.Point(70, 200), new System.Drawing.Point(800, 300));
-			pe.Line(new System.Drawing.Point(70, 202), new System.Drawing.Point(800, 302));
+			pe.Line(new System.Drawing.Point(70, 202), new System.Drawing.Point(800, 302));*/
+
+			var b = new Brush();
+			var x = b.PaintingElementsPoints((int)Math.Round(2 * 43.6), (int)Math.Round(0.6 * 43.6)).ToArray();
+			foreach (var point in x)
+			{
+				pe.Stab(point);
+			}
+
 			canvas.Save("E:/Stuff/test.png");
 		}
 	}
