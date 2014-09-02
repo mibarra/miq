@@ -4,6 +4,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Miq.Tests.Nursery
 {
@@ -379,9 +381,115 @@ namespace Miq.Tests.Nursery
 			DryWithNoPaint
 		}
 
+		class Brush
+		{
+			// Attack plan:
+			// Draw with a brush
+			//	can load paint in a brush
+			//		can create PEs in a brush
+			//			calc grid bounding rectangle <= rectangle with size of ellipse
+			//			points grid <= 
+			//			randomize grid
+			//			pick points inside ellipse
+			IEnumerable<System.Drawing.Point> GridPoints(int majorAxis, int minorAxis)
+			{
+				for (int x = 0; x < minorAxis; x+=3)
+				{
+					for (int y = 0; y < majorAxis; y+=2)
+					{
+						var point = new System.Drawing.Point(x, y);
+						// move randomly
+						// check inside ellipse
+						yield return point;
+					}
+				}
+			}
+
+			IEnumerable<System.Drawing.Point> PaintingElementsPoints(int majorAxis, int minorAxis)
+			{
+				return GridPoints(majorAxis, minorAxis).Select(RandomizePoint).Where(point => PointInsideEllipse(point, majorAxis, minorAxis));
+			}
+
+			private bool PointInsideEllipse(System.Drawing.Point point, int majorAxis, int minorAxis)
+			{
+				// h = minorAxis / 2;
+				// k = majorAxis / 2;
+				// ((x-h)^2 / h^2) + ((y-k)^2 / k^2) <= 1
+				throw new NotImplementedException();
+			}
+
+			private System.Drawing.Point RandomizePoint(System.Drawing.Point point)
+			{
+				point.X += Rng.Next(-1, 1);
+				point.Y += Rng.Next(-1, 1);
+				return point;
+			}
+
+			Random Rng;
+
+			//	can send line stroke to a brush
+			//		can use rotation
+			//		can use pressure
+
+			// Manages PEs
+
+			// Create brush by:
+			// placing PEs together to form shape of bursh footprint
+
+			// To reset PEs;  Select locations each time brush is about to stroke
+			// Each brush type as its own way to place PEs
+			//	1&2 inch brush
+			//			have an elipse;		major axis		minor axis
+			//				1 inch bursh	1 inch			0.55 inches
+			//				2 inch brush	2 inch			0.6 inches
+			//		make a grid 2x1 pixels appart (x and y direction)
+			//		put a point at each grid location
+			//		randonmize each point by +-1 pixel both locations
+			//		test if point is inside the ellipse, if so, create a PE there.
+			//		[should keep about 300 PE for the 2inch brush]
+			//		[and around 135 PEs for the 1inch brush]
+			//	round brush
+			//		same as 1&2 inch brush but bounding ellipse is 1x0.8 inches.
+			//	fan brush
+			//	fan brush corner
+			//	filbert Brush
+			//	liner brush (One PE), start with this one?
+			//	palette knife
+			//		No paint blending when has paint, but enable is doesnt have paint
+			//		No 3d effect
+			//		Disable painting flag
+			//		Scratch mode
+			//
+
+			// Brush Orientation
+			//	angle in degrees
+			//	top and clockwise 0, 90, 180, 270
+			//	chaging the angle should rotate the PEs relative position
+			//	PEs don't store position, Brush should keep track of the relative position of PE
+			//  Brush uses that to calculate final positions when doing line or stab in PE.
+
+			// Paint Loading
+			//	LoadPaint(color, amount) => foreach PE; PE.loadpaint(color, amount +- random 5%)
+
+			// Line stroke( args)
+			//		args:
+			//			start & end location
+			//			rotation + pressure at each location
+			//	sample points on the line between start & end at regular intervals
+			//	calc location for each PE at each sample point
+			//	send line commands to PEs for each pair of sample points
+
+			// Stab stroke({point, rotation, pressure}, offset, direction)
+			//		offset	0-5
+			//		direction (angle)
+			//	calculate {offset}points  {fixed distance?}
+			//	draw a line with each PE for each pair of points
+			//
+		}
+
 		[TestMethod]
 		[TestCategory("AutoBob")]
-		public void PaintADropInACanvas()
+		public void PaintALine()
 		{
 			var canvas = new Canvas(new Size(1024, 768), System.Drawing.Color.White);
 			var pe = new PaintingEntity(canvas, 0.0);
