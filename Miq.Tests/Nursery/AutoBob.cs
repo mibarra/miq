@@ -220,12 +220,12 @@ namespace Miq.Tests.Nursery
 				get
 				{
 					return paintColor;
-/*					double maxAdjustment = (Rng.NextDouble() - 0.5) * 20;
-					double adjustmentFor3dEffect = 1 + (maxAdjustment * (PaintAmount - 80) / 20);
-					return System.Drawing.Color.FromArgb(
-						(int)Math.Round(paintColor.R * adjustmentFor3dEffect),
-						(int)Math.Round(paintColor.G * adjustmentFor3dEffect),
-						(int)Math.Round(paintColor.B * adjustmentFor3dEffect));*/
+					/*					double maxAdjustment = (Rng.NextDouble() - 0.5) * 20;
+										double adjustmentFor3dEffect = 1 + (maxAdjustment * (PaintAmount - 80) / 20);
+										return System.Drawing.Color.FromArgb(
+											(int)Math.Round(paintColor.R * adjustmentFor3dEffect),
+											(int)Math.Round(paintColor.G * adjustmentFor3dEffect),
+											(int)Math.Round(paintColor.B * adjustmentFor3dEffect));*/
 				}
 				private set
 				{
@@ -264,9 +264,9 @@ namespace Miq.Tests.Nursery
 					{
 						return;
 					}
-		
+
 					int e2 = 2 * err;
-					
+
 					if (e2 > -dy)
 					{
 						err -= dy;
@@ -385,22 +385,37 @@ namespace Miq.Tests.Nursery
 			DryWithNoPaint
 		}
 
+		class PositionedPaintingEntity
+		{
+			public PaintingEntity PaintingEntity;
+			public System.Drawing.Point Position;
+		}
+
 		class Brush
 		{
 			// Attack plan:
-			// Draw with a brush
 			//	can load paint in a brush
-			//		can create PEs in a brush
-			//			calc grid bounding rectangle <= rectangle with size of ellipse
-			//			points grid <= 
-			//			randomize grid
-			//			pick points inside ellipse
-
-			IEnumerable<System.Drawing.Point> GridPoints(int majorAxis, int minorAxis)
+			
+			public void GeneratePaintingEntities(System.Drawing.Size brushSize, Canvas canvas, double blendingAdjustment)
 			{
-				for (int x = 0; x < minorAxis; x+=3)
+				PaintingEntities = new List<PositionedPaintingEntity>();
+				foreach (System.Drawing.Point point in PaintingElementsPoints(brushSize.Height, brushSize.Width))
 				{
-					for (int y = 0; y < majorAxis; y+=2)
+					PaintingEntities.Add(new PositionedPaintingEntity()
+					{
+						PaintingEntity = new PaintingEntity(canvas, blendingAdjustment),
+						Position = new System.Drawing.Point(point.X - brushSize.Width / 2, point.Y - brushSize.Height / 2)
+					});
+				}
+			}
+
+			public List<PositionedPaintingEntity> PaintingEntities;
+
+			private IEnumerable<System.Drawing.Point> GridPoints(int majorAxis, int minorAxis)
+			{
+				for (int x = 0; x < minorAxis; x += 3)
+				{
+					for (int y = 0; y < majorAxis; y += 2)
 					{
 						var point = new System.Drawing.Point(x, y);
 						yield return point;
@@ -408,7 +423,7 @@ namespace Miq.Tests.Nursery
 				}
 			}
 
-			public IEnumerable<System.Drawing.Point> PaintingElementsPoints(int majorAxis, int minorAxis)
+			private IEnumerable<System.Drawing.Point> PaintingElementsPoints(int majorAxis, int minorAxis)
 			{
 				return GridPoints(majorAxis, minorAxis).Select(RandomizePoint)
 													   .Where(point => PointInsideEllipse(point, majorAxis, minorAxis));
@@ -432,6 +447,7 @@ namespace Miq.Tests.Nursery
 
 			Random Rng = new Random();
 
+			// NEXT Attack plan:
 			//	can send line stroke to a brush
 			//		can use rotation
 			//		can use pressure
@@ -498,24 +514,20 @@ namespace Miq.Tests.Nursery
 		{
 			var canvas = new Canvas(new Size(1024, 768), System.Drawing.Color.White);
 			var pe = new PaintingEntity(canvas, 0.0);
-			pe.Load(System.Drawing.Color.Black, 100);
-/*			pe.Stab(new System.Drawing.Point(56, 128));
-			pe.Stab(new System.Drawing.Point(60, 128));
-			pe.Stab(new System.Drawing.Point(64, 128));
-			pe.Stab(new System.Drawing.Point(56, 132));
-			pe.Stab(new System.Drawing.Point(60, 132));
-			pe.Stab(new System.Drawing.Point(64, 132));
-			pe.Stab(new System.Drawing.Point(56, 136));
-			pe.Stab(new System.Drawing.Point(60, 136));
-			pe.Stab(new System.Drawing.Point(64, 136));
-			pe.Line(new System.Drawing.Point(70, 200), new System.Drawing.Point(800, 300));
-			pe.Line(new System.Drawing.Point(70, 202), new System.Drawing.Point(800, 302));*/
+			pe.Load(System.Drawing.Color.Red, 100);
+			pe.Stab(new System.Drawing.Point(512, 384));
 
+			var brushPosition = new System.Drawing.Point(512, 384);
 			var b = new Brush();
-			var x = b.PaintingElementsPoints((int)Math.Round(2 * 43.6), (int)Math.Round(0.6 * 43.6)).ToArray();
-			foreach (var point in x)
+			var brushSize = new System.Drawing.Size(
+				(int)Math.Round(0.6 * 43.6),
+				(int)Math.Round(2 * 43.6));
+			b.GeneratePaintingEntities(brushSize, canvas, 0.0);
+			foreach (PositionedPaintingEntity element in b.PaintingEntities)
 			{
-				pe.Stab(point);
+				element.PaintingEntity.Load(System.Drawing.Color.Black, 100);
+				var finalPosition = new System.Drawing.Point(brushPosition.X + element.Position.X, brushPosition.Y + element.Position.Y);
+				element.PaintingEntity.Stab(finalPosition);
 			}
 
 			canvas.Save("E:/Stuff/test.png");
