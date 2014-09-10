@@ -242,8 +242,9 @@ namespace Miq.Tests.Nursery
 
 			public void Load(System.Drawing.Color paintColor, int paintAmount)
 			{
-				PaintAmount = paintAmount;
+				PaintAmount = Math.Max(0, Math.Min(100, paintAmount));
 				PaintColor = paintColor;
+				// ZZZ what if PaintAmount is 0?
 				State = PaintingEntityState.WetLoaded;
 			}
 
@@ -393,18 +394,26 @@ namespace Miq.Tests.Nursery
 
 		class Brush
 		{
-			// Attack plan:
-			//	can load paint in a brush
-			
-			public void GeneratePaintingEntities(System.Drawing.Size brushSize, Canvas canvas, double blendingAdjustment)
+			private Canvas Canvas;
+			private System.Drawing.Size Size;
+			private System.Drawing.Color PaintColor;
+			private double PaintAmount;
+
+			public Brush(Canvas canvas, System.Drawing.Size size)
+			{
+				Canvas = canvas;
+				Size = size;
+			}
+
+			public void GeneratePaintingEntities(double blendingAdjustment)
 			{
 				PaintingEntities = new List<PositionedPaintingEntity>();
-				foreach (System.Drawing.Point point in PaintingElementsPoints(brushSize.Height, brushSize.Width))
+				foreach (System.Drawing.Point point in PaintingElementsPoints(Size.Height, Size.Width))
 				{
 					PaintingEntities.Add(new PositionedPaintingEntity()
 					{
-						PaintingEntity = new PaintingEntity(canvas, blendingAdjustment),
-						Position = new System.Drawing.Point(point.X - brushSize.Width / 2, point.Y - brushSize.Height / 2)
+						PaintingEntity = new PaintingEntity(Canvas, blendingAdjustment),
+						Position = new System.Drawing.Point(point.X - Size.Width / 2, point.Y - Size.Height / 2)
 					});
 				}
 			}
@@ -447,50 +456,15 @@ namespace Miq.Tests.Nursery
 
 			Random Rng = new Random();
 
-			// NEXT Attack plan:
-			//	can send line stroke to a brush
+			//  Attack plan:
+			//	can send line stroke to a brush (is doing lines but the blending is ugly, PEs location is ugly)
 			//		can use rotation
 			//		can use pressure
-
-			// Manages PEs
-
-			// Create brush by:
-			// placing PEs together to form shape of bursh footprint
-
-			// To reset PEs;  Select locations each time brush is about to stroke
-			// Each brush type as its own way to place PEs
-			//	1&2 inch brush
-			//			have an elipse;		major axis		minor axis
-			//				1 inch bursh	1 inch			0.55 inches
-			//				2 inch brush	2 inch			0.6 inches
-			//		make a grid 2x1 pixels appart (x and y direction)
-			//		put a point at each grid location
-			//		randonmize each point by +-1 pixel both locations
-			//		test if point is inside the ellipse, if so, create a PE there.
-			//		[should keep about 300 PE for the 2inch brush]
-			//		[and around 135 PEs for the 1inch brush]
-			//	round brush
-			//		same as 1&2 inch brush but bounding ellipse is 1x0.8 inches.
-			//	fan brush
-			//	fan brush corner
-			//	filbert Brush
-			//	liner brush (One PE), start with this one?
-			//	palette knife
-			//		No paint blending when has paint, but enable is doesnt have paint
-			//		No 3d effect
-			//		Disable painting flag
-			//		Scratch mode
-			//
-
-			// Brush Orientation
-			//	angle in degrees
-			//	top and clockwise 0, 90, 180, 270
-			//	chaging the angle should rotate the PEs relative position
-			//	PEs don't store position, Brush should keep track of the relative position of PE
-			//  Brush uses that to calculate final positions when doing line or stab in PE.
-
-			// Paint Loading
-			//	LoadPaint(color, amount) => foreach PE; PE.loadpaint(color, amount +- random 5%)
+			//	Don't load any paint in a brush, see if it traces the line as expected
+			//  refactor: make the brush ctor to take the canvas and the brush size, remove those
+			//					args from GeneratePaintingEntities.
+			//  refactor: think on how to best handle the bleedingAdjustment
+			//  can send a stab stroke to the brush
 
 			// Line stroke( args)
 			//		args:
@@ -506,6 +480,34 @@ namespace Miq.Tests.Nursery
 			//	calculate {offset}points  {fixed distance?}
 			//	draw a line with each PE for each pair of points
 			//
+
+			public void Load(System.Drawing.Color paintColor, int paintAmount)
+			{
+				PaintColor = paintColor;
+				PaintAmount = paintAmount;
+			}
+
+			private void LoadPaintingEntities()
+			{
+				foreach (var element in PaintingEntities)
+				{
+					double randomAdjust = 1 + Rng.NextDouble() * 0.1 - 0.05;
+					int amountToLoad = (int)Math.Round(PaintAmount * randomAdjust);
+					element.PaintingEntity.Load(PaintColor, amountToLoad);
+				}
+			}
+
+			public void Line(System.Drawing.Point a, System.Drawing.Point b)
+			{
+				GeneratePaintingEntities(0.0);
+				LoadPaintingEntities();
+				foreach (var element in PaintingEntities)
+				{
+					var startPosition = new System.Drawing.Point(a.X + element.Position.X, a.Y + element.Position.Y);
+					var endPosition = new System.Drawing.Point(b.X + element.Position.X, b.Y + element.Position.Y);
+					element.PaintingEntity.Line(startPosition, endPosition);
+				}
+			}
 		}
 
 		[TestMethod]
@@ -513,22 +515,41 @@ namespace Miq.Tests.Nursery
 		public void PaintALine()
 		{
 			var canvas = new Canvas(new Size(1024, 768), System.Drawing.Color.White);
-			var pe = new PaintingEntity(canvas, 0.0);
-			pe.Load(System.Drawing.Color.Red, 100);
-			pe.Stab(new System.Drawing.Point(512, 384));
-
-			var brushPosition = new System.Drawing.Point(512, 384);
-			var b = new Brush();
 			var brushSize = new System.Drawing.Size(
 				(int)Math.Round(0.6 * 43.6),
 				(int)Math.Round(2 * 43.6));
-			b.GeneratePaintingEntities(brushSize, canvas, 0.0);
-			foreach (PositionedPaintingEntity element in b.PaintingEntities)
-			{
-				element.PaintingEntity.Load(System.Drawing.Color.Black, 100);
-				var finalPosition = new System.Drawing.Point(brushPosition.X + element.Position.X, brushPosition.Y + element.Position.Y);
-				element.PaintingEntity.Stab(finalPosition);
-			}
+			var brush = new Brush(canvas, brushSize);
+			brush.Load(System.Drawing.Color.ForestGreen, 75);
+			brush.Line(
+				new System.Drawing.Point(50, 380),
+				new System.Drawing.Point(900, 380));
+
+			brush.Load(System.Drawing.Color.OrangeRed, 75);
+			brush.Line(
+				new System.Drawing.Point(50, 180),
+				new System.Drawing.Point(900, 180));
+
+			brush.Load(System.Drawing.Color.BlueViolet, 75);
+			brush.Line(
+				new System.Drawing.Point(50, 580),
+				new System.Drawing.Point(900, 580));
+
+			brush.Load(System.Drawing.Color.LightGoldenrodYellow, 10);
+			brush.Line(
+				new System.Drawing.Point(150, 50),
+				new System.Drawing.Point(150, 700));
+
+			brush.Line(
+				new System.Drawing.Point(350, 50),
+				new System.Drawing.Point(350, 700));
+
+			brush.Line(
+				new System.Drawing.Point(550, 50),
+				new System.Drawing.Point(550, 700));
+
+			brush.Line(
+				new System.Drawing.Point(750, 50),
+				new System.Drawing.Point(750, 700));
 
 			canvas.Save("E:/Stuff/test.png");
 		}
