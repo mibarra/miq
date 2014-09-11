@@ -114,8 +114,6 @@ namespace TextElite
 		{
 			var market = new PricedStock();
 
-			market.quantity = new int[lasttrade + 1];
-			market.price = new int[lasttrade + 1];
 			for (int i = 0; i <= lasttrade; i++)
 			{
 				TradeGood good = TradeGood.AllGoods[i];
@@ -126,11 +124,11 @@ namespace TextElite
 				q = q & 0xFF;
 				if ((q & 0x80) != 0) { q = 0; };                       /* Clip to positive 8-bit */
 
-				market.quantity[i] = (UInt16)(q & 0x3F); /* Mask to 6 bits */
+				market.Quantity[good] = (UInt16)(q & 0x3F); /* Mask to 6 bits */
 
 				q = (good.baseprice) + changing + product;
 				q = q & 0xFF;
-				market.price[i] = (UInt16)(q * 4);
+				market.Price[good] = (UInt16)(q * 4);
 			}
 			return market;
 		}
@@ -404,8 +402,7 @@ namespace TextElite
 
 			foreach (TradeGood good in TradeGood.AllGoods.Where(good => good.Unit.AccumulateOnShipHold))
 			{
-				int index = Array.IndexOf(TradeGood.AllGoods, good);
-				t += shipshold[index];
+				t += shipshold.Quantity[good];
 			}
 
 			if (t > a)
@@ -526,17 +523,17 @@ namespace TextElite
 			return 0;
 		}
 
-		static void displaymarket(markettype m)
+		static void displaymarket(PricedStock m)
 		{
 			for (int i = 0; i <= lasttrade; i++)
 			{
 				TradeGood good = TradeGood.AllGoods[i];
 				Console.Write("\n");
 				Console.Write(good.name);
-				Console.Write("   {0:0.1}", ((float)(m.price[i]) / 10));
-				Console.Write("   {0}", m.quantity[i]);
+				Console.Write("   {0:0.1}", ((float)(m.Price[good]) / 10));
+				Console.Write("   {0}", m.Quantity[good]);
 				Console.Write(good.Unit.Symbol);
-				Console.Write("   {0}", shipshold[i]);
+				Console.Write("   {0}", shipshold.Quantity[good]);
 			}
 		}
 
@@ -621,6 +618,8 @@ namespace TextElite
 		// Try to buy ammount a  of good i  Return ammount bought Cannot buy more than is availble, can afford, or will fit in hold
 		static int gamebuy(int i, int a)
 		{
+			// ZZZ pass in good instead of index to this method
+			var good = TradeGood.AllGoods[i];
 			int t;
 			if (cash < 0)
 			{
@@ -628,25 +627,26 @@ namespace TextElite
 			}
 			else
 			{
-				t = Math.Min(localmarket.quantity[i], a);
+				t = Math.Min(localmarket.Quantity[good], a);
 				if (TradeGood.AllGoods[i].Unit.AccumulateOnShipHold) { t = Math.Min(holdspace, t); }
-				t = Math.Min(t, (int)Math.Floor((double)cash / (localmarket.price[i])));
+				t = Math.Min(t, (int)Math.Floor((double)cash / (localmarket.Price[good])));
 			}
 
-			shipshold[i] += t;
-			localmarket.quantity[i] -= t;
-			cash -= t * (localmarket.price[i]);
+			shipshold.Quantity[good] += t;
+			localmarket.Quantity[good] -= t;
+			cash -= t * (localmarket.Price[good]);
 			if (TradeGood.AllGoods[i].Unit.AccumulateOnShipHold) { holdspace -= t; }
 			return t;
 		}
 
 		static int gamesell(int i, int a)
 		{
-			int t = Math.Min(shipshold[i], a);
-			shipshold[i] -= t;
-			localmarket.quantity[i] += t;
+			var good = TradeGood.AllGoods[i];
+			int t = Math.Min(shipshold.Quantity[good], a);
+			shipshold.Quantity[good] -= t;
+			localmarket.Quantity[good] += t;
 			if (TradeGood.AllGoods[i].Unit.AccumulateOnShipHold) { holdspace += t; }
-			cash += t * localmarket.price[i];
+			cash += t * localmarket.Price[good];
 			return t;
 		}
 		#endregion
