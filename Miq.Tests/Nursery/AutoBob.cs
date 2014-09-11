@@ -457,7 +457,6 @@ namespace Miq.Tests.Nursery
 			Random Rng = new Random();
 
 			//  Attack plan:
-			//	can send line stroke to a brush (is doing lines but the blending is ugly, PEs location is ugly)
 			//		can use rotation
 			//		can use pressure
 			//	Don't load any paint in a brush, see if it traces the line as expected

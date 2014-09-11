@@ -80,31 +80,57 @@ namespace TextElite
 
 		#region Trading
 
-		class QuantityCollection
+		class GoodIndexedIntegerCollection
 		{
+			public GoodIndexedIntegerCollection(int defaultValue)
+			{
+				Values = new Dictionary<TradeGood, int>();
+				DefaultValue = defaultValue;
+			}
+
 			public int this[TradeGood good]
 			{
-				get { return 0; }
-				set { /* set the specified index to value here */ }
+				get { return Values.ContainsKey(good)? Values[good]: DefaultValue; }
+				set { Values[good] = value; }
+			}
+
+			private Dictionary<TradeGood, int> Values;
+			private int DefaultValue;
+		}
+
+		class QuantityCollection : GoodIndexedIntegerCollection
+		{
+			public QuantityCollection(): base(0)
+			{
+
 			}
 		}
 
-		class PriceList
+		class PriceList : GoodIndexedIntegerCollection
 		{
-			public int this[TradeGood index]
+			public PriceList():base(int.MaxValue)
 			{
-				get { return 0; }
-				set { /* set the specified index to value here */ }
+
 			}
 		}
 
 		class Stock
 		{
+			public Stock()
+			{
+				Quantity = new QuantityCollection();
+			}
+
 			public QuantityCollection Quantity { get; private set; }
 		}
 
 		class PricedStock : Stock
 		{
+			public PricedStock() : base()
+			{
+				Price = new PriceList();
+			}
+
 			public PriceList Price { get; private set; }
 		}
 
@@ -841,12 +867,12 @@ namespace TextElite
 
 		public override bool Equals(object obj)
 		{
-			// same type &*
-			return this.GetHashCode() == obj.GetHashCode();
+			return (obj as TradeGood) != null && this.GetHashCode() == obj.GetHashCode();
 		}
+
 		public override int GetHashCode()
 		{
-			return base.GetHashCode();
+			return name.GetHashCode();
 		}
 	};
 }
