@@ -37,6 +37,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Performance1.psess = Performance1.psess
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfPlayground", "WpfPlayground\WpfPlayground.csproj", "{AE8EC9AF-C720-436C-8B98-B61AF22ECE14}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -155,12 +157,19 @@ Global
 		{65BDA3B1-3B81-4AEA-BFA2-DF5A41EBDD3B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{65BDA3B1-3B81-4AEA-BFA2-DF5A41EBDD3B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{65BDA3B1-3B81-4AEA-BFA2-DF5A41EBDD3B}.Release|x86.ActiveCfg = Release|Any CPU
+		{AE8EC9AF-C720-436C-8B98-B61AF22ECE14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE8EC9AF-C720-436C-8B98-B61AF22ECE14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE8EC9AF-C720-436C-8B98-B61AF22ECE14}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AE8EC9AF-C720-436C-8B98-B61AF22ECE14}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AE8EC9AF-C720-436C-8B98-B61AF22ECE14}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AE8EC9AF-C720-436C-8B98-B61AF22ECE14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE8EC9AF-C720-436C-8B98-B61AF22ECE14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE8EC9AF-C720-436C-8B98-B61AF22ECE14}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{AE8EC9AF-C720-436C-8B98-B61AF22ECE14}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{AE8EC9AF-C720-436C-8B98-B61AF22ECE14}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = DailyProgrammerChallenge133\DailyProgrammerChallenges.csproj

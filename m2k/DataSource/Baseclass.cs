@@ -116,7 +116,7 @@ namespace miq.m2k
         }
 
 
-        internal static MsdnArticle FromSyndicationItem(SyndicationItem item, string OutputFolder)
+        internal static Article FromSyndicationItem(SyndicationItem item, string OutputFolder)
         {
             try
             {
@@ -130,7 +130,7 @@ namespace miq.m2k
                     category = categoryItem.Name;
                 }
 
-                var article = new MsdnArticle(OutputFolder, link, title, category);
+                var article = new Article(OutputFolder, link, title, category);
                 return article;
             }
             catch (Exception)
@@ -140,7 +140,7 @@ namespace miq.m2k
 
         }
 
-        public override string GetArticleContent(string rawHtml)
+        public string GetArticleContent(string rawHtml)
         {
             var doc = new HtmlDocument();
             doc.LoadHtml(rawHtml);

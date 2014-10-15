@@ -1,7 +1,5 @@
 ﻿using System;
-using MSDNMagzine;
 using System.Diagnostics;
-using TechnetMagazine;
 using System.Windows.Forms;
 
 namespace miq.m2k
