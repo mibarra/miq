@@ -139,6 +139,7 @@
     <Compile Include="Imgur\nurseryTests.cs" />
     <Compile Include="Nursery\IntSpanTests.cs" />
     <Compile Include="Nursery\AntSimulatorTests.cs" />
+    <Compile Include="Nursery\ObjectStoreTests.cs" />
     <Compile Include="Nursery\WmiUsbTests.cs" />
     <Compile Include="Nursery\UnsignedInteger.cs" />
     <Compile Include="Nursery\ZombieDiceTests.cs" />

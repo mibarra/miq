@@ -97,6 +97,12 @@ namespace Miq.Tests.Nursery
 
 		struct AntData
 		{
+			public AntData(bool hasFood, Location location)
+			{
+				HasFood = hasFood;
+				Location = location;
+			}
+
 			public bool HasFood;
 			public Location Location;
 		}

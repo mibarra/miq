@@ -26,7 +26,7 @@ namespace Miq.Game.ZombieDice
                     case 3: return Color.Green;
                 }
 
-                throw new Exception("Invalid number of brain faces in a dice.");
+                throw new NotSupportedException("Invalid number of brain faces in a dice.");
             }
         }
 

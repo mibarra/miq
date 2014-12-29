@@ -1,0 +1,51 @@
+﻿<Window x:Class="WpfPlayground.DocumentsTests"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="DocumentsTests" Height="600" Width="800">
+    <FlowDocumentReader>
+        <FlowDocument>
+            <Paragraph Margin="0" FontSize="28" FontFamily="Impact" TextAlignment="Center" Foreground="Green">Lorem ipsum dolor sit amet</Paragraph>
+            <Paragraph Margin="0 10 0 0" Foreground="DarkGray" TextAlignment="Center" FontStretch="ExtraExpanded" FontFamily="Verdana" FontSize="10">Monday, November 17, 2014</Paragraph>
+            <Paragraph>
+                <Floater Margin="0" Padding="0 0 5 0" HorizontalAlignment="Left">
+                    <Paragraph Margin="0" FontWeight="Bold" FontSize="48">F</Paragraph>
+                </Floater> usce eleifend fringilla nulla a faucibus. Etiam eget nibh
+            congue, hendrerit risus ac, facilisis leo. Cras finibus leo odio,
+            faucibus dapibus lacus condimentum nec. Etiam sed eleifend quam.
+            Proin tincidunt nunc nunc, a lacinia mauris consectetur id. Fusce
+            euismod, lacus leo euismod orci, a facilisis ante diam euismod
+            lacus. Suspendisse potenti. Etiam ut sapien ultrices, pharetra nisi
+            nec, cursus est. Proin dictum sit amet mi eu feugiat. Sed quis urna
+            ligula. Nullam sit amet pharetra dolor, interdum condimentum nunc.
+            Etiam scelerisque finibus pretium. Quisque porttitor ex orci.
+            Curabitur pulvinar lorem non ultricies tempus.
+            </Paragraph>
+
+            <Paragraph>Nulla mattis lorem aliquet, lobortis neque ac, dignissim
+            eros. Nullam in sollicitudin nulla. Fusce vitae blandit diam. Donec
+            tempus dapibus convallis. In pulvinar nulla metus, vel ornare risus
+            dapibus vitae. Nam ut sagittis lacus. Fusce maximus, metus quis
+            lacinia elementum, lorem augue malesuada odio, a lobortis turpis ex
+            nec nunc. Morbi bibendum porttitor elit, sed lacinia nulla sagittis
+            a. Vestibulum commodo urna vel dui scelerisque scelerisque. Donec
+            sit amet velit in turpis congue efficitur. Maecenas ultricies arcu
+            eu enim tincidunt, non luctus velit iaculis. Vestibulum at tincidunt
+            ante.</Paragraph>
+
+            <Paragraph>Proin pretium nibh vitae orci laoreet, nec malesuada urna
+            congue. Nam id metus massa. In suscipit, tortor vel lacinia
+            gravida, magna dolor tincidunt risus, sit amet sagittis est ipsum
+            fermentum diam. Vivamus rhoncus quam ornare risus tempor, eu
+            consequat felis scelerisque. Nullam vehicula nisi eget enim iaculis
+            accumsan. Donec viverra sapien urna, eget molestie mauris aliquam
+            id. Sed egestas ante sed elit tempor vehicula. Nunc venenatis leo
+            ut ultricies tempor.</Paragraph>
+
+            <Paragraph>Maecenas sit amet augue quis nulla scelerisque malesuada.
+            Donec varius ullamcorper egestas. Sed cursus nibh sollicitudin
+            ullamcorper sit amet non arcu. Proin leo leo, commodo quis dolor
+            at, tincidunt posuere ante. Vivamus volutpat accumsan malesuada.
+            Nulla facilisi.</Paragraph>
+        </FlowDocument>
+    </FlowDocumentReader>
+</Window>

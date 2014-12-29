@@ -1,0 +1,52 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<form class="form-horizontal" role="form">
+    <div class="form-group">
+        <label for="koVersion" class="col-sm-2 control-label">Knockout Version</label>
+        <div class="col-sm-1">
+            <input type="text" class="form-control" data-bind="value: ko.version" id="koVersion" disabled="disabled">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="browserProduct" class="col-sm-2 control-label">Browser Product</label>
+        <div class="col-sm-1">
+            <input type="text" class="form-control" data-bind="value: navigator.product" id="browserProduct" disabled="disabled">
+        </div>
+    </div>
+    <div data-bind="foreach: flights">
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-1">
+                <div><strong><span data-bind="text: flight"></span></strong></div>
+                <div><small><span data-bind="text: date"></span></small></div>
+            </div>
+            <div class="col-sm-1">
+                <div><span data-bind="text: departure.airport"></span></div>
+                <div><strong><small><span data-bind="text: departure.time"></span></small></strong></div>
+            </div>
+            <div class="col-sm-1">
+                <div><span data-bind="text: arrival.airport"></span></div>
+                <div><small><span data-bind="text: arrival.time"></span></small></></div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section scripts
+{
+    <script type="text/javascript" src="~/Scripts/knockout-3.2.0.js"></script>
+    <script type="text/javascript">
+
+        var flights = [
+            { flight: "UA1085", date: "Sun, Oct 19", departure: { airport: "MEX", time: "6:15 AM" }, arrival: { airport: "IAH", time: "8:50 AM" } },
+            { flight: "UA1650", date: "Sun, Oct 19", departure: { airport: "IAH", time: "11:25 AM" }, arrival: { airport: "DEN", time: "12:51 PM" } },
+            { flight: "UA6237", date: "Sun, Oct 19", departure: { airport: "DEN", time: "2:38 PM" }, arrival: { airport: "FSD", time: "5:07 PM" } },
+            { flight: "UA5560", date: "Sun, Oct 26", departure: { airport: "FSD", time: "12:59 PM" }, arrival: { airport: "DEN", time: "1:41 PM" } },
+            { flight: "UA1561", date: "Sun, Oct 26", departure: { airport: "DEN", time: "4:00 PM" }, arrival: { airport: "IAH", time: "7:17 PM" } },
+            { flight: "UA437", date: "Sun, Oct 26", departure: { airport: "IAH", time: "9:08 PM" }, arrival: { airport: "MEX", time: "10:29 PM" } },
+        ]
+
+        ko.applyBindings(window);
+    </script>
+}
