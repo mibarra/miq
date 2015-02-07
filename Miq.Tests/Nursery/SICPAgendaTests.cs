@@ -7,368 +7,370 @@ using System.Diagnostics;
 
 namespace Miq.Tests.Nursery
 {
-    public class Agenda
-    {
-        public uint CurrentTime
-        { get; private set; }
+	public class Agenda
+	{
+		public uint CurrentTime
+		{ get; private set; }
 
-        public void AfterDelay(uint delay, Action action)
-        {
-            Add(delay + CurrentTime, action);
-        }
+		public void AfterDelay(uint delay, Action action)
+		{
+			Add(delay + CurrentTime, action);
+		}
 
-        public void Propagate()
-        {
-            while (!Empty)
-            {
-                var action = Dequeue();
-                action();
-            }
-        }
+		public void Propagate()
+		{
+			while (!Empty)
+			{
+				var action = Dequeue();
+				action();
+			}
+		}
 
-        public Agenda()
-        {
-            Segments = new SortedList<uint, Queue<Action>>();
-            CurrentTime = 0;
-        }
+		public Agenda()
+		{
+			Segments = new SortedList<uint, Queue<Action>>();
+			CurrentTime = 0;
+		}
 
-        private SortedList<uint, Queue<Action>> Segments;
+		private SortedList<uint, Queue<Action>> Segments;
 
-        private bool Empty
-        {
-            get
-            {
-                return Segments.Count == 0;
-            }
-        }
+		private bool Empty
+		{
+			get
+			{
+				return Segments.Count == 0;
+			}
+		}
 
-        private Action Dequeue()
-        {
-            var queue = Segments.First().Value;
-            var action = queue.Dequeue();
-            CurrentTime = Segments.First().Key;
-            if (queue.Count == 0)
-            {
-                Segments.RemoveAt(0);
-            }
-            return action;
-        }
+		private Action Dequeue()
+		{
+			var queue = Segments.First().Value;
+			var action = queue.Dequeue();
+			CurrentTime = Segments.First().Key;
+			if (queue.Count == 0)
+			{
+				Segments.RemoveAt(0);
+			}
+			return action;
+		}
 
-        private void Add(uint time, Action action)
-        {
-            if (!Segments.ContainsKey(time))
-            {
-                Segments.Add(time, new Queue<Action>());
-            }
-            Segments[time].Enqueue(action);
-        }
-    }
+		private void Add(uint time, Action action)
+		{
+			if (!Segments.ContainsKey(time))
+			{
+				Segments.Add(time, new Queue<Action>());
+			}
+			Segments[time].Enqueue(action);
+		}
+	}
 
-    public class Wire
-    {
-        public bool Signal
-        {
-            get
-            {
-                return _signal;
-            }
-            set
-            {
-                if (value != _signal)
-                {
-                    _signal = value;
-                    if (_actions != null)
-                        _actions();
-                }
-            }
-        }
+	public class Wire
+	{
+		public bool Signal
+		{
+			get
+			{
+				return _signal;
+			}
+			set
+			{
+				if (value != _signal)
+				{
+					_signal = value;
+					if (_actions != null)
+						_actions(this, new EventArgs());
+				}
+			}
+		}
 
-        public event Action Actions
-        {
-            add
-            {
-                lock (objectLock)
-                {
-                    _actions += value;
-                    value();
-                }
-            }
+		public delegate	void WireAction(object sender, EventArgs e);
 
-            remove
-            {
-                lock (objectLock)
-                {
-                    _actions -= value;
-                }
-            }
-        }
+		public event WireAction Actions
+		{
+			add
+			{
+				lock (objectLock)
+				{
+					_actions += value;
+					value(this, new EventArgs());
+				}
+			}
 
-        object objectLock = new Object();
-        private event Action _actions;
-        private bool _signal;
-    }
+			remove
+			{
+				lock (objectLock)
+				{
+					_actions -= value;
+				}
+			}
+		}
 
-    public class HalfAdder
-    {
-        public Wire d;
-        public Wire e;
+		object objectLock = new Object();
+		private event WireAction _actions;
+		private bool _signal;
+	}
 
-        public HalfAdder(Wire a, Wire b, Wire s, Wire c, Agenda agenda)
-        {
-            d = new Wire();
-            e = new Wire();
+	public class HalfAdder
+	{
+		public Wire d;
+		public Wire e;
 
-            new OrGate(a, b, d, agenda);
-            new AndGate(a, b, c, agenda);
-            new Inverter(c, e, agenda);
-            new AndGate(d, e, s, agenda);
-        }
-    }
+		public HalfAdder(Wire a, Wire b, Wire s, Wire c, Agenda agenda)
+		{
+			d = new Wire();
+			e = new Wire();
 
-    public class HalfAdderExample
-    {
-        public Wire input1;
-        public Wire input2;
-        public Wire sum;
-        public Wire carry;
+			new OrGate(a, b, d, agenda);
+			new AndGate(a, b, c, agenda);
+			new Inverter(c, e, agenda);
+			new AndGate(d, e, s, agenda);
+		}
+	}
 
-        public HalfAdderExample(Agenda agenda)
-        {
-            input1 = new Wire();
-            input2 = new Wire();
-            sum = new Wire();
-            carry = new Wire();
+	public class HalfAdderExample
+	{
+		public Wire input1;
+		public Wire input2;
+		public Wire sum;
+		public Wire carry;
 
-            new Probe("sum", sum, agenda);
-            new Probe("carry", carry, agenda);
+		public HalfAdderExample(Agenda agenda)
+		{
+			input1 = new Wire();
+			input2 = new Wire();
+			sum = new Wire();
+			carry = new Wire();
 
-            new HalfAdder(input1, input2, sum, carry, agenda);
-        }
-    }
+			new Probe("sum", sum, agenda);
+			new Probe("carry", carry, agenda);
 
-    public abstract class BinaryGate
-    {
-        public abstract bool Value { get; }
-        public abstract uint Delay { get; }
+			new HalfAdder(input1, input2, sum, carry, agenda);
+		}
+	}
 
-        public BinaryGate(Wire a1, Wire a2, Wire output, Agenda agenda)
-        {
-            A1 = a1;
-            A2 = a2;
-            Output = output;
-            Agenda = agenda;
+	public abstract class BinaryGate
+	{
+		public abstract bool Value { get; }
+		public abstract uint Delay { get; }
 
-            a1.Actions += ActionProcedure;
-            a2.Actions += ActionProcedure;
-        }
+		public BinaryGate(Wire a1, Wire a2, Wire output, Agenda agenda)
+		{
+			A1 = a1;
+			A2 = a2;
+			Output = output;
+			Agenda = agenda;
 
-        public void ActionProcedure()
-        {
-            var value = Value;
-            Agenda.AfterDelay(Delay, () => Output.Signal = value);
-        }
+			a1.Actions += ActionProcedure;
+			a2.Actions += ActionProcedure;
+		}
 
-        protected Wire A1;
-        protected Wire A2;
-        protected Wire Output;
-        protected Agenda Agenda;
-    }
+		public void ActionProcedure(object sender, EventArgs e)
+		{
+			var value = Value;
+			Agenda.AfterDelay(Delay, () => Output.Signal = value);
+		}
 
-    public class AndGate : BinaryGate
-    {
-        public AndGate(Wire a1, Wire a2, Wire output, Agenda agenda)
-            : base(a1, a2, output, agenda)
-        { }
+		protected Wire A1;
+		protected Wire A2;
+		protected Wire Output;
+		protected Agenda Agenda;
+	}
 
-        public override uint Delay
-        {
-            get { return 3; }
-        }
+	public class AndGate : BinaryGate
+	{
+		public AndGate(Wire a1, Wire a2, Wire output, Agenda agenda)
+			: base(a1, a2, output, agenda)
+		{ }
 
-        public override bool Value
-        {
-            get { return A1.Signal && A2.Signal; }
-        }
-    }
+		public override uint Delay
+		{
+			get { return 3; }
+		}
 
-    public class OrGate : BinaryGate
-    {
-        public OrGate(Wire a1, Wire a2, Wire output, Agenda agenda)
-            : base(a1, a2, output, agenda)
-        { }
+		public override bool Value
+		{
+			get { return A1.Signal && A2.Signal; }
+		}
+	}
 
-        public override uint Delay
-        {
-            get { return 5; }
-        }
+	public class OrGate : BinaryGate
+	{
+		public OrGate(Wire a1, Wire a2, Wire output, Agenda agenda)
+			: base(a1, a2, output, agenda)
+		{ }
 
-        public override bool Value
-        {
-            get { return A1.Signal || A2.Signal; }
-        }
-    }
+		public override uint Delay
+		{
+			get { return 5; }
+		}
 
-    public class Inverter
-    {
-        public Inverter(Wire input, Wire output, Agenda agenda)
-        {
-            Input = input;
-            Output = output;
-            Agenda = agenda;
+		public override bool Value
+		{
+			get { return A1.Signal || A2.Signal; }
+		}
+	}
 
-            Input.Actions += ActionProcedure;
-        }
+	public class Inverter
+	{
+		public Inverter(Wire input, Wire output, Agenda agenda)
+		{
+			Input = input;
+			Output = output;
+			Agenda = agenda;
 
-        public void ActionProcedure()
-        {
-            var value = Value;
-            Agenda.AfterDelay(Delay, () => Output.Signal = value);
-        }
+			Input.Actions += ActionProcedure;
+		}
 
-        public uint Delay { get { return 2; } }
-        public bool Value { get { return !Input.Signal; } }
+		public void ActionProcedure(object sender, EventArgs e)
+		{
+			var value = Value;
+			Agenda.AfterDelay(Delay, () => Output.Signal = value);
+		}
 
-        protected Wire Input;
-        protected Wire Output;
-        protected Agenda Agenda;
-    }
+		public uint Delay { get { return 2; } }
+		public bool Value { get { return !Input.Signal; } }
 
-    public class Probe
-    {
-        public Probe(string name, Wire wire, Agenda agenda)
-        {
-            Name = name;
-            Wire = wire;
-            Agenda = agenda;
+		protected Wire Input;
+		protected Wire Output;
+		protected Agenda Agenda;
+	}
 
-            wire.Actions += ActionProcedure;
-        }
+	public class Probe
+	{
+		public Probe(string name, Wire wire, Agenda agenda)
+		{
+			Name = name;
+			Wire = wire;
+			Agenda = agenda;
 
-        public void ActionProcedure()
-        {
-            Debug.WriteLine("{0} {1} new value = {2}", Name, Agenda.CurrentTime, Wire.Signal);
-        }
+			wire.Actions += ActionProcedure;
+		}
 
-        string Name;
-        Wire Wire;
-        Agenda Agenda;
-    }
+		public void ActionProcedure(object sender, EventArgs e)
+		{
+			Debug.WriteLine("{0} {1} new value = {2}", Name, Agenda.CurrentTime, Wire.Signal);
+		}
 
-    [TestClass]
-    public class SICPAgendaTests
-    {
-        Agenda Agenda;
+		string Name;
+		Wire Wire;
+		Agenda Agenda;
+	}
 
-        [TestInitialize]
-        [Ignore]
-        public void Initialize()
-        {
-            Agenda = new Agenda();
-        }
+	[TestClass]
+	public class SICPAgendaTests
+	{
+		Agenda Agenda;
 
-        [TestMethod]
-        [Ignore]
-        public void TestMethod1()
-        {
-            Agenda.AfterDelay(10, () =>
-                Debug.WriteLine("time is: {0}", Agenda.CurrentTime));
-            Agenda.Propagate();
-        }
+		[TestInitialize]
+		[Ignore]
+		public void Initialize()
+		{
+			Agenda = new Agenda();
+		}
 
-        [TestMethod]
-        [Ignore]
-        public void TestMethod2()
-        {
-            var circuit = new HalfAdderExample(Agenda);
-            circuit.input1.Signal = true;
-            Agenda.Propagate();
+		[TestMethod]
+		[Ignore]
+		public void TestMethod1()
+		{
+			Agenda.AfterDelay(10, () =>
+				Debug.WriteLine("time is: {0}", Agenda.CurrentTime));
+			Agenda.Propagate();
+		}
 
-            circuit.input2.Signal = true;
-            Agenda.Propagate();
-        }
+		[TestMethod]
+		[Ignore]
+		public void TestMethod2()
+		{
+			var circuit = new HalfAdderExample(Agenda);
+			circuit.input1.Signal = true;
+			Agenda.Propagate();
 
-        [TestMethod]
-        [Ignore]
-        public void MyTestMethod()
-        {
-            for (int i = 0; i < Cashiers.Length; i++)
-            {
-                Cashiers[i] = new Cashier(Agenda);
-            }
-            Agenda.AfterDelay(ClientInterArrivalTime(), ClientArrives);
-            Agenda.Propagate();
-        }
+			circuit.input2.Signal = true;
+			Agenda.Propagate();
+		}
 
-        static Random r = new Random();
+		[TestMethod]
+		[Ignore]
+		public void MyTestMethod()
+		{
+			for (int i = 0; i < Cashiers.Length; i++)
+			{
+				Cashiers[i] = new Cashier(Agenda);
+			}
+			Agenda.AfterDelay(ClientInterArrivalTime(), ClientArrives);
+			Agenda.Propagate();
+		}
 
-        private static uint ClientInterArrivalTime()
-        {
-            return (uint)ExponentialDistribution(r.NextDouble(), 20.0);
-        }
+		static Random r = new Random();
 
-        private static uint ServiceTime()
-        {
-            return (uint)ExponentialDistribution(r.NextDouble(), 100.0);
-        }
+		private static uint ClientInterArrivalTime()
+		{
+			return (uint)ExponentialDistribution(r.NextDouble(), 20.0);
+		}
 
-        private static double ExponentialDistribution(double uniform, double rate)
-        {
-            double val = -rate * System.Math.Log(1d - uniform);
-            return val;
-        }
+		private static uint ServiceTime()
+		{
+			return (uint)ExponentialDistribution(r.NextDouble(), 100.0);
+		}
 
-        static class ClientQueue
-        {
-            public static int Length;
-        }
+		private static double ExponentialDistribution(double uniform, double rate)
+		{
+			double val = -rate * System.Math.Log(1d - uniform);
+			return val;
+		}
 
-        class Cashier
-        {
-            public Cashier(Agenda agenda)
-            {
-                Agenda = agenda;
-            }
-            public bool Busy;
+		static class ClientQueue
+		{
+			public static int Length;
+		}
 
-            internal void TakeClient()
-            {
-                if (ClientQueue.Length > 0)
-                {
-                    ClientQueue.Length--;
-                    Busy = true;
-                    Agenda.AfterDelay(ServiceTime(), FinishedWithClient);
-                }
-                else
-                {
-                    Busy = false;
-                }
-            }
+		class Cashier
+		{
+			public Cashier(Agenda agenda)
+			{
+				Agenda = agenda;
+			}
+			public bool Busy;
 
-            private void FinishedWithClient()
-            {
-                ClientLeaves();
-                TakeClient();
-            }
+			internal void TakeClient()
+			{
+				if (ClientQueue.Length > 0)
+				{
+					ClientQueue.Length--;
+					Busy = true;
+					Agenda.AfterDelay(ServiceTime(), FinishedWithClient);
+				}
+				else
+				{
+					Busy = false;
+				}
+			}
 
-            Agenda Agenda;
-        }
-        Cashier[] Cashiers = new Cashier[10];
-        
-        private void ClientArrives()
-        {
-            ClientQueue.Length++;
+			private void FinishedWithClient()
+			{
+				ClientLeaves();
+				TakeClient();
+			}
 
-            var idleCashier = Cashiers.FirstOrDefault(c => !c.Busy);
-            if (idleCashier != null)
-            {
-                idleCashier.TakeClient();
-            }
+			Agenda Agenda;
+		}
+		Cashier[] Cashiers = new Cashier[10];
+		
+		private void ClientArrives()
+		{
+			ClientQueue.Length++;
 
-            Agenda.AfterDelay(ClientInterArrivalTime(), ClientArrives);
-        }
+			var idleCashier = Cashiers.FirstOrDefault(c => !c.Busy);
+			if (idleCashier != null)
+			{
+				idleCashier.TakeClient();
+			}
 
-        private static void ClientLeaves()
-        {
-        }
-    }
+			Agenda.AfterDelay(ClientInterArrivalTime(), ClientArrives);
+		}
+
+		private static void ClientLeaves()
+		{
+		}
+	}
 }
