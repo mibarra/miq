@@ -21,7 +21,8 @@ namespace Miq.Games
 
     abstract class Simple2DGame : GameWindow
     {
-        internal Simple2DGame(int width, int height, string title) : base(width, height,  OpenTK.Graphics.GraphicsMode.Default, title)
+        internal Simple2DGame(int width, int height, string title)
+            : base(width, height, OpenTK.Graphics.GraphicsMode.Default, title)
         {
             VSync = VSyncMode.On;
         }
@@ -140,8 +141,9 @@ namespace Miq.Games
         Stopwatch stopwatch = new Stopwatch();
         CumulativeMovingAverage average = new CumulativeMovingAverage();
         private GameOfLife Board;
-        
-        public GameOfLifeInterface(int width, int height) : base(width, height, "Game of Life")
+
+        public GameOfLifeInterface(int width, int height)
+            : base(width, height, "Game of Life")
         {
             Board = new GameOfLife(Width, Height);
         }
@@ -149,7 +151,7 @@ namespace Miq.Games
         protected override void Init()
         {
             Board.Randomize();
-            
+
             GL.EnableClientState(ArrayCap.VertexArray);
             GL.DisableClientState(ArrayCap.TextureCoordArray);
 
@@ -164,7 +166,7 @@ namespace Miq.Games
             {
                 for (int j = 0; j <= Height; j++)
                 {
-                    Vertices[j * (Width+1) + i] = new Vector3(i * DotWidth, j * DotHeight, 0);
+                    Vertices[j * (Width + 1) + i] = new Vector3(i * DotWidth, j * DotHeight, 0);
                 }
             }
             GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Vertices.Length * Vector3.SizeInBytes), Vertices, BufferUsageHint.StaticDraw);
@@ -223,7 +225,7 @@ namespace Miq.Games
                         Indices.Add(index);
                         Indices.Add(index + 1);
                         Indices.Add(index + 1 + ((uint)Board.Width + 1));
-                        Indices.Add(index     + ((uint)Board.Width + 1));
+                        Indices.Add(index + ((uint)Board.Width + 1));
                     }
 
             GL.Color3(0, 0, 0);
@@ -262,7 +264,7 @@ namespace Miq.Games
                 {
                     bool alive = temp[x, y].state;
                     int neighboors = temp[x, y].neighbors;
-                    
+
                     if (alive)
                     {
                         if (neighboors != 2 && neighboors != 3)
@@ -273,9 +275,9 @@ namespace Miq.Games
                     else
                     {
                         if (neighboors == 3)
-	                    {
-                            SetCell(x, y);		 
-	                    }
+                        {
+                            SetCell(x, y);
+                        }
                     }
                 }
             }
@@ -291,7 +293,7 @@ namespace Miq.Games
         int WrapHeight(int y)
         {
             if (y < 0) return y + Height;
-            if (y >= Height)  return y - Height;
+            if (y >= Height) return y - Height;
             return y;
         }
 

@@ -294,7 +294,7 @@ namespace Miq.Tests.Nursery.MobiDeDRM
             Name.Read(reader);                                    //  0,32
             Unknown1 = GenericReader.ReadByteArray(28, reader);   // 32,28
             Ident.Read(reader);                                   // 60, 8
-            if(Ident.Value != "BOOKMOBI")
+            if (Ident.Value != "BOOKMOBI")
             {
                 return;
             }
@@ -407,16 +407,18 @@ namespace Miq.Tests.Nursery.MobiDeDRM
         {
             foreach (var path in Directory.EnumerateFiles(@"C:\Users\Miguel\Documents\My Kindle Content", "*.azw"))
             {
-                var file = new BinaryReader(File.OpenRead(path));
-                AzwFile doc = new AzwFile();
-                doc.Read(file);
-                if (doc.Ident.Value != "BOOKMOBI")
+                using (var file = new BinaryReader(File.OpenRead(path)))
                 {
-                    continue;
-                }
+                    AzwFile doc = new AzwFile();
+                    doc.Read(file);
+                    if (doc.Ident.Value != "BOOKMOBI")
+                    {
+                        continue;
+                    }
 
-                Debug.WriteLine("{0,20}\t{1,8}\t{2,8}",
-                    Path.GetFileName(path), doc.SectionHeaders[1].Offset - doc.SectionHeaders[0].Offset, doc.DocHeader.Length);
+                    Debug.WriteLine("{0,20}\t{1,8}\t{2,8}",
+                        Path.GetFileName(path), doc.SectionHeaders[1].Offset - doc.SectionHeaders[0].Offset, doc.DocHeader.Length);
+                }
             }
         }
     }

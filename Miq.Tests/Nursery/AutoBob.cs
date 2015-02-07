@@ -212,14 +212,14 @@ namespace Miq.Tests.Nursery
 			public Canvas Canvas { get; private set; }
 			public double PaintAmount
 			{
-				get { return paintAmount; }
-				private set { paintAmount = Math.Max(0, Math.Min(100, value)); }
+				get { return _PaintAmount; }
+				private set { _PaintAmount = Math.Max(0, Math.Min(100, value)); }
 			}
 			public System.Drawing.Color PaintColor
 			{
 				get
 				{
-					return paintColor;
+					return _PaintColor;
 					/*					double maxAdjustment = (Rng.NextDouble() - 0.5) * 20;
 										double adjustmentFor3dEffect = 1 + (maxAdjustment * (PaintAmount - 80) / 20);
 										return System.Drawing.Color.FromArgb(
@@ -229,7 +229,7 @@ namespace Miq.Tests.Nursery
 				}
 				private set
 				{
-					paintColor = value;
+					_PaintColor = value;
 				}
 			}
 			public PaintingEntityState State { get; private set; }
@@ -324,7 +324,7 @@ namespace Miq.Tests.Nursery
 				var drop = new PaintDrop(position, PaintColor);
 				System.Drawing.Color colorOnCanvas = Canvas.Blend(drop);
 				double blendingControl = BlendingControl;
-				PaintColor = BlendColors(paintColor, colorOnCanvas, blendingControl);
+				PaintColor = BlendColors(_PaintColor, colorOnCanvas, blendingControl);
 			}
 
 			System.Drawing.Color BlendColors(System.Drawing.Color paintColor, System.Drawing.Color colorOnCanvas, double blendingControl)
@@ -373,8 +373,8 @@ namespace Miq.Tests.Nursery
 				}
 			}
 
-			System.Drawing.Color paintColor;
-			private double paintAmount;
+			System.Drawing.Color _PaintColor;
+			private double _PaintAmount;
 			private Random Rng;
 			private double BlendingAdjustment;
 		}
