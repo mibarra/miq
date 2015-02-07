@@ -68,7 +68,7 @@ namespace Miq.ImgurBrowser
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(true);
+            GC.SuppressFinalize(this);
         }
 
         ~MainWindow()
