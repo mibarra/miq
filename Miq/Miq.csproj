@@ -69,6 +69,11 @@
     <Compile Include="Math\Number.cs" />
     <Compile Include="Math\RomanNumerals.cs" />
     <Compile Include="Math\Sieve.cs" />
+    <Compile Include="PlanetaryPositions\Coordinates.cs" />
+    <Compile Include="PlanetaryPositions\DayNumber.cs" />
+    <Compile Include="PlanetaryPositions\DegreesMath.cs" />
+    <Compile Include="PlanetaryPositions\EarthLocation.cs" />
+    <Compile Include="PlanetaryPositions\PlanetPosition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -140,9 +140,11 @@
     <Compile Include="Nursery\IntSpanTests.cs" />
     <Compile Include="Nursery\AntSimulatorTests.cs" />
     <Compile Include="Nursery\ObjectStoreTests.cs" />
+    <Compile Include="PlanetaryPositions\PlanetaryPositionsTests.cs" />
     <Compile Include="Nursery\WmiUsbTests.cs" />
     <Compile Include="Nursery\UnsignedInteger.cs" />
     <Compile Include="Nursery\ZombieDiceTests.cs" />
+    <Compile Include="PlanetaryPositions\DayNumberTests.cs" />
     <Compile Include="ProjectEuler\Problem 61 Cyclical figurate numbers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

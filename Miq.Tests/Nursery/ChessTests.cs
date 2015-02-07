@@ -10,11 +10,11 @@ namespace Miq.Tests.Nursery
     public class Square : IEquatable<Square>, IComparable<Square>
     {
         public readonly int Rank;
-        public readonly File File;
+        public readonly ChessFile File;
 
-        public Square(int rank, File file)
+        public Square(int rank, ChessFile file)
         {
-            if (rank == 0 && file == File.None)
+            if (rank == 0 && file == ChessFile.None)
             {
                 return;
             }
@@ -23,8 +23,8 @@ namespace Miq.Tests.Nursery
             {
                 throw new ArgumentException("rank should be between 1 and 8");
             }
-            if (file != File.A && file != File.B && file != File.C && file != File.D &&
-                file != File.E && file != File.F && file != File.G && file != File.H)
+            if (file != ChessFile.A && file != ChessFile.B && file != ChessFile.C && file != ChessFile.D &&
+                file != ChessFile.E && file != ChessFile.F && file != ChessFile.G && file != ChessFile.H)
             {
                 throw new ArgumentException("file shound be File.A thru File.H");
             }
@@ -37,7 +37,7 @@ namespace Miq.Tests.Nursery
         {
             get
             {
-                return new Square(Rank - 1, File.A);
+                return new Square(Rank - 1, ChessFile.A);
             }
         }
 
@@ -51,7 +51,7 @@ namespace Miq.Tests.Nursery
 
         internal static Square For(int i)
         {
-            return new Square(1 + i / 8, (File)(1 + i % 8));
+            return new Square(1 + i / 8, (ChessFile)(1 + i % 8));
             throw new NotImplementedException();
         }
 
@@ -61,71 +61,71 @@ namespace Miq.Tests.Nursery
         }
 
         #region All Squares
-        public readonly static Square None = new Square(0, File.None);
-        public readonly static Square A8 = new Square(8, File.A);
-        public readonly static Square B8 = new Square(8, File.B);
-        public readonly static Square C8 = new Square(8, File.C);
-        public readonly static Square D8 = new Square(8, File.D);
-        public readonly static Square E8 = new Square(8, File.E);
-        public readonly static Square F8 = new Square(8, File.F);
-        public readonly static Square G8 = new Square(8, File.G);
-        public readonly static Square H8 = new Square(8, File.H);
-        public readonly static Square A7 = new Square(7, File.A);
-        public readonly static Square B7 = new Square(7, File.B);
-        public readonly static Square C7 = new Square(7, File.C);
-        public readonly static Square D7 = new Square(7, File.D);
-        public readonly static Square E7 = new Square(7, File.E);
-        public readonly static Square F7 = new Square(7, File.F);
-        public readonly static Square G7 = new Square(7, File.G);
-        public readonly static Square H7 = new Square(7, File.H);
-        public readonly static Square A6 = new Square(6, File.A);
-        public readonly static Square B6 = new Square(6, File.B);
-        public readonly static Square C6 = new Square(6, File.C);
-        public readonly static Square D6 = new Square(6, File.D);
-        public readonly static Square E6 = new Square(6, File.E);
-        public readonly static Square F6 = new Square(6, File.F);
-        public readonly static Square G6 = new Square(6, File.G);
-        public readonly static Square H6 = new Square(6, File.H);
-        public readonly static Square A5 = new Square(5, File.A);
-        public readonly static Square B5 = new Square(5, File.B);
-        public readonly static Square C5 = new Square(5, File.C);
-        public readonly static Square D5 = new Square(5, File.D);
-        public readonly static Square E5 = new Square(5, File.E);
-        public readonly static Square F5 = new Square(5, File.F);
-        public readonly static Square G5 = new Square(5, File.G);
-        public readonly static Square H5 = new Square(5, File.H);
-        public readonly static Square A4 = new Square(4, File.A);
-        public readonly static Square B4 = new Square(4, File.B);
-        public readonly static Square C4 = new Square(4, File.C);
-        public readonly static Square D4 = new Square(4, File.D);
-        public readonly static Square E4 = new Square(4, File.E);
-        public readonly static Square F4 = new Square(4, File.F);
-        public readonly static Square G4 = new Square(4, File.G);
-        public readonly static Square H4 = new Square(4, File.H);
-        public readonly static Square A3 = new Square(3, File.A);
-        public readonly static Square B3 = new Square(3, File.B);
-        public readonly static Square C3 = new Square(3, File.C);
-        public readonly static Square D3 = new Square(3, File.D);
-        public readonly static Square E3 = new Square(3, File.E);
-        public readonly static Square F3 = new Square(3, File.F);
-        public readonly static Square G3 = new Square(3, File.G);
-        public readonly static Square H3 = new Square(3, File.H);
-        public readonly static Square A2 = new Square(2, File.A);
-        public readonly static Square B2 = new Square(2, File.B);
-        public readonly static Square C2 = new Square(2, File.C);
-        public readonly static Square D2 = new Square(2, File.D);
-        public readonly static Square E2 = new Square(2, File.E);
-        public readonly static Square F2 = new Square(2, File.F);
-        public readonly static Square G2 = new Square(2, File.G);
-        public readonly static Square H2 = new Square(2, File.H);
-        public readonly static Square A1 = new Square(1, File.A);
-        public readonly static Square B1 = new Square(1, File.B);
-        public readonly static Square C1 = new Square(1, File.C);
-        public readonly static Square D1 = new Square(1, File.D);
-        public readonly static Square E1 = new Square(1, File.E);
-        public readonly static Square F1 = new Square(1, File.F);
-        public readonly static Square G1 = new Square(1, File.G);
-        public readonly static Square H1 = new Square(1, File.H);
+        public readonly static Square None = new Square(0, ChessFile.None);
+        public readonly static Square A8 = new Square(8, ChessFile.A);
+        public readonly static Square B8 = new Square(8, ChessFile.B);
+        public readonly static Square C8 = new Square(8, ChessFile.C);
+        public readonly static Square D8 = new Square(8, ChessFile.D);
+        public readonly static Square E8 = new Square(8, ChessFile.E);
+        public readonly static Square F8 = new Square(8, ChessFile.F);
+        public readonly static Square G8 = new Square(8, ChessFile.G);
+        public readonly static Square H8 = new Square(8, ChessFile.H);
+        public readonly static Square A7 = new Square(7, ChessFile.A);
+        public readonly static Square B7 = new Square(7, ChessFile.B);
+        public readonly static Square C7 = new Square(7, ChessFile.C);
+        public readonly static Square D7 = new Square(7, ChessFile.D);
+        public readonly static Square E7 = new Square(7, ChessFile.E);
+        public readonly static Square F7 = new Square(7, ChessFile.F);
+        public readonly static Square G7 = new Square(7, ChessFile.G);
+        public readonly static Square H7 = new Square(7, ChessFile.H);
+        public readonly static Square A6 = new Square(6, ChessFile.A);
+        public readonly static Square B6 = new Square(6, ChessFile.B);
+        public readonly static Square C6 = new Square(6, ChessFile.C);
+        public readonly static Square D6 = new Square(6, ChessFile.D);
+        public readonly static Square E6 = new Square(6, ChessFile.E);
+        public readonly static Square F6 = new Square(6, ChessFile.F);
+        public readonly static Square G6 = new Square(6, ChessFile.G);
+        public readonly static Square H6 = new Square(6, ChessFile.H);
+        public readonly static Square A5 = new Square(5, ChessFile.A);
+        public readonly static Square B5 = new Square(5, ChessFile.B);
+        public readonly static Square C5 = new Square(5, ChessFile.C);
+        public readonly static Square D5 = new Square(5, ChessFile.D);
+        public readonly static Square E5 = new Square(5, ChessFile.E);
+        public readonly static Square F5 = new Square(5, ChessFile.F);
+        public readonly static Square G5 = new Square(5, ChessFile.G);
+        public readonly static Square H5 = new Square(5, ChessFile.H);
+        public readonly static Square A4 = new Square(4, ChessFile.A);
+        public readonly static Square B4 = new Square(4, ChessFile.B);
+        public readonly static Square C4 = new Square(4, ChessFile.C);
+        public readonly static Square D4 = new Square(4, ChessFile.D);
+        public readonly static Square E4 = new Square(4, ChessFile.E);
+        public readonly static Square F4 = new Square(4, ChessFile.F);
+        public readonly static Square G4 = new Square(4, ChessFile.G);
+        public readonly static Square H4 = new Square(4, ChessFile.H);
+        public readonly static Square A3 = new Square(3, ChessFile.A);
+        public readonly static Square B3 = new Square(3, ChessFile.B);
+        public readonly static Square C3 = new Square(3, ChessFile.C);
+        public readonly static Square D3 = new Square(3, ChessFile.D);
+        public readonly static Square E3 = new Square(3, ChessFile.E);
+        public readonly static Square F3 = new Square(3, ChessFile.F);
+        public readonly static Square G3 = new Square(3, ChessFile.G);
+        public readonly static Square H3 = new Square(3, ChessFile.H);
+        public readonly static Square A2 = new Square(2, ChessFile.A);
+        public readonly static Square B2 = new Square(2, ChessFile.B);
+        public readonly static Square C2 = new Square(2, ChessFile.C);
+        public readonly static Square D2 = new Square(2, ChessFile.D);
+        public readonly static Square E2 = new Square(2, ChessFile.E);
+        public readonly static Square F2 = new Square(2, ChessFile.F);
+        public readonly static Square G2 = new Square(2, ChessFile.G);
+        public readonly static Square H2 = new Square(2, ChessFile.H);
+        public readonly static Square A1 = new Square(1, ChessFile.A);
+        public readonly static Square B1 = new Square(1, ChessFile.B);
+        public readonly static Square C1 = new Square(1, ChessFile.C);
+        public readonly static Square D1 = new Square(1, ChessFile.D);
+        public readonly static Square E1 = new Square(1, ChessFile.E);
+        public readonly static Square F1 = new Square(1, ChessFile.F);
+        public readonly static Square G1 = new Square(1, ChessFile.G);
+        public readonly static Square H1 = new Square(1, ChessFile.H);
         #endregion
 
         #region Equality Implementation
@@ -354,7 +354,7 @@ namespace Miq.Tests.Nursery
         }
     }
 
-    public enum File
+    public enum ChessFile
     {
         None, A, B, C, D, E, F, G, H
     }
@@ -415,12 +415,12 @@ namespace Miq.Tests.Nursery
 
         IEnumerable<PieceLocation> ParseRankLine(string rankSpec, int rank)
         {
-            File currentFile = File.A;
+            ChessFile currentFile = ChessFile.A;
             foreach (Char c in rankSpec)
             {
                 if (Char.IsDigit(c))
                 {
-                    currentFile = (File)((int)currentFile + (int)Char.GetNumericValue(c));
+                    currentFile = (ChessFile)((int)currentFile + (int)Char.GetNumericValue(c));
                 }
                 else
                 {
@@ -445,7 +445,7 @@ namespace Miq.Tests.Nursery
             // what if line is not valid?
             return new Square(
                 (int)Char.GetNumericValue(field[1]),
-                (File)Enum.Parse(typeof(File), field[0].ToString(), true)
+                (ChessFile)Enum.Parse(typeof(ChessFile), field[0].ToString(), true)
             );
         }
 
@@ -552,7 +552,7 @@ namespace Miq.Tests.Nursery
         private string ToLine(IOrderedEnumerable<PieceLocation> pieces)
         {
             var line = new StringBuilder();
-            var currentFile = File.A;
+            var currentFile = ChessFile.A;
             int skipped;
             foreach (var piece in pieces)
             {
@@ -563,7 +563,7 @@ namespace Miq.Tests.Nursery
                 currentFile = piece.Location.File + 1;
             }
 
-            skipped = 1 + File.H - currentFile;
+            skipped = 1 + ChessFile.H - currentFile;
             if (skipped > 0)
                 line.Append(skipped);
 

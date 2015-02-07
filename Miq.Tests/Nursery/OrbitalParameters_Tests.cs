@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Miq.Tests.Nursery
 {
+	// See also PlanetaryPositionsTests.cs
     [TestClass]
     public class OrbitalParameters_Tests
     {
