@@ -41,11 +41,6 @@ namespace Miq.Imgur
             return new ImgurAssetCollection(HitService<JArray>("gallery/hot/viral/0.json"));
         }
 
-        public void Dispose()
-        {
-            HttpClient.Dispose();
-        }
-
         HttpClient HttpClient;
         string ClientId = "cc7a67f84a31063";
         //string ClientSecret = "c631b56cd31629d3162471b41edcd51509f8cc61";
@@ -87,6 +82,28 @@ namespace Miq.Imgur
             // int status = (int)j["status"];
             // TODO check if status is 200
             return (TReturn)j["data"];
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~ImgurClient()
+        {
+            Dispose(false);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (HttpClient != null)
+                {
+                    HttpClient.Dispose();
+                }
+            }
         }
     }
 }

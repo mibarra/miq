@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Miq.ImgurBrowser.Data
 {
-    public class ImageCollection : ObservableCollection<Image>
+    public class ImageCollection : ObservableCollection<Image>, IDisposable
     {
         public ImageCollection()
         {
@@ -24,7 +24,7 @@ namespace Miq.ImgurBrowser.Data
                 GalleryImages = AllImages.GetEnumerator();
             }
 
-            if(!GalleryImages.MoveNext())
+            if (!GalleryImages.MoveNext())
             {
                 return null;
             }
@@ -37,5 +37,33 @@ namespace Miq.ImgurBrowser.Data
         ImgurClient Imgur;
         ImgurImageRetriever Retriever;
         IEnumerator<Imgur.Image> GalleryImages;
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~ImageCollection()
+        {
+            Dispose(false);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (Imgur != null)
+                {
+                    Imgur.Dispose();
+                    Imgur = null;
+                }
+                if (Retriever != null)
+                {
+                    Retriever.Dispose();
+                    Retriever = null;
+                }
+            }
+        }
     }
 }
