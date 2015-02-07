@@ -17,14 +17,14 @@ using System.Windows.Shapes;
 
 namespace Miq.ImgurBrowser
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IDisposable
     {
         public MainWindow()
         {
             InitializeComponent();
             SetupImageLoader();
         }
-        
+
         void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Images = ImageList.DataContext as ImageCollection;
@@ -44,7 +44,7 @@ namespace Miq.ImgurBrowser
         {
             ImageLoader.RunWorkerAsync(Images);
         }
-        
+
         void ImageLoader_DoWork(object sender, DoWorkEventArgs e)
         {
             ImageCollection images = e.Argument as ImageCollection;
@@ -54,7 +54,7 @@ namespace Miq.ImgurBrowser
                 ImageLoader.ReportProgress(0, nextImage);
             }
         }
-        
+
         private void ImageLoader_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             Data.Image image = e.UserState as Data.Image;
@@ -64,5 +64,29 @@ namespace Miq.ImgurBrowser
         BackgroundWorker ImageLoader;
         ImageCollection Images;
         #endregion
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(true);
+        }
+
+        ~MainWindow()
+        {
+            Dispose(false);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if(ImageLoader != null)
+                {
+                    ImageLoader.Dispose();
+                    ImageLoader = null;
+                }
+                
+            }
+        }
     }
 }
