@@ -51,8 +51,8 @@ namespace Miq.Tests.Nursery
 			}
 
 			using (Stream stream = new MemoryStream())
-			using (TextWriter writer = new StreamWriter(stream))
 			{
+				TextWriter writer = new StreamWriter(stream);
 				foreach (var item in this.Values)
 				{
 					writer.WriteLine("{0} {1} {2}", item.Sha1, item.Type, item.Name);
@@ -134,7 +134,7 @@ namespace Miq.Tests.Nursery
 			catch (PathTooLongException)
 			{
 				string formattedName = @"\\?\" + filename;
-				SafeFileHandle handle = CreateFile(formattedName, (int)0x10000000, FileShare.None, null, FileMode.Open, (int)0x00000080, IntPtr.Zero);
+				SafeFileHandle handle = NativeMethods.CreateFile(formattedName, (int)0x10000000, FileShare.None, null, FileMode.Open, (int)0x00000080, IntPtr.Zero);
 				if (handle.IsInvalid)
 				{
 					throw new System.ComponentModel.Win32Exception();
@@ -162,26 +162,12 @@ namespace Miq.Tests.Nursery
 			Directory.CreateDirectory(directory);
 		}
 
-
-		[StructLayout(LayoutKind.Sequential)]
-		public class SECURITY_ATTRIBUTES
-		{
-			public int nLength;
-			public IntPtr pSecurityDescriptor;
-			public int bInheritHandle;
-		}
-
-		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		public static extern SafeFileHandle CreateFile(string lpFileName, int dwDesiredAccess, FileShare dwShareMode, SECURITY_ATTRIBUTES securityAttrs, FileMode dwCreationDisposition, int dwFlagsAndAttributes, IntPtr hTemplateFile);
-
 		void Compressfile(Stream stream, string objectFilePath)
 		{
-			using (Stream compressed = new FileStream(objectFilePath, FileMode.CreateNew))
+			Stream compressed = new FileStream(objectFilePath, FileMode.CreateNew);
+			using (Stream compression = new GZipStream(compressed, CompressionMode.Compress))
 			{
-				using (Stream compression = new GZipStream(compressed, CompressionMode.Compress))
-				{
-					stream.CopyTo(compression);
-				}
+				stream.CopyTo(compression);
 			}
 		}
 
@@ -219,6 +205,21 @@ namespace Miq.Tests.Nursery
 			}
 			return new string(result);
 		}
+	}
+
+	static class NativeMethods
+	{
+		[StructLayout(LayoutKind.Sequential)]
+		public class SECURITY_ATTRIBUTES
+		{
+			public int nLength;
+			public IntPtr pSecurityDescriptor;
+			public int bInheritHandle;
+		}
+
+		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+		public static extern SafeFileHandle CreateFile(string lpFileName, int dwDesiredAccess, FileShare dwShareMode, SECURITY_ATTRIBUTES securityAttrs, FileMode dwCreationDisposition, int dwFlagsAndAttributes, IntPtr hTemplateFile);
+
 	}
 
 	[TestClass]
