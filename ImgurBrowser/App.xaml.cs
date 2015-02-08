@@ -15,10 +15,8 @@ namespace Miq.ImgurBrowser
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            using (var mainWindow = new MainWindow())
-            {
-                mainWindow.Show();
-            }
+            var mainWindow = new MainWindow();
+            mainWindow.Show();
         }
     }
 }

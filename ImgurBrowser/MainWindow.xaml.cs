@@ -17,6 +17,8 @@ using System.Windows.Shapes;
 
 namespace Miq.ImgurBrowser
 {
+    // ZZZ main window can't be a disposable because it will keep running by it self.
+    // So there won't be anybody to explicitly dispose of it.
     public partial class MainWindow : Window, IDisposable
     {
         public MainWindow()

@@ -479,7 +479,7 @@ namespace TextElite
 		{
 			displaymarket(localmarket);
 			Console.WriteLine("\nFuel :{0:0.1}", (float)fuel / 10);
-			Console.WriteLine("      Holdspace :{0}t", holdspace);
+			Console.WriteLine("      Hold space :{0}t", holdspace);
 		}
 
 		static void doquit(string s)
@@ -490,13 +490,13 @@ namespace TextElite
 		static void dohelp(string s)
 		{
 			Console.WriteLine("Commands are:");
-			Console.WriteLine("Buy   tradegood ammount");
-			Console.WriteLine("Sell  tradegood ammount");
-			Console.WriteLine("Fuel  ammount    (buy ammount LY of fuel)");
-			Console.WriteLine("Jump  planetname (limited by fuel)");
-			Console.WriteLine("Sneak planetname (any distance - no fuel cost)");
+			Console.WriteLine("Buy   {trade good} amount");
+			Console.WriteLine("Sell  {trade good} amount");
+			Console.WriteLine("Fuel  amount    (buy amount LY of fuel)");
+			Console.WriteLine("Jump  {planet name} (limited by fuel)");
+			Console.WriteLine("Sneak {planet name} (any distance - no fuel cost)");
 			Console.WriteLine("Galhyp           (jumps to next galaxy)");
-			Console.WriteLine("Info  planetname (prints info on system)");
+			Console.WriteLine("Info  {planet name} (prints info on system)");
 			Console.WriteLine("Mkt              (shows market prices)");
 			Console.WriteLine("Local            (lists systems within 7 light years)");
 			Console.WriteLine("Cash number      (alters cash - cheating!)");
