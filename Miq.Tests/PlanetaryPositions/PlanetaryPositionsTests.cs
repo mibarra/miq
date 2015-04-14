@@ -17,9 +17,6 @@ namespace Miq.Tests.Nursery
 			var scandinaviaAtMidnightApril19th1990 = new EarthLocation(15.0, 60.0, date, 0.0);
 			sun.ObserverLocationOnEarth = scandinaviaAtMidnightApril19th1990;
 
-			// ZZZ getting tired of typing 0.0001, abstract out
-
-			// Earth Position in its Orbit Parameters
 			Assert.AreEqual(105.9134, sun.TrueAnomaly, 0.0001);
 			Assert.AreEqual(104.9904, sun.EccentricAnomaly, 0.001);
 			Assert.AreEqual(104.0653, sun.MeanAnomaly, 0.0001);
@@ -53,12 +50,6 @@ namespace Miq.Tests.Nursery
 
 			Assert.AreEqual(15.68/*Degrees*/, sun.SkyPosition.Azimuth, 0.01);
 			Assert.AreEqual(-17.96/*degrees*/, sun.SkyPosition.Altitude, 0.01);
-
-			// dawn, sunrise, sunset, dusk, night
-			// noche, alba, dia, ocaso
-			// 18 degrees below horizon: night
-			// 90.83 from zenith
-			// We could calculate dawn/sunrise/sunset/dusk time tables! :)
 		}
 
 		[TestMethod]
