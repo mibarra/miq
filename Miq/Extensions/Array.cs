@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Miq.Extensions
+namespace Miq
 {
     public static class ArrayExtensions
     {

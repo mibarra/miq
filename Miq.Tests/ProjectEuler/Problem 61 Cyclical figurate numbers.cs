@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Miq.Tests.ProjectEuler
 {
-    public partial class ProjectEuler
+    public partial class Solutions
     {
         public uint TriangularNumer(uint n)
         {
@@ -26,7 +26,7 @@ namespace Miq.Tests.ProjectEuler
         [TestMethod]
         public void TestMethod1()
         {
-            var sut = new ProjectEuler();
+            var sut = new Solutions();
             Assert.AreEqual(15u, sut.TriangularNumer(5));
             // What is the first n for which polygonalNumber(3, n) is four digits long?
             var x2 = sut.TriangularRoot(1000);

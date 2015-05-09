@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows.Forms;
 
-namespace miq.m2k
+namespace Miq.M2K
 {
     class Program
     {
         private const string KindleGenApp = @"tools\kindlegen.exe ";
 
         [STAThread]
-        static void Main(string[] args)
+        static void Main()
         {
             Application.EnableVisualStyles();
             // get outputfolder
@@ -26,7 +27,7 @@ namespace miq.m2k
             }
             catch (Exception ex)
             {
-                Console.WriteLine(string.Format("failed to download articles: {0}", ex.ToString()));
+                Console.WriteLine(string.Format(CultureInfo.CurrentCulture, Properties.Resources.FailedArticlesDownload, ex.ToString()));
             }
 
             // "http://technet.microsoft.com/en-us/magazine/rss/default.aspx?issue=tue";
@@ -47,25 +48,25 @@ namespace miq.m2k
         private static string GetOutputFolder()
         {
             string outputFolder = null;
-            FolderBrowserDialog folder = new FolderBrowserDialog();
-            folder.SelectedPath = Properties.Settings.Default.OutputFolder;
-            folder.ShowNewFolderButton = true;
-            if (folder.ShowDialog() == DialogResult.OK)
+            using (FolderBrowserDialog folder = new FolderBrowserDialog())
             {
-                outputFolder = folder.SelectedPath;
-                Properties.Settings.Default.OutputFolder = outputFolder;
-                Properties.Settings.Default.Save();
+                folder.SelectedPath = Properties.Settings.Default.OutputFolder;
+                folder.ShowNewFolderButton = true;
+                if (folder.ShowDialog() == DialogResult.OK)
+                {
+                    outputFolder = folder.SelectedPath;
+                    Properties.Settings.Default.OutputFolder = outputFolder;
+                    Properties.Settings.Default.Save();
+                }
             }
             return outputFolder;
         }
 
-        private static void ConvertToMobi(string sourFilePath, string outputFilePath)
+        private static void ConvertToMobi(string sourceFilePath, string outputFilePath)
         {
-            //var currentFolder = Directory.GetCurrentDirectory();
-            //var convertor = Path.Combine(currentFolder, KindleGenApp);
-            var stratInfo = new ProcessStartInfo { FileName = KindleGenApp, Arguments = string.Format("\"{0}\"", sourFilePath) };
-            RunAndWaitForExit(stratInfo, 10000);
-            Console.WriteLine("Generated {0}", outputFilePath);
+            var startInfo = new ProcessStartInfo { FileName = KindleGenApp, Arguments = "\"" + sourceFilePath + "\"" };
+            RunAndWaitForExit(startInfo, 10000);
+            Console.WriteLine(Properties.Resources.OutputGenerated, outputFilePath);
         }
 
         private static void RunAndWaitForExit(ProcessStartInfo startInfo, int milliSeconds)

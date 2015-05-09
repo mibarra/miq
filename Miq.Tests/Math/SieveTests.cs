@@ -19,7 +19,7 @@ namespace Miq.Tests.MoreMathTests
 
         [TestMethod]
         [TestCategory("Slow")]
-        public void SieveTill100MillionDoesntBreak()
+        public void SieveTill100MillionDoesNotBreak()
         {
             MoreMath.Sieve sieve = new MoreMath.Sieve(100000000);
             

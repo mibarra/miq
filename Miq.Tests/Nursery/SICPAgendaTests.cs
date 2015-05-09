@@ -153,7 +153,7 @@ namespace Miq.Tests.Nursery
 		public abstract bool Value { get; }
 		public abstract uint Delay { get; }
 
-		public BinaryGate(Wire a1, Wire a2, Wire output, Agenda agenda)
+		protected BinaryGate(Wire a1, Wire a2, Wire output, Agenda agenda)
 		{
 			A1 = a1;
 			A2 = a2;

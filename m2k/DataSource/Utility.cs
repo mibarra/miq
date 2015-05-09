@@ -8,11 +8,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
-namespace miq.m2k
+namespace Miq.M2K
 {
-    public class Utility
+    internal static class Utility
     {
-        public static string GetHtml(Uri uri)
+        internal static string GetHtml(Uri uri)
         {
             var req = ((HttpWebRequest)(WebRequest.Create(uri)));
             string htmlContent;
@@ -26,7 +26,7 @@ namespace miq.m2k
             return htmlContent;
         }
 
-        public static string GetImageExtension(string imageUrl)
+        internal static string GetImageExtension(string imageUrl)
         {
             var ext = Path.GetExtension(imageUrl);
             if (ext == null || ext.Length > 5)
@@ -34,14 +34,16 @@ namespace miq.m2k
             return Path.GetExtension(imageUrl);
         }
 
-        public static string DownloadImage(string url, string filePath)
+        internal static string DownloadImage(string url, string filePath)
         {
-            var wc = new WebClient();
-            wc.DownloadFile(url, filePath);
+            using (var wc = new WebClient())
+            {
+                wc.DownloadFile(url, filePath);
+            }
             return filePath;
         }
 
-        public static List<string> GetAllImagesFromUrl(string rawHtml)
+        internal static List<string> GetAllImagesFromUrl(string rawHtml)
         {
             const string regExPattern = @"< \s* img [^\>]* src \s* = \s* [\""\']? ( [^\""\'\s>]* )";
             var r = new Regex(regExPattern, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
@@ -49,10 +51,10 @@ namespace miq.m2k
             return (from Match m in matches select m.Groups[1].Value).ToList();
         }
 
-        public static string GetValidFileName(string rawFileName)
+        internal static string GetValidFileName(string rawFileName)
         {
             var fileName = new StringBuilder(rawFileName);
-            var invalidFileName = new[] { '?', '\\', '*', '"', '<', '>', '|', '/', '.',':' };
+            var invalidFileName = new[] { '?', '\\', '*', '"', '<', '>', '|', '/', '.', ':' };
             foreach (var chr in invalidFileName)
             {
                 fileName.Replace(chr, '_');
@@ -60,7 +62,7 @@ namespace miq.m2k
             return fileName.ToString();
         }
 
-        public static string CreateTableOfContent(IEnumerable<Article> articles)
+        internal static string CreateTableOfContent(IEnumerable<Article> articles)
         {
             var toc = new XElement("html",
                                 new XElement("head",
@@ -81,8 +83,8 @@ namespace miq.m2k
 
             foreach (var c in articlesInGroup)
             {
-                var category = new XElement("b",c.Key);
-                var ul=new XElement("ul");
+                var category = new XElement("b", c.Key);
+                var ul = new XElement("ul");
                 foreach (var article in c)
                 {
                     ul.Add(new XElement("li",
@@ -90,12 +92,12 @@ namespace miq.m2k
 
                 }
                 Debug.Assert(div != null, "div != null");
-                div.Add(category,ul);
+                div.Add(category, ul);
             }
             return toc.ToString();
         }
 
-        public static string CreateOpf(IEnumerable<Article> articles, string title)
+        internal static string CreateOpf(IEnumerable<Article> articles, string title)
         {
             XNamespace dc = "http://purl.org/dc/elements/1.1/";
             var odf = new XElement("package", new XAttribute(XNamespace.Xmlns + "dc", "http://purl.org/dc/elements/1.1/"),
@@ -120,10 +122,10 @@ namespace miq.m2k
             guide.Add(new XElement("reference", new XAttribute("type", "toc"), new XAttribute("title", "able of Contents"), new XAttribute("href", "toc.html")
                                      ));
             var num = 2;
-            foreach (var article in articles.OrderBy(a=>a.Category))
+            foreach (var article in articles.OrderBy(a => a.Category))
             {
-                manifeast.Add(new XElement("item", new XAttribute("id", String.Format("item{0}", num)), new XAttribute("media-type", "application/xhtml+xml"), new XAttribute("href", article.OutFileName)));
-                spine.Add(new XElement("itemref", new XAttribute("idref", String.Format("item{0}", num))));
+                manifeast.Add(new XElement("item", new XAttribute("id", "item" + num), new XAttribute("media-type", "application/xhtml+xml"), new XAttribute("href", article.OutFileName)));
+                spine.Add(new XElement("itemref", new XAttribute("idref", "item" + num)));
                 num++;
             }
             return odf.ToString();

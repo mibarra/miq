@@ -32,7 +32,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>BasicCorrectnessRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -112,6 +113,7 @@
     <Compile Include="Challenge133FootTrafficAnalysis.cs" />
     <Compile Include="Learning\ConsoleMusicTests.cs" />
     <Compile Include="Nursery\AutoBob.cs" />
+    <Compile Include="Nursery\KindleUnpack.cs" />
     <Compile Include="Nursery\LSystemsTests.cs" />
     <Compile Include="Nursery\MarkovChain.cs" />
     <Compile Include="Nursery\MondrainPictures.cs" />
@@ -141,6 +143,7 @@
     <Compile Include="Nursery\IntSpanTests.cs" />
     <Compile Include="Nursery\AntSimulatorTests.cs" />
     <Compile Include="Nursery\ObjectStoreTests.cs" />
+    <Compile Include="Nursery\SudokuSolver.cs" />
     <Compile Include="PlanetaryPositions\PlanetaryPositionsTests.cs" />
     <Compile Include="Nursery\WmiUsbTests.cs" />
     <Compile Include="Nursery\UnsignedInteger.cs" />

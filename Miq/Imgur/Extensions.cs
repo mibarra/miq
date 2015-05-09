@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Miq.Imgur
 {
-    public static class Extensions
+    public static class ExtensionMethods
     {
         public static MediaTypeHeaderValue GetMediaTypeValueFromJObjecT(this JObject jObject, string propertyName)
         {

@@ -10,7 +10,7 @@ namespace Miq.Test.xUnit
         public int Add(string numbers)
         {
             string numbersOnly = NumbersOnly(numbers);
-            if (numbersOnly == string.Empty)
+            if (string.IsNullOrEmpty(numbersOnly))
             {
                 return 0;
             }

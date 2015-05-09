@@ -102,7 +102,7 @@ namespace Miq.Tests.Nursery
                 {
                     throw new ArgumentNullException("alphabet");
                 }
-                if (alphabet == string.Empty)
+                if (alphabet.Length == 0)
                 {
                     throw new ArgumentException("alphabet");
                 }
@@ -110,7 +110,7 @@ namespace Miq.Tests.Nursery
                 {
                     throw new ArgumentNullException("axiom");
                 }
-                if (axiom == string.Empty)
+                if (axiom.Length == 0)
                 {
                     throw new ArgumentException("axiom");
                 }

@@ -16,7 +16,7 @@ namespace Miq.Tests.Nursery
 
         [TestMethod]
         [Ignore]
-        public void Login_Works() // XXX incomplete, it's not asserting anything
+        public void LogOn_Works() // XXX incomplete, it's not asserting anything
         {
             // /api/login/nonspinningrotator?user=nonspinningrotator&passwd=nueva.cosa&api_type=json
 
